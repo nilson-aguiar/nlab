@@ -1,0 +1,18 @@
+repositories:
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+
+releases:
+  - name: prometheus
+    namespace: prometheus-system
+    chart: prometheus-community/prometheus
+    version: 25.27.0
+    values:
+      - ./prometheus.values.yaml
+
+  # - name: prometheus-node-exporter
+  #   namespace: prometheus-system
+  #   chart: prometheus-community/node-exporter
+  #   version: 25.27.0
+  #   values:
+  #     - ./prometheus.values.yaml

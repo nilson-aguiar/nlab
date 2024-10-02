@@ -1,0 +1,18 @@
+repositories:
+  - name: nfs-subdir-external-provisioner
+    url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+    
+---
+releases:
+  - name: nfs-backup-subdir
+    chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+    namespace: nfs-subdir-system
+    version: 4.0.18
+    values:
+      - ./values/backup.yaml
+  - name: nfs-secondary-subdir
+    chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+    namespace: nfs-subdir-system
+    version: 4.0.18
+    values:
+      - ./values/secondary-nobkp.yaml

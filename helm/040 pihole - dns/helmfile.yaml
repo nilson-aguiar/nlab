@@ -1,0 +1,23 @@
+repositories:
+  - name: mojo2600
+    url: https://mojo2600.github.io/pihole-kubernetes/
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
+---
+releases:
+# pihole - DNS records and AdGuard
+  - name: pihole
+    namespace: pihole-system
+    chart: mojo2600/pihole
+    version: 2.26.1
+    values:
+      - ./values/pihole.values.yaml
+
+# Automatic DNS for pihole
+  - name: externaldns-pihole
+    namespace: pihole-system
+    chart: bitnami/external-dns
+    version: 8.0.1
+    values:
+      - ./values/externaldns.values.yaml

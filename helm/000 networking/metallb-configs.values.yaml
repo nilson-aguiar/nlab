@@ -1,0 +1,61 @@
+## Common Labels
+# commonLabels -- Common Labels are added to each kubernetes resource manifest. 
+commonLabels: {}
+
+## Overwrite Labels
+# overwriteLabels -- Overwrites default labels, but not resource specific labels and common labels
+overwriteLabels: {}
+
+## Define Pure kubernetes resources
+# resources -- Define resources to be deployed by the raw chart 
+resources:
+  - apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: pool
+      namespace: metallb-system
+    spec:
+      # TODO: update it to ipv6 
+      # CIDR calc, sample with range between 128-191
+      #  https://jodies.de/ipcalc?host=192.168.0.129&mask1=26
+      # So I can configura my DHCP to allow:
+      #  - Wireless devices            -> 192.168.1.5   - 192.168.1.99
+      #  - Manually configured devices -> 192.168.1.100 - 192.168.1.127
+      #  - Multus pods                 -> 192.168.1.128 - 192.168.1.191  /26
+      #  - Metal LB services           -> 192.168.1.192 - 192.168.1.255  /26
+      addresses:
+        - 192.168.1.192/26
+      autoAssign: true
+  - apiVersion: metallb.io/v1beta1
+    kind: L2Advertisement
+    metadata:
+      name: pool
+      namespace: metallb-system
+    spec:
+      ipAddressPools:
+        - pool
+
+---
+
+#
+#  - apiVersion: scheduling.k8s.io/v1beta1
+#    kind: PriorityClass
+#    metadata:
+#      name: common-critical
+#    value: 100000000
+#    globalDefault: false
+#    description: "This priority class should only be used for critical priority common pods."
+#
+#  - apiVersion: scheduling.k8s.io/v1beta1
+#    kind: PriorityClass
+#    metadata:
+#      name: common-high
+#    value: 90000000
+#    globalDefault: false
+#    description: "This priority class should only be used for high priority common pods."
+#
+
+# templates -- Define templates which will be executed using the `tpl` function  
+templates: []
+
+

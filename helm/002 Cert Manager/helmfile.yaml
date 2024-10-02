@@ -1,0 +1,26 @@
+repositories:
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+
+---
+releases:
+  - name: cert-manager
+    namespace: cert-manager-system
+    chart: jetstack/cert-manager
+    version: 1.16.1
+    values:
+      - ./cert-manager.values.yaml
+
+  - name: issuer
+    chart: raw/raw
+    namespace: cert-manager-system
+    values:
+      - ./issuer.values.yaml
+
+  - name: issuer-stg
+    chart: raw/raw
+    namespace: cert-manager-system
+    values:
+      - ./issuer-stg.values.yaml

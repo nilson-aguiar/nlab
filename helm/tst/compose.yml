@@ -1,0 +1,10 @@
+services:
+  debian:
+    tty: true
+    build: .
+
+networks:  
+  host:
+    name: host
+    driver: host
+    external: true
