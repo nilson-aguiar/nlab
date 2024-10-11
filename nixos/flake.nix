@@ -3,8 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    # Disko
-    disko.url = "github:nix-community/disko";
+    disko.url = "github:nix-community/disko"; #Disk config
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
