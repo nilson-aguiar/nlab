@@ -1,0 +1,6 @@
+nfs:
+  server: 192.168.1.110
+  path: /volume1/k8s-primary
+storageClass:
+  name: primary
+  provisionerName: k8s-sigs.io/primary-nfs-subdir-external-provisioner
