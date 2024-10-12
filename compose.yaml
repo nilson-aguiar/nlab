@@ -1,0 +1,12 @@
+services:
+  nix:
+    image: nixos/nix
+    container_name: nix
+    platform: linux/amd64
+    network_mode: host
+    volumes:
+      - ./nixos:/nlab
+    tty: true
+    stdin_open: true
+    working_dir: /nlab
+    # command: nix run github:nix-community/nixos-anywhere --build-on-remote --extra-experimental-features "nix-command flakes" -- --flake '.#homelab-0' nixos@192.168.1.174

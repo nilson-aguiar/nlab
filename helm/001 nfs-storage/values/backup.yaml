@@ -1,0 +1,6 @@
+nfs:
+  server: 192.168.1.110
+  path: /volume1/k8s-backup
+storageClass:
+  name: backup
+  provisionerName: k8s-sigs.io/backup-nfs-subdir-external-provisioner
