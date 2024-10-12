@@ -36,10 +36,20 @@ The command I use is as follows:
 ```shell
 nix run github:nix-community/nixos-anywhere \
 --extra-experimental-features "nix-command flakes" \
--- --flake '.#homelab-0' nixos@192.168.1.100
+-- --flake '.#homelab-0' nixos@192.168.1.100 
 ```
 
+`--build-on-remote` can be added in the end of the command in case you don't have a laptop with the same architecture, but cache won't be re-used in this case.
+
 make sure to replace with your own ip.
+
+After finished you can copy the connection details from `homelab-0` with:
+
+```shell
+scp -r naguiar@homelab-0:/etc/rancher/k3s/k3s.yaml .kube/config
+```
+
+then open the copied file and update the ip for the server
 
 ## helm
 

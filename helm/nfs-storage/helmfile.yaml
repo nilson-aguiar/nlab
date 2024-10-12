@@ -1,0 +1,8 @@
+repositories:
+  - name: nfs-subdir
+    url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+    
+---
+releases:
+  - name: nfs-subdir
+    waitForJobs: false
