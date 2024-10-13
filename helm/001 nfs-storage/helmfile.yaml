@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: nfs-backup-subdir
     chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
-    namespace: nfs-backup-system
+    namespace: nfs-subdir-system
     version: 4.0.18
     values:
       - ./values/backup.yaml

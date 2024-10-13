@@ -13,7 +13,7 @@ spec:
   #  - Metal LB services           -> 192.168.1.129 - 192.168.1.254
   addresses:
     - 192.168.1.129/25
-  autoAssign: false
+  autoAssign: true
 
 ---
 apiVersion: metallb.io/v1beta1
