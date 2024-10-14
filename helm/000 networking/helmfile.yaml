@@ -1,0 +1,33 @@
+repositories:
+  - name: metallb
+    url: https://metallb.github.io/metallb
+  - name: raw 
+    url: https://bedag.github.io/helm-charts/
+  - name: rke2-charts
+    url: https://rke2-charts.rancher.io
+---
+releases:
+# Load balancer to assign IPs
+  - name: metallb
+    chart: metallb/metallb
+    namespace: metallb-system
+    version: 0.14.8
+  - name: metallb-configs
+    chart: raw/raw
+    namespace: metallb-system
+    version: 2.0.0
+    values:
+      - ./metallb-configs.values.yaml
+
+# Pod with host and k8s network
+  - name: multus
+    chart: rke2-charts/rke2-multus
+    namespace: kube-system
+    values:
+      - ./multus.values.yaml
+
+  - name: multus-config
+    chart: raw/raw
+    namespace: kube-system
+    values:
+      - ./multus-config.values.yaml
