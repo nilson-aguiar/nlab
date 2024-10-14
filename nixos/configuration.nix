@@ -109,8 +109,11 @@
   ];
 
   environment.etc = {
-        "/var/lib/rancher/k3s/agent/etc/cni".source = "/etc/cni"
-  }
+        "cni" = {
+          source = "/var/lib/rancher/k3s/agent/etc/cni";
+          mode = "0644";
+        };
+    };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
