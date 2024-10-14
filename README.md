@@ -51,6 +51,12 @@ scp -r naguiar@homelab-0:/etc/rancher/k3s/k3s.yaml .kube/config
 
 then open the copied file and update the ip for the server
 
+When changes are made you can update the node using:
+
+```shell
+sudo nixos-rebuild switch --flake github:nilson-aguiar/nlab?dir=nixos
+```
+
 ## helm
 
 This directory is used to store the helm configuration of the node and is managed using [helmfile](https://github.com/helmfile/helmfile), which is a declarative spec for defining helm charts.

@@ -111,7 +111,6 @@
   environment.etc = {
         "cni" = {
           source = "/var/lib/rancher/k3s/agent/etc/cni";
-          mode = "0644";
         };
     };
 
