@@ -9,3 +9,10 @@ releases:
     version: 25.27.0
     values:
       - ./prometheus.values.yaml
+
+  # - name: prometheus-node-exporter
+  #   namespace: prometheus-system
+  #   chart: prometheus-community/node-exporter
+  #   version: 25.27.0
+  #   values:
+  #     - ./prometheus.values.yaml
