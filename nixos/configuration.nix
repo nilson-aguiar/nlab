@@ -115,7 +115,7 @@
     };
 
   environment.shellAliases = {
-    k = kubectl;
+    k = "kubectl";
   };
 
 
