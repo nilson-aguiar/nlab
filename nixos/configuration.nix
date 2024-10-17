@@ -106,6 +106,8 @@
      cifs-utils
      nfs-utils
      git
+     sops
+     age
   ];
 
   environment.etc = {
