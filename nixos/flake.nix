@@ -2,9 +2,22 @@
   description = "Homelab NixOS Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    disko.url = "github:nix-community/disko"; #Disk config
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-24.05";
+    };
+#    home-manager = {
+#      url = "github:nix-community/home-manager/release-24.05";
+#    };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "github:nix-community/disko"; #Disk config
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, disko, ... }@inputs: let

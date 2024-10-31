@@ -2,11 +2,12 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, meta, ... }:
+{ config, lib, pkgs, input, meta, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
+        inputs.sops-nix.nixosModules.sops
     ];
 
   nix = {
@@ -120,6 +121,16 @@
     k = "kubectl";
   };
 
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+
+    age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
+
+    secrets = {
+      "k3s/token" = { };
+    };
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
