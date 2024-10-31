@@ -1,0 +1,22 @@
+cloudflareToken:
+  secretName: cloudflare-token-secret
+  secretKey: cloudflare-token
+
+clusterIssuer:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+
+certificate:
+  reflector:
+    enabled: true
+    allowedNamespaces: &namespaces
+      - traefik-system
+      - prometheus-system
+      - grafana-system
+      - longhorn-system
+      - pihole-system
+#      -
+      - home-assistant
+      - media-flix
+      - tinfoil-hat
+    autoNamespaces: *namespaces

@@ -1,0 +1,24 @@
+extraEnvVars:
+  - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: password
+        name: pihole-password
+ingressClassFilters:
+  - nginx-internal
+logLevel: debug
+pihole:
+  server: http://pihole-web.pihole-system.svc.cluster.local
+  tlsSkipVerify: true
+policy: upsert-only
+provider: pihole
+serviceAccount:
+  create: true
+  name: external-dns
+sources:
+  - service
+  - ingress
+  - traefik-proxy
+traefik:
+  disableLegacy: true
+  disableNew: false

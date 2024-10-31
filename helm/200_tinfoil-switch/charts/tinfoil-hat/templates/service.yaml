@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-tinfoil-hat
+  labels:
+    app: tinfoil-hat
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: tinfoil
+      port: 80
+      targetPort: tinfoil
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.qbittorrent.service.bittorrent.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    app: tinfoil-hat

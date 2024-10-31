@@ -1,0 +1,13 @@
+repositories:
+  - name: gabe565
+    url: https://charts.gabe565.com
+
+
+---
+releases:
+  - name: smarter-device-manager
+    namespace: smarter-device-manager
+    chart: gabe565/smarter-device-manager
+    version: 0.5.2
+    values:
+      - ./smarter-device-manager.values.yaml

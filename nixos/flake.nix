@@ -5,9 +5,6 @@
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-24.05";
     };
-#    home-manager = {
-#      url = "github:nix-community/home-manager/release-24.05";
-#    };
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -31,6 +28,7 @@
 	    name = name;
 	    value = nixpkgs.lib.nixosSystem {
      	    specialArgs = {
+     	      inherit inputs;
             meta = { hostname = name; };
           };
           system = "x86_64-linux";

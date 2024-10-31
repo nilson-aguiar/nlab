@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - ingress.yaml
+  - ingressRoute.yaml
+  - pvc.yaml
+  - service.yaml
+  - configmap.yaml
+
+images:
+  - name: homeassistant/home-assistant
+    newTag: "2024.11"
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app: home-assistant
+      app.kubernetes.io/name: home-assistant
+
+# Refer to: https://github.com/mysticrenji/home-assistant-on-kubernetes/blob/main/home-automation/deployment.yaml
+#  for extra ideas

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-tinfoil-hat
+  labels:
+    app: tinfoil-hat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tinfoil-hat
+  template:
+    metadata:
+      labels:
+        app: tinfoil-hat
+    spec:
+      containers:
+        - name: tinfoil-hat
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+              name: tinfoil
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DEBUG
+              value: {{ .Values.config.debug | quote }}
+            - name: AUTH_USERS
+              value: {{ .Values.config.authUsers | quote }}
+            - name: UNAUTHORIZED_MSG
+              value: {{ .Values.config.unauthorizedMsg | quote }}
+            - name: WELCOME_MSG
+              value: {{ .Values.config.welcomeMsg | quote }}
+            - name: NX_PORTS
+              value: {{ .Values.config.nxPorts | quote }}
+          volumeMounts:
+            - name: games-storage
+              mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+        - name: games-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-tinfoil-hat-pvc

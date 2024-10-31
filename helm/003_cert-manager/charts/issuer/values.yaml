@@ -1,0 +1,24 @@
+cloudflareToken:
+  secretName: your-token-secret
+  secretKey: your-token-key
+
+name: staging
+
+clusterIssuer:
+  name: staging
+  email: email@example.com
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+  cloudflare:
+    email: email@example.com
+  dnsZones:
+    - example.com
+
+certificate:
+  commonName: "*.local.example.com"
+  reflector:
+    enabled: false
+    allowedNamespaces:
+      - default
+    autoNamespaces:
+      - default

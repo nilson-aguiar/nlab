@@ -1,0 +1,57 @@
+{{- if .Values.qbittorrent.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      containers:
+        - name: qbittorrent
+          image: "{{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag }}"
+          imagePullPolicy: {{ .Values.qbittorrent.image.pullPolicy }}
+          ports:
+            - name: webui
+              containerPort: {{ .Values.qbittorrent.config.webui_port }}
+            - name: bittorrent
+              containerPort: {{ .Values.qbittorrent.config.bittorrent_port }}
+              protocol: TCP
+          env:
+            - name: TZ
+              value: {{ .Values.qbittorrent.config.timezone }}
+            - name: WEBUI_PORT
+              value: {{ .Values.qbittorrent.config.webui_port | quote }}
+            - name: PUID
+              value: {{ .Values.qbittorrent.config.puid | quote }}
+            - name: PGID
+              value: {{ .Values.qbittorrent.config.pgid | quote }}
+            - name: UMASK
+              value: {{ .Values.qbittorrent.config.umask | quote }}
+          volumeMounts:
+            - name: games-storage
+              mountPath: /downloads
+            - name: qbittorrent-config
+              mountPath: /config
+          resources:
+            {{- toYaml .Values.qbittorrent.resources | nindent 12 }}
+      volumes:
+        - name: games-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-tinfoil-hat-pvc
+        - name: qbittorrent-config
+          {{- if .Values.qbittorrent.persistence.config.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-qbittorrent-config
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}

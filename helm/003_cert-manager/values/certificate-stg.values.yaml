@@ -1,0 +1,17 @@
+cloudflareToken:
+  secretName: cloudflare-token-secret
+  secretKey: cloudflare-token
+
+clusterIssuer:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+
+certificate:
+  reflector:
+    enabled: true
+    allowedNamespaces:
+      - default
+      - media-flix
+    autoNamespaces:
+      - default
+      - media-flix

@@ -1,0 +1,132 @@
+controllers:
+  jellyfin:
+    containers:
+      app:
+        image:
+          repository: jellyfin/jellyfin
+          tag: 2024110405@sha256:ff112e2e28b66ef2ce8ee7228f6457b37313cb7e7f09358e90f2f13873e2cf31
+        env:
+          TZ: Europe/Amsterdam
+          PUID: 568
+          GUID: 568
+          JELLYFIN_PublishedServerUrl: "http://192.168.0.5"
+        probes:
+          liveness: &jellyfinProbes
+            enabled: true
+          readiness: *jellyfinProbes
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 10
+        ports:
+          - name: http
+            protocol: TCP
+            containerPort: &jellyfinPort 8096
+          - name: discover
+            protocol: UDP
+            containerPort: 7359
+          - name: dlna
+            protocol: UDP
+            containerPort: 1900
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: { drop: ["ALL"] }
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+#            gpu.intel.com/i915: 1
+            memory: 1Gi
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 568
+    runAsGroup: 568
+    fsGroup: 568
+    fsGroupChangePolicy: OnRootMismatch
+#    supplementalGroups: [44, 10000]
+    seccompProfile: { type: RuntimeDefault }
+#  nodeSelector:
+#    intel.feature.node.kubernetes.io/gpu: "true"
+
+service:
+  app:
+    controller: jellyfin
+    ports:
+      http:
+        port: *jellyfinPort
+
+
+persistence:
+  config:
+#    existingClaim: jellyfin-config
+    size: 500Mi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteMany
+#    globalMounts:
+#      - path: "/config"
+  # Separate PVC for cache to avoid backing up cache files
+  cache:
+#    existingClaim: jellyfin-cache
+    size: 1Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteMany
+  tmp:
+    type: emptyDir
+#  transcode:
+#    type: emptyDir
+  media:
+    existingClaim: media-storage-data
+    globalMounts:
+      - path: /media
+        subPath: media
+        readOnly: true
+
+starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
+hostSuffix: &hostSuffix "local.naguiar.dev"
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: true
+          contentTypeNosniff: true
+          forceSTSHeader: true
+          stsIncludeSubdomains: true
+          stsPreload: true
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`jellyfin.local.naguiar.dev`)
+            kind: Rule
+            middlewares:
+              - name: jellyfin-default-headers
+            services:
+              - name: jellyfin
+                port: *jellyfinPort
+        tls:
+          secretName: certificate-tls

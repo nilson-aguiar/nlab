@@ -1,0 +1,42 @@
+repositories:
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+
+---
+releases:
+  - name: cloudflare-token
+    namespace: cert-manager-system
+    chart: bjw-s/app-template
+    version: 3.5.1
+    secrets:
+      - ./secrets/cloudflare.values.secret.yaml
+    values:
+      - ./values/cloudflare.values.yaml
+
+  - name: cert-manager
+    namespace: cert-manager-system
+    chart: jetstack/cert-manager
+    version: 1.16.1
+    values:
+      - ./values/cert-manager.values.yaml
+
+  - name: certificate-staging
+    namespace: cert-manager-system
+    chart: ./charts/issuer  # Path to your local chart
+    version: 0.1.0
+    secrets:
+      - ./secrets/certificate-stg.values.secret.yaml
+    values:
+      - ./values/certificate-stg.values.yaml
+
+  - name: certificate
+    namespace: cert-manager-system
+    chart: ./charts/issuer  # Path to your local chart
+    version: 0.1.0
+    secrets:
+      - ./secrets/certificate-pro.values.secret.yaml
+    values:
+      - ./values/certificate-pro.values.yaml

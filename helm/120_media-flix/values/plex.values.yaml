@@ -1,0 +1,149 @@
+controllers:
+  plex:
+
+    containers:
+      app:
+        image:
+          repository: ghcr.io/onedr0p/plex
+          tag: 1.41.1.9057-af5eaea7a@sha256:5926b77196bb7c9f75b52f431d0483abea0fef1f576b7201592b385449201456
+        env:
+          TZ: Europe/Amsterdam
+          PLEX_ADVERTISE_URL: https://plex.local.naguiar.dev:443 #,http://192.168.42.128:32400
+          PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24,10.42.1.0/24
+        probes:
+          liveness: &plexProbes
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /identity
+                port: 32400
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness: *plexProbes
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 10
+        ports:
+          - name: http
+            containerPort: &plexPort 32400
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: { drop: ["ALL"] }
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+#            gpu.intel.com/i915: 1
+            memory: 1Gi
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 568
+    runAsGroup: 568
+    fsGroup: 568
+    fsGroupChangePolicy: OnRootMismatch
+    supplementalGroups: [44, 10000]
+    seccompProfile: { type: RuntimeDefault }
+#  nodeSelector:
+#    intel.feature.node.kubernetes.io/gpu: "true"
+service:
+  app:
+    controller: plex
+#    type: LoadBalancer
+#    annotations:
+#      lbipam.cilium.io/ips: 192.168.42.128
+    ports:
+      http:
+        port: *plexPort
+
+
+persistence:
+  config:
+#    existingClaim: plex-config
+    size: 500Mi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteMany
+    globalMounts:
+      - path: "/config/Library/Application Support/Plex Media Server"
+  # Separate PVC for cache to avoid backing up cache files
+  cache:
+    enabled: true
+#    existingClaim: plex-cache
+    size: 1Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteMany
+    globalMounts:
+      - path: "/config/Library/Application Support/Plex Media Server/Cache"
+  logs:
+    type: emptyDir
+    globalMounts:
+      - path: "/config/Library/Application Support/Plex Media Server/Logs"
+  tmp:
+    type: emptyDir
+  transcode:
+    type: emptyDir
+  media:
+    existingClaim: media-storage-data
+    globalMounts:
+      - path: /media
+        subPath: media
+        readOnly: false
+#  music:
+#    existingClaim: media-storage-data
+#    globalMounts:
+#      - path: /music
+#        readOnly: true
+
+
+starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
+hostSuffix: &hostSuffix "local.naguiar.dev"
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: true
+          contentTypeNosniff: true
+          forceSTSHeader: true
+          stsIncludeSubdomains: true
+          stsPreload: true
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`plex.local.naguiar.dev`)
+            kind: Rule
+            middlewares:
+              - name: plex-default-headers
+            services:
+              - name: plex
+                port: *plexPort
+        tls:
+          secretName: certificate-tls

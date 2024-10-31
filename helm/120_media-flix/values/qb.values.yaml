@@ -1,0 +1,129 @@
+controllers:
+  media-qb:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: ghcr.io/onedr0p/qbittorrent
+          tag: 5.0.1
+
+        env:
+          TZ: Europe/Amsterdam
+          QBT_WEBUI_PORT: &qbPort 80
+          QBT_TORRENTING_PORT: &torrentPort 50413
+          CROSS_SEED_ENABLED: false
+          PUSHOVER_ENABLED: false
+#        envFrom:
+#          - secretRef:
+#              name: qbittorrent-secret
+        ports:
+          - name: http
+            containerPort: *qbPort
+          - name: qbittorrent
+            containerPort: *torrentPort
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 10
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: { drop: ["ALL"] }
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 4Gi
+
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 568
+    runAsGroup: 568
+    fsGroup: 568
+    fsGroupChangePolicy: OnRootMismatch
+    supplementalGroups: [10000]
+    seccompProfile: { type: RuntimeDefault }
+  terminationGracePeriodSeconds: 300
+
+service:
+  app:
+    controller: &qb-service media-qb
+    ports:
+      http:
+        enabled: true
+        protocol: TCP
+        port: *qbPort
+      qbittorrent:
+        enabled: true
+        port: *torrentPort
+        protocol: TCP
+
+persistence:
+  config:
+#    size: 100Mi
+#    retain: true
+#    accessMode: ReadWriteOnce
+    existingClaim: media-qb-config
+  tmp:
+    type: emptyDir
+#  scripts:
+#    type: configMap
+#    name: qbittorrent-scripts
+#    defaultMode: 0775
+#    globalMounts:
+#      - readOnly: true
+  media:
+    existingClaim: media-storage-data
+    globalMounts:
+      - path: /media
+#        subPath: downloads
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: false
+          contentTypeNosniff: false
+          forceSTSHeader: false
+          stsIncludeSubdomains: false
+          stsPreload: false
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+#          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+#          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`media-qb.local.naguiar.dev`)
+            kind: Rule
+#            middlewares:
+#              - name: media-qb-default-headers
+            services:
+              - name: *qb-service
+                port: *qbPort
+        tls:
+          secretName: certificate-tls

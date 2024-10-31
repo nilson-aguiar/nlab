@@ -1,0 +1,9 @@
+global:
+  nameOverride: storage
+
+persistence:
+  data:
+    size: 1Ti
+    storageClass: secondary
+    retain: true
+    accessMode: ReadWriteMany

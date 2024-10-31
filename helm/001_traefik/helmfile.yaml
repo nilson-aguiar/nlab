@@ -1,0 +1,36 @@
+repositories:
+  - name: traefik
+    url: https://traefik.github.io/charts
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+
+---
+releases:
+  #  Ingress for local network
+  - name: ingress-traefik-internal
+    namespace: traefik-system
+    chart: traefik/traefik
+    version: v32.1.1
+    values:
+      - ./values/traefik.values.yaml
+
+  - name: traefik-ingress
+    namespace: traefik-system
+    chart: bjw-s/app-template
+    version: 3.5.1
+    secrets:
+      - ./secrets/traefik.values.secret.yaml
+
+
+  - name: traefik-middleware
+    chart: raw/raw
+    namespace: traefik-system
+    values:
+      - ./values/middleware.values.yaml
+
+  - name: traefik-ingress-route
+    chart: raw/raw
+    namespace: traefik-system
+    values:
+      - ./values/ingress-route.values.yaml

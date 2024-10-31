@@ -1,0 +1,58 @@
+repositories:
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+
+---
+templates:
+  bjw: &bjw
+    namespace: media-flix
+    chart: bjw-s/app-template
+    version: 3.5.1
+
+releases:
+  - name: media-postgres
+    namespace: media-flix
+    chart: postgres-cluster
+
+  - name: prowlarr
+    <<: *bjw
+    values:
+      - ./values/prowlarr.values.yaml
+    secrets:
+      - ./secrets/prowlarr.secrets.yaml
+
+  - name: media-storage
+    <<: *bjw
+    values:
+      - ./values/storage.values.yaml
+
+# Commenting it out since it's applying changes without need
+#  - name: media-qb
+#    <<: *bjw
+#    values:
+#      - ./values/qb.values.yaml
+
+  - name: sonarr
+    <<: *bjw
+    values:
+      - ./values/sonarr.values.yaml
+    secrets:
+      - ./secrets/sonarr.secrets.yaml
+
+  - name: radarr
+    <<: *bjw
+    values:
+      - ./values/radarr.values.yaml
+    secrets:
+      - ./secrets/radarr.secrets.yaml
+
+  - name: plex
+    <<: *bjw
+    values:
+      - ./values/plex.values.yaml
+
+  - name: jellyfin
+    <<: *bjw
+    values:
+      - ./values/jellyfin.values.yaml

@@ -1,0 +1,149 @@
+controllers:
+  sonarr:
+    replicas: 1
+#    annotations:
+#      reloader.stakater.com/auto: "true"
+
+    pod:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        runAsNonRoot: true
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+
+    initContainers:
+      init-db:
+        image:
+          repository: ghcr.io/onedr0p/postgres-init
+          tag: 16
+        env:
+          INIT_POSTGRES_SUPER_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: postgres16-superuser
+                key: password
+          INIT_POSTGRES_HOST:
+            valueFrom:
+              secretKeyRef:
+                name: postgres16-superuser
+                key: host
+        envFrom:
+          - secretRef:
+              name: sonarr-init
+    containers:
+      app:
+        image:
+          repository: ghcr.io/onedr0p/sonarr
+          tag: 4.0.10
+        env:
+          SONARR__APP__INSTANCENAME: Sonarr
+          SONARR__APP__THEME: dark
+          SONARR__AUTH__METHOD: External
+          SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+          SONARR__LOG__DBENABLED: "False"
+          SONARR__LOG__LEVEL: info
+          SONARR__SERVER__PORT: &sonarrPort 80
+          SONARR__UPDATE__BRANCH: main
+          TZ: Europe/Amsterdam
+          SONARR__POSTGRES__PORT: "5432"
+          SONARR__POSTGRES__HOST:
+            valueFrom:
+              secretKeyRef:
+                name: postgres16-app
+                key: host
+        envFrom:
+          - secretRef:
+              name: sonarr-secret
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        ports:
+          - name: http
+            containerPort: *sonarrPort
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+
+persistence:
+  config:
+    enabled: true
+#    existingClaim: sonarr-config
+    size: 5Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteMany
+  tmp:
+    type: emptyDir
+  media:
+    existingClaim: media-storage-data
+    globalMounts:
+      - path: /media
+service:
+  app:
+    controller: sonarr
+    ports:
+      http:
+        port: *sonarrPort
+
+
+starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
+hostSuffix: &hostSuffix "local.naguiar.dev"
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: true
+          contentTypeNosniff: true
+          forceSTSHeader: true
+          stsIncludeSubdomains: true
+          stsPreload: true
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`sonarr.local.naguiar.dev`)
+            kind: Rule
+            middlewares:
+              - name: sonarr-default-headers
+            services:
+              - name: sonarr
+                port: *sonarrPort
+        tls:
+          secretName: certificate-tls

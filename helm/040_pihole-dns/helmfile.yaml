@@ -1,0 +1,32 @@
+repositories:
+  - name: mojo2600
+    url: https://mojo2600.github.io/pihole-kubernetes/
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+
+---
+releases:
+# pihole - DNS records and AdGuard
+  - name: pihole
+    namespace: pihole-system
+    chart: mojo2600/pihole
+    version: 2.26.1
+    values:
+      - ./values/pihole.values.yaml
+
+# Automatic DNS for pihole
+  - name: externaldns-pihole
+    namespace: pihole-system
+    chart: bitnami/external-dns
+    version: 8.3.9
+    values:
+      - ./values/externaldns.values.yaml
+
+  - name: pihole-ingress
+    namespace: pihole-system
+    chart: raw/raw
+    version: 2.0.0
+    values:
+      - ./values/pihole.ingress.values.yaml

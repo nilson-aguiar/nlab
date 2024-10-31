@@ -1,0 +1,83 @@
+image:
+  repository: vinicioslc/tinfoil-hat
+  tag: latest
+  pullPolicy: IfNotPresent
+
+annotations: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  nodePort: null
+
+resources:
+  limits:
+    cpu: 400m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  storageClassName: standard
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  mountPath: /games
+
+config:
+  debug: "*"
+  authUsers: "admin:admin,othertinfoiler:otherpassword"
+  unauthorizedMsg: "No tricks and treats for you!!"
+  welcomeMsg: "The Server Just Works!!"
+  nxPorts: "5000"
+
+# values override
+ingressRoute:
+  annotations: {}
+  enabled: false
+  hostSuffix: example.com
+  entryPoints:
+    - websecure
+  tls:
+    issuerRef: letsencrypt-prod
+    enabled: true
+    secretName: certificate-tls
+
+qbittorrent:
+  enabled: true
+  image:
+    repository: linuxserver/qbittorrent
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  service:
+    webui:
+      port: 8080
+      nodePort: null
+    bittorrent:
+      port: 6881
+      nodePort: null
+
+  config:
+    timezone: UTC
+    webui_port: 8080
+    bittorrent_port: 6881
+    umask: "022"
+    puid: "1000"
+    pgid: "1000"
+
+  resources:
+    limits:
+      cpu: 400m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+
+  persistence:
+    config:
+      enabled: true
+      storageClassName: ""
+      size: 50Mi
+      accessMode: ReadWriteOnce

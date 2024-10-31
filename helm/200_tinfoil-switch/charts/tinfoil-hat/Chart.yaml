@@ -1,0 +1,6 @@
+---
+apiVersion: v2
+name: tinfoil-hat
+description: A Helm chart for Tinfoil Hat application
+version: 0.1.0
+appVersion: "1.0.0"

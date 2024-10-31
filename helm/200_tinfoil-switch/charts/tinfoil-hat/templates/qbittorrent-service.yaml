@@ -1,0 +1,29 @@
+---
+# templates/qbittorrent-service.yaml
+{{- if .Values.qbittorrent.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: webui
+      port: {{ .Values.qbittorrent.service.webui.port }}
+      targetPort: webui
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.qbittorrent.service.webui.nodePort }}
+      nodePort: {{ .Values.qbittorrent.service.webui.nodePort }}
+      {{- end }}
+    - name: bittorrent
+      port: {{ .Values.qbittorrent.service.bittorrent.port }}
+      targetPort: bittorrent
+      protocol: TCP
+      {{- if and (eq .Values.service.type "NodePort") .Values.qbittorrent.service.bittorrent.nodePort }}
+      nodePort: {{ .Values.qbittorrent.service.bittorrent.nodePort }}
+      {{- end }}
+  selector:
+    app: qbittorrent
+{{- end }}

@@ -1,0 +1,17 @@
+---
+# templates/qbittorrent-pvc.yaml
+{{- if and .Values.qbittorrent.enabled .Values.qbittorrent.persistence.config.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-qbittorrent-config
+  labels:
+    app: qbittorrent
+spec:
+  accessModes:
+    - {{ .Values.qbittorrent.persistence.config.accessMode }}
+  storageClassName: {{ .Values.qbittorrent.persistence.config.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.qbittorrent.persistence.config.size }}
+{{- end }}

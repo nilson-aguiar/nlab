@@ -1,0 +1,45 @@
+qbittorrent:
+  enabled: true
+  image:
+    repository: linuxserver/qbittorrent
+    tag: 5.0.0
+
+  persistence:
+    config:
+      storageClassName: "longhorn"
+
+  config:
+    timezone: Europe/Amsterdam
+
+
+#  kubernetes.io/ingress.class: traefik-external
+
+image:
+  repository: vinicioslc/tinfoil-hat
+  tag: 1.1.7
+
+persistence:
+  enabled: true
+  storageClassName: secondary
+  accessMode: ReadWriteMany
+  size: 100Gi
+
+config:
+  debug: "*"
+#  authUsers: "admin:admin,othertinfoiler:otherpassword"
+  unauthorizedMsg: "No tricks and treats for you!!"
+  welcomeMsg: "The Server Just Works!!"
+  nxPorts: "5000"
+
+# values override
+ingressRoute:
+  annotations:
+    external-dns.alpha.kubernetes.io/target: 192.168.1.200
+    kubernetes.io/ingress.class: traefik-external
+  enabled: true
+  hostSuffix: local.naguiar.dev
+  entryPoints:
+    - websecure
+  tls:
+    enabled: true
+    secretName: certificate-tls

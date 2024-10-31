@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../base
+
+images:
+- name: ghcr.io/home-assistant/home-assistant
+  newTag: 2024.10.3
+#patches:
+#- patch: |-
+#    - op: replace
+#      path: /spec/rules/0/host
+#      value: example.com
+#  target:
+#    kind: Ingress
+#    name: home-assistant
+#    version: v1

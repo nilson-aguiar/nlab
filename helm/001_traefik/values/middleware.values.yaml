@@ -1,0 +1,38 @@
+## Common Labels
+# commonLabels -- Common Labels are added to each kubernetes resource manifest.
+commonLabels: {}
+
+## Overwrite Labels
+# overwriteLabels -- Overwrites default labels, but not resource specific labels and common labels
+overwriteLabels: {}
+
+## Define Pure kubernetes resources
+# resources -- Define resources to be deployed by the raw chart
+resources:
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: traefik-dashboard-basicauth
+    spec:
+      basicAuth:
+        secret: traefik-dashboard-auth
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: default-headers
+    spec:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        referrerPolicy: no-referrer
+        contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+# templates -- Define templates which will be executed using the `tpl` function
+templates: []

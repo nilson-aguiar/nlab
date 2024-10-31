@@ -1,0 +1,25 @@
+repositories:
+  - name: gitea-charts
+    url: https://dl.gitea.com/charts/
+
+---
+releases:
+  - name: gitea-secret
+    chart: raw/raw
+    namespace: gitea
+    values:
+      - ./gitea.secret.values.yaml
+
+  - name: gitea-postgres
+    namespace: gitea
+    chart: oci://registry-1.docker.io/bitnamicharts/postgresql
+    version: 16.1.0
+    values:
+      - ./postgres.values.yaml
+
+  - name: gitea
+    namespace: gitea
+    chart: gitea-charts/gitea
+    version: 10.5.0
+    values:
+      - ./gitea.values.yaml

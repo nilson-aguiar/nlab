@@ -1,0 +1,121 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant
+    role: server
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant
+      role: server
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: kube-system/lan-bridge
+      labels:
+        app: home-assistant
+        role: server
+    spec:
+#      serviceAccountName: homeassistant-sa
+      automountServiceAccountToken: false
+#      hostNetwork: true
+#      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+#        - name: bluez
+#          image: ghcr.io/mysticrenji/bluez-service:latest
+#          securityContext:
+#            privileged: true
+        - name: home-assistant-app
+          image: "homeassistant/home-assistant:tag-here"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - NET_BROADCAST
+          envFrom:
+            - configMapRef:
+                name: home-assistant-env
+          ports:
+            - name: http
+              containerPort: 8123
+              protocol: TCP
+          resources:
+            requests:
+              memory: "512Mi"
+            limits:
+              memory: "1Gi"
+          livenessProbe:
+            tcpSocket:
+              port: 8123
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8123
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: 8123
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+          volumeMounts:
+            - mountPath: /config
+              name: ha-config-root
+#            - mountPath: /run/dbus
+#              name: d-bus
+#              readOnly: true
+#            - mountPath: /media
+#              name: media-volume
+#            - mountPath: /run/dbus
+#              name: d-bus
+#              readOnly: true
+#            - mountPath: /dev/ttyUSB1
+#              name: zigbee
+#            - mountPath: /dev/video0
+#              name: cam
+      restartPolicy: Always
+      volumes:
+        - name: ha-config-root
+          persistentVolumeClaim:
+            claimName: home-assistant-pvc
+        - name: configmap-file
+          configMap:
+            name: home-assistant-configmap
+#        - name: d-bus
+#          hostPath:
+#            path: /run/dbus
+#        - name: media-volume
+#          hostPath:
+#            path: /tmp/media
+#        - name: temp
+#          hostPath:
+#            path: /tmp/home-assistant
+#            type: DirectoryOrCreate
+#        - name: d-bus
+#          hostPath:
+#            path: /run/dbus
+#        - name: zigbee
+#          hostPath:
+#            path: /dev/ttyACM0
+#        - name: cam
+#          hostPath:
+#            path: /dev/video0
+
