@@ -79,5 +79,5 @@ qbittorrent:
     config:
       enabled: true
       storageClassName: ""
-      size: 50Mi
+      size: 100Mi
       accessMode: ReadWriteOnce
