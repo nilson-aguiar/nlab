@@ -8,7 +8,7 @@ releases:
   - name: grafana
     namespace: grafana-system
     chart: grafana/grafana
-    version: 8.5.2
+    version: 8.5.12
     values:
       - ./grafana.values.yaml
 
