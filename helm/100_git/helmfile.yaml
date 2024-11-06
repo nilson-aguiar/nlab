@@ -13,7 +13,7 @@ releases:
   - name: gitea-postgres
     namespace: gitea
     chart: oci://registry-1.docker.io/bitnamicharts/postgresql
-    version: 16.1.0
+    version: 16.1.2
     values:
       - ./postgres.values.yaml
 
