@@ -24,13 +24,15 @@ releases:
 
 
   - name: traefik-middleware
-    chart: raw/raw
     namespace: traefik-system
+    chart: raw/raw
+    version: 2.0.0
     values:
       - ./values/middleware.values.yaml
 
   - name: traefik-ingress-route
-    chart: raw/raw
     namespace: traefik-system
+    chart: raw/raw
+    version: 2.0.0
     values:
       - ./values/ingress-route.values.yaml
