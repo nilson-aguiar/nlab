@@ -2,7 +2,7 @@ qbittorrent:
   enabled: true
   image:
     repository: linuxserver/qbittorrent
-    tag: 5.0.1
+    tag: 20.04.1
 
   persistence:
     config:
