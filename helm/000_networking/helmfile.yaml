@@ -22,7 +22,7 @@ releases:
 # Pod with host and k8s network
   - name: multus
     namespace: kube-system
-    chart: rke2-charts/
+    chart: rke2-charts/rke2-multus
     version: 4.1.301
     values:
       - ./multus.values.yaml

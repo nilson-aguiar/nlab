@@ -1,9 +1,7 @@
 repositories:
   - name: cloudnative-pg
     url: https://cloudnative-pg.io/charts/
-  - name: bjw-s
-    oci: true
-    url: ghcr.io/bjw-s/helm
+
 
 ---
 releases:
@@ -13,13 +11,3 @@ releases:
     version: 0.22.1
     values:
       - ./values/pg.values.yaml
-#    secrets:
-#      - ./secrets/pg.secrets.values.yaml
-
-#  - name: db-cluster
-#    namespace: cloudnative-pg
-#    chart: cluster
-#    values:
-#      - ./values/db-cluster.values.yaml
-#    secrets:
-#      - ./secrets/db-cluster.secrets.values.yaml

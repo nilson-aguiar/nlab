@@ -6,7 +6,7 @@ extraEnvVars:
         name: pihole-password
 ingressClassFilters:
   - nginx-internal
-logLevel: debug
+logLevel: info
 pihole:
   server: http://pihole-web.pihole-system.svc.cluster.local
   tlsSkipVerify: true
@@ -22,3 +22,4 @@ sources:
 traefik:
   disableLegacy: true
   disableNew: false
+txtOwnerId: homelab
