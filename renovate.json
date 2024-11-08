@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended",
     ":disableRateLimiting",
-    ":timezone(Europe/Amsterdam)"
+    ":timezone(Europe/Amsterdam)",
+    "github>nilson-aguiar/nlab//.github/renovate/allowedVersions.json5"
   ]
 }
