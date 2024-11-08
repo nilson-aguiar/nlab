@@ -4,7 +4,7 @@
     {
       matchDatasources: ["docker"],
       matchPackageNames: ["linuxserver/qbittorrent"],
-      allowedVersions: "<20",
+      allowedVersions: "<10",
     },
   ],
 }
