@@ -4,6 +4,6 @@
     "config:recommended",
     ":disableRateLimiting",
     ":timezone(Europe/Amsterdam)",
-    "github>nilson-aguiar/nlab//.github/renovate/allowedVersions.json5"
+    "github>nilson-aguiar/nlab//.github/renovate/allowed-versions.json5"
   ]
 }
