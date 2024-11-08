@@ -1,11 +1,3 @@
-## Common Labels
-# commonLabels -- Common Labels are added to each kubernetes resource manifest.
-commonLabels: {}
-
-## Overwrite Labels
-# overwriteLabels -- Overwrites default labels, but not resource specific labels and common labels
-overwriteLabels: {}
-
 ## Define Pure kubernetes resources
 # resources -- Define resources to be deployed by the raw chart
 resources:
@@ -29,5 +21,3 @@ resources:
               kind: TraefikService
       tls:
         secretName: certificate-tls
-# templates -- Define templates which will be executed using the `tpl` function
-templates: []

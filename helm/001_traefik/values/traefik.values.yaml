@@ -11,7 +11,6 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
 
-
 deployment:
   enabled: true
   kind: DaemonSet
@@ -20,16 +19,10 @@ deployment:
   dnsPolicy: ""
   dnsConfig: {}
 
-# -- [Pod Disruption Budget](https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/)
-podDisruptionBudget:  # @schema additionalProperties: false
-  enabled: false
-  maxUnavailable:  # @schema type:[string, integer, null];minimum:0
-  minAvailable:    # @schema type:[string, integer, null];minimum:0
-
-
 ports:
-  #  web:
-  #    redirectTo: websecure
+  # web:
+    # redirectTo:
+      # websecure:
   websecure:
     tls:
       enabled: true
@@ -39,60 +32,6 @@ ingressClass:  # @schema additionalProperties: false
   enabled: true
   isDefaultClass: false
   name: "traefik-external"
-
-# Traefik experimental features
-experimental:
-  # -- Enable traefik experimental plugins
-  plugins: {}
-  # demo:
-  #   moduleName: github.com/traefik/plugindemo
-  #   version: v0.2.1
-  kubernetesGateway:
-    # -- Enable traefik experimental GatewayClass CRD
-    enabled: false
-
-gateway:
-  # -- When providers.kubernetesGateway.enabled, deploy a default gateway
-  enabled: true
-  listeners:
-    web:
-      # -- Port is the network port. Multiple listeners may use the same port, subject to the Listener compatibility rules.
-      # The port must match a port declared in ports section.
-      port: 8000
-    # websecure listener is disabled by default because certificateRefs needs to be added,
-    # or you may specify TLS protocol with Passthrough mode and add "--providers.kubernetesGateway.experimentalChannel=true" in additionalArguments section.
-    # websecure:
-    #   # -- Port is the network port. Multiple listeners may use the same port, subject to the Listener compatibility rules.
-    #   # The port must match a port declared in ports section.
-    #   port: 8443
-    #   # -- Optional hostname. See [Hostname](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.Hostname)
-    #   hostname:
-    #   # Specify expected protocol on this listener See [ProtocolType](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.ProtocolType)
-    #   protocol: HTTPS
-    #   # -- Routes are restricted to namespace of the gateway [by default](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.FromNamespaces)
-    #   namespacePolicy:
-    #   # -- Add certificates for TLS or HTTPS protocols. See [GatewayTLSConfig](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io%2fv1.GatewayTLSConfig)
-    #   certificateRefs:
-    #   # -- TLS behavior for the TLS session initiated by the client. See [TLSModeType](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.TLSModeType).
-    #   mode:
-
-gatewayClass:  # @schema additionalProperties: false
-  # -- When providers.kubernetesGateway.enabled and gateway.enabled, deploy a default gatewayClass
-  enabled: true
-  # -- Set a custom name to GatewayClass
-  name: ""
-  # -- Additional gatewayClass labels (e.g. for filtering gateway objects by custom labels)
-  labels: {}
-
-ingressRoute:
-  dashboard:
-    # -- Create an IngressRoute for the dashboard
-    enabled: false
-    # -- TLS options (e.g. secret containing certificate)
-    tls: {}
-  healthcheck:
-    enabled: false
-    tls: {}
 
 providers:  # @schema additionalProperties: false
   kubernetesCRD:
@@ -115,62 +54,11 @@ providers:  # @schema additionalProperties: false
     # -- A label selector can be defined to filter on specific GatewayClass objects only.
     labelselector: ""
 
-
-
 service:
   enabled: true
   type: LoadBalancer
-  # -- Additional annotations applied to both TCP and UDP services (e.g. for cloud provider specific config)
-  annotations: {}
-  # -- Additional annotations for TCP service only
-  annotationsTCP: {}
-  # -- Additional annotations for UDP service only
-  annotationsUDP: {}
-  # -- Additional service labels (e.g. for filtering Service by custom labels)
-  labels: {}
   spec:
     loadBalancerIP: "192.168.1.200"
-  loadBalancerSourceRanges: []
-  # - 192.168.0.1/32
-  # - 172.16.0.0/16
-  ## -- Class of the load balancer implementation
-  # loadBalancerClass: service.k8s.aws/nlb
-  externalIPs: []
-  # - 1.2.3.4
-  ## One of SingleStack, PreferDualStack, or RequireDualStack.
-  # ipFamilyPolicy: SingleStack
-  ## List of IP families (e.g. IPv4 and/or IPv6).
-  ## ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services
-  # ipFamilies:
-  #   - IPv4
-  #   - IPv6
-  ##
-  additionalServices: {}
-  ## -- An additional and optional internal Service.
-  ## Same parameters as external Service
-  # internal:
-  #   type: ClusterIP
-  #   # labels: {}
-  #   # annotations: {}
-  #   # spec: {}
-  #   # loadBalancerSourceRanges: []
-  #   # externalIPs: []
-  #   # ipFamilies: [ "IPv4","IPv6" ]
-
-
-volumes: []
-# - name: public-cert
-#   mountPath: "/certs"
-#   type: secret
-# - name: '{{ printf "%s-configs" .Release.Name }}'
-#   mountPath: "/config"
-#   type: configMap
-
-# -- Additional volumeMounts to add to the Traefik container
-additionalVolumeMounts: []
-# -- For instance when using a logshipper for access logs
-# - name: traefik-logs
-#   mountPath: /var/log/traefik
 
 metrics:
   ## -- Enable metrics for internal resources. Default: false
@@ -351,61 +239,9 @@ autoscaling:
   # See EXAMPLES.md for more details.
   enabled: false
 
-persistence:
-  # -- Enable persistence using Persistent Volume Claims
-  # ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-  # It can be used to store TLS certificates, see `storage` in certResolvers
-  enabled: false
-  name: data
-  existingClaim: ""
-  accessMode: ReadWriteOnce
-  size: 128Mi
-  storageClass: ""
-  volumeName: ""
-  path: /data
-  annotations: {}
-  # -- Only mount a subpath of the Volume into the pod
-  subPath: ""
-
-# -- Certificates resolvers configuration.
-# Ref: https://doc.traefik.io/traefik/https/acme/#certificate-resolvers
-# See EXAMPLES.md for more details.
-certResolvers: {}
-
 # -- Whether Role Based Access Control objects like roles and rolebindings should be created
 rbac:  # @schema additionalProperties: false
   enabled: true
 
-
-# -- This example pod anti-affinity forces the scheduler to put traefik pods
-# -- on nodes where no other traefik pods are scheduled.
-# It should be used when hostNetwork: true to prevent port conflicts
-affinity: {}
-#  podAntiAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#      - labelSelector:
-#          matchLabels:
-#            app.kubernetes.io/name: '{{ template "traefik.name" . }}'
-#            app.kubernetes.io/instance: '{{ .Release.Name }}-{{ .Release.Namespace }}'
-#        topologyKey: kubernetes.io/hostname
-
-# -- nodeSelector is the simplest recommended form of node selection constraint.
-nodeSelector: {}
-# -- Tolerations allow the scheduler to schedule pods with matching taints.
-tolerations: []
-# -- You can use topology spread constraints to control
-# how Pods are spread across your cluster among failure-domains.
-topologySpreadConstraints: []
-# This example topologySpreadConstraints forces the scheduler to put traefik pods
-# on nodes where no other traefik pods are scheduled.
-#  - labelSelector:
-#      matchLabels:
-#        app.kubernetes.io/name: '{{ template "traefik.name" . }}'
-#    maxSkew: 1
-#    topologyKey: kubernetes.io/hostname
-#    whenUnsatisfiable: DoNotSchedule
-
-# -- This field override the default Release Namespace for Helm.
-# It will not affect optional CRDs such as `ServiceMonitor` and `PrometheusRules`
 namespaceOverride: "traefik-system"
 
