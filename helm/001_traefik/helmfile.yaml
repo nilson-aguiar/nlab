@@ -12,27 +12,21 @@ releases:
     namespace: traefik-system
     chart: traefik/traefik
     version: 33.0.0
+    secrets:
+      - ./secrets/traefik.values.secret.yaml
     values:
       - ./values/traefik.values.yaml
 
-  - name: traefik-ingress
+  - name: traefik-auth
     namespace: traefik-system
     chart: bjw-s/app-template
     version: 3.5.1
     secrets:
-      - ./secrets/traefik.values.secret.yaml
+      - ./secrets/auth.values.secret.yaml
 
-
-  - name: traefik-middleware
+  - name: traefik-extra-resources
     namespace: traefik-system
     chart: raw/raw
     version: 2.0.0
     values:
-      - ./values/middleware.values.yaml
-
-  - name: traefik-ingress-route
-    namespace: traefik-system
-    chart: raw/raw
-    version: 2.0.0
-    values:
-      - ./values/ingress-route.values.yaml
+      - ./values/extras.values.yaml

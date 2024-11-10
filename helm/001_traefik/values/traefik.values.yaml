@@ -33,6 +33,17 @@ ingressClass:  # @schema additionalProperties: false
   isDefaultClass: false
   name: "traefik-external"
 
+logs:
+  access:
+    enabled: false
+
+experimental:
+  # -- Enable traefik experimental plugins
+  plugins: 
+    sablier:
+        moduleName: "github.com/sablierapp/sablier"
+        version: "v1.8.1"
+
 providers:  # @schema additionalProperties: false
   kubernetesCRD:
     # -- Load Kubernetes IngressRoute provider
@@ -53,6 +64,9 @@ providers:  # @schema additionalProperties: false
     namespaces: []
     # -- A label selector can be defined to filter on specific GatewayClass objects only.
     labelselector: ""
+
+  # file:
+    # enabled: true
 
 service:
   enabled: true
