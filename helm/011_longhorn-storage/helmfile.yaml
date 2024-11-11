@@ -7,12 +7,12 @@ repositories:
 ---
 releases:
 # Distributed storage between clusters
-#  - name: longhorn
-#    namespace: longhorn-system
-#    chart: longhorn/longhorn
-#    version: 1.7.2
-#    values:
-#      - ./longhorn.values.yaml
+  - name: longhorn
+    namespace: longhorn-system
+    chart: longhorn/longhorn
+    version: 1.7.2
+    values:
+      - ./longhorn.values.yaml
 
   - name: longhorn-ingress
     namespace: longhorn-system
