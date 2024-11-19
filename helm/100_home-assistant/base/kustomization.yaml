@@ -8,10 +8,6 @@ resources:
   - service.yaml
   - configmap.yaml
 
-images:
-  - name: homeassistant/home-assistant
-
-
 labels:
   - includeSelectors: true
     pairs:

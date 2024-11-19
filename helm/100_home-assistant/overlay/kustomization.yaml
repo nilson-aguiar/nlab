@@ -5,8 +5,9 @@ resources:
 
 namespace: home-assistant
 images:
-- name: ghcr.io/home-assistant/home-assistant
-  newTag: 2024.11.2
+  - name: homeassistant/home-assistant
+    newTag: 2024.11.2
+
 #patches:
 #- patch: |-
 #    - op: replace
