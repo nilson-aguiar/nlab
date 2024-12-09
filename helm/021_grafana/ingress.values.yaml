@@ -12,8 +12,8 @@ resources:
       routes:
         - match: Host(`grafana.local.naguiar.dev`)
           kind: Rule
-          middlewares:
-            - name: grafana-default-headers
+          # middlewares:
+            # - name: grafana-default-headers
           services:
             - name: grafana
               port: 80
