@@ -2,11 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: home-assistant-pvc
+  name: home-assistant-data
   namespace: home-assistant
 spec:
   accessModes:
     - ReadWriteMany
+  storageClassName: secondary
   resources:
     requests:
       storage: 1Gi

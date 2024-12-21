@@ -8,6 +8,7 @@ diagnosticMode:
 
 auth:
   enabled: true
+  createUserToken: true
 
 ## InfluxDB&trade; backend parameters
 ##

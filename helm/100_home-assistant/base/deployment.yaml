@@ -24,8 +24,7 @@ spec:
         app: home-assistant
         role: server
     spec:
-#      serviceAccountName: homeassistant-sa
-      automountServiceAccountToken: false
+      serviceAccountName: homeassistant-sa
 #      hostNetwork: true
 #      dnsPolicy: ClusterFirstWithHostNet
       containers:
@@ -78,7 +77,7 @@ spec:
             periodSeconds: 5
           volumeMounts:
             - mountPath: /config
-              name: ha-config-root
+              name: ha-config-data
 #            - mountPath: /run/dbus
 #              name: d-bus
 #              readOnly: true
@@ -93,9 +92,9 @@ spec:
 #              name: cam
       restartPolicy: Always
       volumes:
-        - name: ha-config-root
+        - name: ha-config-data
           persistentVolumeClaim:
-            claimName: home-assistant-pvc
+            claimName: home-assistant-data
         - name: configmap-file
           configMap:
             name: home-assistant-configmap
