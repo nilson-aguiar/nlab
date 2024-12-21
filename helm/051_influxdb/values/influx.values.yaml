@@ -1,124 +1,176 @@
-livenessProbe: {}
-  # path: "/ping"
-  # initialDelaySeconds: 30
-  # timeoutSeconds: 5
-  # scheme: HTTP
 
-readinessProbe: {}
-  # path: "/ping"
-  # initialDelaySeconds: 5
-  # timeoutSeconds: 1
-  # scheme: HTTP
-
-securityContext: {}
-  # runAsUser: 999
-  # runAsGroup: 999
-
-startupProbe:
+diagnosticMode:
   enabled: false
-  # path: "/ping"
-  # failureThreshold: 6
-  # periodSeconds: 5
-  # scheme: HTTP
+  command:
+    - sleep
+  args:
+    - infinity
 
-service:
-  ## Add annotations to service
-  # annotations: {}
-  type: ClusterIP
+auth:
+  enabled: true
 
-## Persist data to a persistent volume
+## InfluxDB&trade; backend parameters
 ##
+influxdb:
+  ## @param influxdb.configuration Specify content for influxdb.conf
+  ## Alternatively, you can put your config.yaml under the files/conf/ directory
+  ##
+  ## configuration: |-
+  ##   reporting-disabled: true
+  ##   http-bind-address: "127.0.0.1:8086"
+  ##   ...
+  ##
+  configuration: ""
+
+
+
+collectd:
+  ## @param collectd.enabled InfluxDB Collectd&trade; service enable
+  ##
+  enabled: false
+  service:
+    ## @param collectd.service.type Kubernetes service type (`ClusterIP`, `NodePort` or `LoadBalancer`)
+    ##
+    type: ClusterIP
+    ## @param collectd.service.port InfluxDB Collectd&trade; UDP port (should match with corresponding port in influxdb.conf)
+    ## This requires corresponding configuration in influxdb.conf to enable
+    ## collectd block
+    ##
+    port: 25826
+    ## @param collectd.service.nodePort Kubernetes HTTP node port
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    ##
+    nodePort: ""
+    ## @param collectd.service.loadBalancerIP loadBalancerIP if service type is `LoadBalancer`
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    ##
+    loadBalancerIP: ""
+    ## @param collectd.service.loadBalancerSourceRanges Address that are allowed when service is LoadBalancer
+    ## https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+    ##
+    ## loadBalancerSourceRanges:
+    ## - 10.10.10.0/24
+    loadBalancerSourceRanges: []
+    ## @param collectd.service.clusterIP Static clusterIP or None for headless services
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address
+    ## e.g:
+    ## clusterIP: None
+    ##
+    clusterIP: ""
+    ## @param collectd.service.externalTrafficPolicy InfluxDB Collectd&trade; service external traffic policy
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
+    ## @param collectd.service.extraPorts Extra ports to expose (normally used with the `sidecar` value)
+    ##
+    extraPorts: []
+    ## @param collectd.service.annotations Annotations for InfluxDB Collectd&trade; service
+    ##   metallb.universe.tf/allow-shared-ip: "true"
+    ##
+    annotations: {}
+    ## @param collectd.service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
+    ## If "ClientIP", consecutive client requests will be directed to the same mongos Pod
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    ##
+    sessionAffinity: None
+    ## @param collectd.service.sessionAffinityConfig Additional settings for the sessionAffinity
+    ## sessionAffinityConfig:
+    ##   clientIP:
+    ##     timeoutSeconds: 300
+    ##
+    sessionAffinityConfig: {}
+
+
+## Prometheus metrics
+## ref: https://docs.influxdata.com/influxdb/v1.7/administration/server_monitoring/#influxdb-metrics-http-endpoint
+##
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+    namespace: "prometheus-system"
+    interval: "1m"
+
 persistence:
   enabled: true
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
-  ## influxdb data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-  annotations: {}
-  accessMode: ReadWriteOnce
+  existingClaim: ""
+  storageClass: "secondary"
+  accessModes:
+    - ReadWriteMany
   size: 8Gi
 
-# resources: {}
-#  requests:
-#    memory: 256Mi
-#    cpu: 0.1
-#  limits:
-#    memory: 16Gi
-#    cpu: 8
 
-ingress:
+## Init Container parameters
+## Change the owner and group of the persistent volume mountpoint to 'runAsUser:fsGroup'
+## values from the securityContext section.
+##
+volumePermissions:
+  ## @param volumePermissions.enabled Enable init container that changes the owner and group of the persistent volume mountpoint to `runAsUser:fsGroup`
+  ##
   enabled: false
-  tls: false
-  # secretName: my-tls-cert # only needed if tls above is true
-  hostname:
-  className: nginx
-  annotations: {}
-    # nginx.ingress.kubernetes.io/rewrite-target: $1
-  path: /
-
-## The InfluxDB image uses several environment variables to automatically
-## configure certain parts of the server.
-## Ref: https://hub.docker.com/_/influxdb/
-env: {}
-  # - name: INFLUXDB_DB
-  #   value: "demo"
+ 
+  ## Init container Security Context
+  ## Note: the chown of the data folder is done to securityContext.runAsUser
+  ## and not the below volumePermissions.securityContext.runAsUser
+  ## When runAsUser is set to special value "auto", init container will try to chwon the
+  ## data folder to autodetermined user&group, using commands: `id -u`:`id -G | cut -d" " -f2`
+  ## "auto" is especially useful for OpenShift which has scc with dynamic userids (and 0 is not allowed).
+  ## You may want to use this volumePermissions.securityContext.runAsUser="auto" in combination with
+  ## pod securityContext.enabled=false and shmVolume.chmod.enabled=false
+  ## @param volumePermissions.securityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+  ## @param volumePermissions.securityContext.runAsUser User ID for the init container (when facing issues in OpenShift or uid unknown, try value "auto")
+  ##
+  securityContext:
+    seLinuxOptions: {}
+    runAsUser: 0
 
 backup:
+  ## @param backup.enabled Enable InfluxDB&trade; backup
+  ##
   enabled: false
-  ## By default emptyDir is used as a transitory volume before uploading to object store.
-  ## As such, ensure that a sufficient ephemeral storage request is set to prevent node disk filling completely.
-  resources:
-    requests:
-      # memory: 512Mi
-      # cpu: 2
-      ephemeral-storage: "8Gi"
-    # limits:
-      # memory: 1Gi
-      # cpu: 4
-      # ephemeral-storage: "16Gi"
-  ## If backup destination is PVC, or want to use intermediate PVC before uploading to object store.
+  ## @param backup.directory Directory where backups are stored
+  ##
+  directory: "/backups"
+  ## @param backup.retentionDays Retention time in days for backups (older backups are deleted)
+  ##
+  retentionDays: 10
+
+  ## Persistence parameters
+  ##
   persistence:
-    enabled: false
+    ## @param backup.persistence.ownConfig Prefer independent own persistence parameters to configure the backup volume
+    ## When set to `false` (for backwards compatibility), the rest of the persistence parameters below will be ignored.
+    ## This parameter will be set to `true` and removed in a future release.
+    ##
+    ownConfig: false
+    ## @param backup.persistence.enabled Enable data persistence for backup volume
+    ##
+    enabled: true
+    ## @param backup.persistence.existingClaim Use a existing PVC which must be created manually before bound
+    ## If defined, PVC must be created manually before volume will be bound
+    ## The value is evaluated as a template
+    ##
+    existingClaim: ""
+    ## @param backup.persistence.storageClass Specify the `storageClass` used to provision the volume
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
+    ## set, choosing the default provisioner.
     ##
-    # storageClass: "-"
-    annotations:
-    accessMode: ReadWriteOnce
+    storageClass: "backup"
+    ## @param backup.persistence.accessModes Access mode of data volume
+    ##
+    accessModes:
+      - ReadWriteOnce
+    ## @param backup.persistence.size Size of data volume
+    ##
     size: 8Gi
-  schedule: "0 0 * * *"
-  startingDeadlineSeconds: ""
-  annotations: {}
-  podAnnotations: {}
-  nodeSelector: {}
-
-backupRetention:
-  enabled: false
-  resources:
-    requests:
-      # memory: 512Mi
-      # cpu: 2
-    # limits:
-      # memory: 1Gi
-      # cpu: 4
-  schedule: "0 0 * * *"
-  startingDeadlineSeconds:
-  annotations: {}
-  podAnnotations: {}
-  daysToRetain: 7
-  # s3:
-  #   credentialsSecret: aws-credentials-secret
-  #   bucketName: bucket
-  #   ## Optional. Specify if you're using an alternate S3 endpoint.
-  #   # endpointUrl: ""
+    ## @param backup.persistence.annotations Persistent Volume Claim annotations
+    ##
+    annotations: {}
+  ## Cronjob configuration
+  ## This cronjob is used to create InfluxDB&trade; backups
+  ##
+  cronjob:
+    schedule: "0 2 * * *"
+    historyLimit: 1

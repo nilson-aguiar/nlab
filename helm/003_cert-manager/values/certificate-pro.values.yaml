@@ -15,7 +15,7 @@ certificate:
       - grafana-system
       - longhorn-system
       - pihole-system
-#      -
+      - influxdb
       - home-assistant
       - media-flix
       - tinfoil-hat
