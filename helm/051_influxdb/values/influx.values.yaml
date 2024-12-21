@@ -1,0 +1,124 @@
+livenessProbe: {}
+  # path: "/ping"
+  # initialDelaySeconds: 30
+  # timeoutSeconds: 5
+  # scheme: HTTP
+
+readinessProbe: {}
+  # path: "/ping"
+  # initialDelaySeconds: 5
+  # timeoutSeconds: 1
+  # scheme: HTTP
+
+securityContext: {}
+  # runAsUser: 999
+  # runAsGroup: 999
+
+startupProbe:
+  enabled: false
+  # path: "/ping"
+  # failureThreshold: 6
+  # periodSeconds: 5
+  # scheme: HTTP
+
+service:
+  ## Add annotations to service
+  # annotations: {}
+  type: ClusterIP
+
+## Persist data to a persistent volume
+##
+persistence:
+  enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+  ## influxdb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  annotations: {}
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+# resources: {}
+#  requests:
+#    memory: 256Mi
+#    cpu: 0.1
+#  limits:
+#    memory: 16Gi
+#    cpu: 8
+
+ingress:
+  enabled: false
+  tls: false
+  # secretName: my-tls-cert # only needed if tls above is true
+  hostname:
+  className: nginx
+  annotations: {}
+    # nginx.ingress.kubernetes.io/rewrite-target: $1
+  path: /
+
+## The InfluxDB image uses several environment variables to automatically
+## configure certain parts of the server.
+## Ref: https://hub.docker.com/_/influxdb/
+env: {}
+  # - name: INFLUXDB_DB
+  #   value: "demo"
+
+backup:
+  enabled: false
+  ## By default emptyDir is used as a transitory volume before uploading to object store.
+  ## As such, ensure that a sufficient ephemeral storage request is set to prevent node disk filling completely.
+  resources:
+    requests:
+      # memory: 512Mi
+      # cpu: 2
+      ephemeral-storage: "8Gi"
+    # limits:
+      # memory: 1Gi
+      # cpu: 4
+      # ephemeral-storage: "16Gi"
+  ## If backup destination is PVC, or want to use intermediate PVC before uploading to object store.
+  persistence:
+    enabled: false
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    annotations:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  schedule: "0 0 * * *"
+  startingDeadlineSeconds: ""
+  annotations: {}
+  podAnnotations: {}
+  nodeSelector: {}
+
+backupRetention:
+  enabled: false
+  resources:
+    requests:
+      # memory: 512Mi
+      # cpu: 2
+    # limits:
+      # memory: 1Gi
+      # cpu: 4
+  schedule: "0 0 * * *"
+  startingDeadlineSeconds:
+  annotations: {}
+  podAnnotations: {}
+  daysToRetain: 7
+  # s3:
+  #   credentialsSecret: aws-credentials-secret
+  #   bucketName: bucket
+  #   ## Optional. Specify if you're using an alternate S3 endpoint.
+  #   # endpointUrl: ""
