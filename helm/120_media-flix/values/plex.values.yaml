@@ -33,7 +33,7 @@ controllers:
                 port: 32400
               initialDelaySeconds: 0
               periodSeconds: 10
-              timeoutSeconds: 10
+              timeoutSeconds: 3
               failureThreshold: 3       
           readiness: *plexProbes
           startup:
