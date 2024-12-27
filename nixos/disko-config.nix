@@ -56,12 +56,14 @@
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
-          root = {
-            size = "100%";
-            content = {
-              type = "btrfs";
-              # extraArgs = [ "-f" ]; # Override existing partition
-              mountpoint = "/data";
+          partitions = {
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                # extraArgs = [ "-f" ]; # Override existing partition
+                mountpoint = "/data";
+              };
             };
           };
         };
