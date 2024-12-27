@@ -109,12 +109,13 @@
      git
      sops
      age
+     disko
   ];
 
   environment.etc = {
-        "cni" = {
-          source = "/var/lib/rancher/k3s/agent/etc/cni";
-        };
+      "cni" = {
+        source = "/var/lib/rancher/k3s/agent/etc/cni";
+      };
     };
 
   environment.shellAliases = {
