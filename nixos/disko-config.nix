@@ -51,6 +51,20 @@
           };
         };
       };
+      secondary = {
+        type = "disk";
+        device = "/dev/nvme0n1";
+        content = {
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                # extraArgs = [ "-f" ]; # Override existing partition
+                mountpoint = "/data";
+              };
+            };
+          };
+        };
     };
   };
 }
