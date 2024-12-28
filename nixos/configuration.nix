@@ -17,6 +17,18 @@
     '';
   };
 
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+
+    age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
+
+    secrets = {
+      "k3s/token" = { };
+      "k3s/tokenFile" = { };
+    };
+  };
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -56,7 +68,7 @@
   services.k3s = {
     enable = true;
     role = "server";
-    tokenFile = config.sops.secrets.k3s.tokenFile.path;
+    tokenFile = config.sops.secrets."k3s/tokenFile".path;
     extraFlags = toString ([
 	    "--write-kubeconfig-mode \"0644\""
 	    "--cluster-init"
@@ -122,16 +134,6 @@
     vim = "nvim";
   };
 
-  sops = {
-    defaultSopsFile = ./secrets/secrets.yaml;
-    defaultSopsFormat = "yaml";
-
-    age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
-
-    secrets = {
-      "k3s/token" = { };
-    };
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
