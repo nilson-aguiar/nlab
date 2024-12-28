@@ -75,10 +75,10 @@
 	    "--disable servicelb"
 	    "--disable traefik"
 	    "--disable local-storage"
-    ] ++ (if meta.hostname == "homelab-1" then [
-        "--server https://homelab-2:6443" 
+    ] ++ (if meta.hostname == "homelab-0" then [
+        "--server https://homelab-1:6443" 
     ] else [
-	      "--server https://homelab-1:6443"
+	      "--server https://homelab-0:6443"
     ]));
     # Used when initializing the cluster only, then use the if above
     # clusterInit = (meta.hostname == "homelab-0");
