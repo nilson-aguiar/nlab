@@ -75,10 +75,13 @@
 	    "--disable servicelb"
 	    "--disable traefik"
 	    "--disable local-storage"
-    ] ++ (if meta.hostname == "homelab-0" then [] else [
+    ] ++ (if meta.hostname == "homelab-0" then [
+        "--server https://homelab-1:6443" 
+    ] else [
 	      "--server https://homelab-0:6443"
     ]));
-    clusterInit = (meta.hostname == "homelab-0");
+    # Used when initializing the cluster only, then use the if above
+    # clusterInit = (meta.hostname == "homelab-0");
   };
 
   services.openiscsi = {
