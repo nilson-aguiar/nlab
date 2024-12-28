@@ -3,7 +3,7 @@
     disk = {
       main = {
         type = "disk";
-        device = "/dev/sda";
+        device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
@@ -23,7 +23,7 @@
               size = "100%";
               content = {
                 type = "btrfs";
-                # extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = [ "-f" ]; # Override existing partition
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
                 subvolumes = {
@@ -53,15 +53,15 @@
       };
       secondary = {
         type = "disk";
-        device = "/dev/nvme0n1";
+        device = "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
-            root = {
+            data = {
               size = "100%";
               content = {
                 type = "btrfs";
-                # extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = [ "-f" ]; # Override existing partition
                 mountpoint = "/data";
               };
             };

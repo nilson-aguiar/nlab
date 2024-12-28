@@ -54,7 +54,7 @@
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
   services.k3s = {
-    enable = true;
+    enable = false;
     role = "server";
     tokenFile = /var/lib/rancher/k3s/server/token;
     extraFlags = toString ([
@@ -109,7 +109,6 @@
      git
      sops
      age
-     disko
   ];
 
   environment.etc = {
