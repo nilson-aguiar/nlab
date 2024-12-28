@@ -56,7 +56,7 @@
   services.k3s = {
     enable = true;
     role = "server";
-    tokenFile = /var/lib/rancher/k3s/server/token;
+    tokenFile = /run/secrets/k3s/tokenFile;
     extraFlags = toString ([
 	    "--write-kubeconfig-mode \"0644\""
 	    "--cluster-init"
