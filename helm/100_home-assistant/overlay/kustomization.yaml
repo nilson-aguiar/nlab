@@ -6,7 +6,7 @@ resources:
 namespace: home-assistant
 images:
   - name: homeassistant/home-assistant
-    newTag: 2024.12.5
+    newTag: 2025.1.2
 
 #patches:
 #- patch: |-
