@@ -5,5 +5,11 @@
     ":disableRateLimiting",
     ":timezone(Europe/Amsterdam)",
     "github>nilson-aguiar/nlab//.github/renovate/allowed-versions.json5"
-  ]
+  ],
+  "helm-values": {
+    "fileMatch": ["^k8s/.+\\.ya?ml$"],
+  },
+  "kubernetes": {
+    "fileMatch": ["^k8s/.+\\.ya?ml$"],
+  }
 }
