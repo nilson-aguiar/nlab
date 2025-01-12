@@ -95,7 +95,6 @@ metrics:
 persistence:
   enabled: true
   existingClaim: ""
-  storageClass: "secondary"
   accessModes:
     - ReadWriteMany
   size: 8Gi

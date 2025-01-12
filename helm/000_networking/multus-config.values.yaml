@@ -18,7 +18,7 @@ resources:
           "cniVersion": "0.3.1",
           "name": "lan-bridge",
           "type": "macvlan",
-          "master": "enp1s0",
+          "master": "enp2s0",
           "mode": "bridge",
           "ipam": {
             "type": "whereabouts",

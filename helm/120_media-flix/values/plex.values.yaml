@@ -12,7 +12,6 @@ controllers:
     #     image:
     #       repository: ghcr.io/onedr0p/plex
     #       tag: 1.41.3.9314-a0bfb8370
-
     containers:
       app:
         image:
