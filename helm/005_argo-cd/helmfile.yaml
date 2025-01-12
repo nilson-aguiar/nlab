@@ -7,7 +7,7 @@ repositories:
 releases:
   - name: argocd
     chart: argo/argo-cd
-    version: 7.7.11
+    version: 7.7.15
     namespace: argocd
     values:
       - ./values/argocd.values.yaml
