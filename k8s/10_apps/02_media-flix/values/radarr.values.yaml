@@ -35,7 +35,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/onedr0p/radarr
-          tag: 5.15.1.9463
+          tag: 5.17.2.9580
         env:
           RADARR__APP__INSTANCENAME: Radarr
           RADARR__APP__THEME: dark
