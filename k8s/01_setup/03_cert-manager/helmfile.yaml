@@ -10,7 +10,7 @@ releases:
   - name: cloudflare-token
     namespace: cert-manager-system
     chart: bjw-s/app-template
-    version: 3.5.1
+    version: 3.6.1
     secrets:
       - ./secrets/cloudflare.values.secret.yaml
     values:
