@@ -23,7 +23,7 @@ releases:
   - name: multus
     namespace: kube-system
     chart: rke2-charts/rke2-multus
-    version: 4.1.301
+    version: v4.1.400
     values:
       - ./multus.values.yaml
 
