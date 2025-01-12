@@ -532,6 +532,7 @@ controller:
 
 ## Dex
 dex:
+  enabled: false
   metrics:
     # -- Deploy metrics service
     enabled: false
