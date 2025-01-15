@@ -11,7 +11,7 @@ releases:
   - name: ingress-traefik-internal
     namespace: traefik-system
     chart: traefik/traefik
-    version: 33.2.1
+    version: 34.1.0
     secrets:
       - ./secrets/traefik.values.secret.yaml
     values:
