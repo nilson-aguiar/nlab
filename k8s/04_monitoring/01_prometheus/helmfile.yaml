@@ -8,7 +8,7 @@ releases:
   - name: prometheus
     namespace: prometheus-system
     chart: prometheus-community/prometheus
-    version: 26.1.0
+    version: 27.1.0
     values:
       - ./prometheus.values.yaml
 
