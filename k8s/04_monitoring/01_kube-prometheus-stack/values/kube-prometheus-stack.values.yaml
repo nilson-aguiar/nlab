@@ -1,0 +1,12 @@
+## custom Rules to override "for" and "severity" in defaultRules
+##
+customRules: {}
+  # AlertmanagerFailedReload:
+  #   for: 3m
+  # AlertmanagerMembersInconsistent:
+  #   for: 5m
+  #   severity: "warning
+
+
+crds:
+  enabled: true

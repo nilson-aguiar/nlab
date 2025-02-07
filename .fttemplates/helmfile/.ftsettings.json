@@ -1,0 +1,5 @@
+{
+    "name": "Helmfile Template",
+    "openFilesWhenDone": ["helmfile.yaml"],
+    "omitParentDirectory": true
+}

@@ -1,0 +1,14 @@
+repositories:
+  - name: [FTName]
+    url:
+
+---
+releases:
+  - name: [FTName]
+    namespace: [FTName]
+    chart: [FTName]/[FTName]
+    version: 
+    values:
+      - ./values/[FTName].values.yaml
+    secrets:
+      - ./secrets/[FTName].secret.yaml
