@@ -20,7 +20,7 @@ releases:
   - name: traefik-auth
     namespace: traefik-system
     chart: bjw-s/app-template
-    version: 3.6.1
+    version: 3.7.1
     secrets:
       - ./secrets/auth.values.secret.yaml
 
