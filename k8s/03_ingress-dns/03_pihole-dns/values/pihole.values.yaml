@@ -466,7 +466,7 @@ monitoring:
     image:
       # -- the repository to use
       repository: ekofr/pihole-exporter
-      tag: v0.4.0
+      tag: v1.0.1
       pullPolicy: IfNotPresent
     resources:
       limits:
