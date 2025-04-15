@@ -14,8 +14,8 @@ controllers:
     initContainers:
       init-db:
         image:
-          repository: ghcr.io/onedr0p/postgres-init
-          tag: 16
+          repository: ghcr.io/home-operations/postgres-init
+          tag: 17
         env:
           INIT_POSTGRES_SUPER_PASS:
             valueFrom:
@@ -33,8 +33,8 @@ controllers:
     containers:
       app:
         image:
-          repository: ghcr.io/onedr0p/prowlarr
-          tag: 1.32.2
+          repository: ghcr.io/home-operations/prowlarr
+          tag: 1.34.0@sha256:a32029de92518c0b23ce94c5df90ccd693a111d9e0f3087c87b2bff1397309da
         env:
           PROWLARR__APP__INSTANCENAME: Prowlarr
           PROWLARR__APP__THEME: dark
