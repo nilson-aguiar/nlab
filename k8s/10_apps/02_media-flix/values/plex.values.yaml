@@ -10,7 +10,7 @@ controllers:
     #       allowPrivilegeEscalation: true
     #     command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "stop", "auto", "exit" ]
     #     image:
-    #       repository: ghcr.io/onedr0p/plex
+    #       repository: ghcr.io/home-operations/plex
     #       tag: 1.41.4.9463-630c9f557
     containers:
       app:
