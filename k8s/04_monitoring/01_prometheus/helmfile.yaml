@@ -4,20 +4,21 @@ repositories:
   - name: raw
     url: https://bedag.github.io/helm-charts/
 
-releases:
-  - name: prometheus
-    namespace: prometheus-system
-    chart: prometheus-community/prometheus
-    version: 27.1.0
-    values:
-      - ./prometheus.values.yaml
+---
+# releases:
+#   - name: prometheus
+#     namespace: prometheus-system
+#     chart: prometheus-community/prometheus
+#     version: 27.1.0
+#     values:
+#       - ./prometheus.values.yaml
 
-  - name: prometheus-ingress
-    namespace: prometheus-system
-    chart: raw/raw
-    version: 2.0.0
-    values:
-      - ./ingress.values.yaml
+#   - name: prometheus-ingress
+#     namespace: prometheus-system
+#     chart: raw/raw
+#     version: 2.0.0
+#     values:
+#       - ./ingress.values.yaml
 
   # - name: prometheus-node-exporter
   #   namespace: prometheus-system

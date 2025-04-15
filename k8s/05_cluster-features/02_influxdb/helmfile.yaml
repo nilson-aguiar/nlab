@@ -3,19 +3,19 @@ repositories:
     url: https://bedag.github.io/helm-charts/
 
 ---
-releases:
-  - name: influxdb
-    namespace: influxdb
-    chart: oci://registry-1.docker.io/bitnamicharts/influxdb
-    version: 6.5.0
-    secrets:
-      - ./secrets/influx.values.secret.yaml
-    values:
-      - ./values/influx.values.yaml
+# releases:
+#   - name: influxdb
+#     namespace: influxdb
+#     chart: oci://registry-1.docker.io/bitnamicharts/influxdb
+#     version: 6.5.0
+#     secrets:
+#       - ./secrets/influx.values.secret.yaml
+#     values:
+#       - ./values/influx.values.yaml
 
-  - name: influx-ingress
-    namespace: influxdb
-    chart: raw/raw
-    version: 2.0.0
-    values:
-      - ./values/ingress.values.yaml
+#   - name: influx-ingress
+#     namespace: influxdb
+#     chart: raw/raw
+#     version: 2.0.0
+#     values:
+#       - ./values/ingress.values.yaml

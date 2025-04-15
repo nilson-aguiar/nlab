@@ -4,19 +4,20 @@ repositories:
   - name: raw
     url: https://bedag.github.io/helm-charts/
 
-releases:
-  - name: grafana
-    namespace: grafana-system
-    chart: grafana/grafana
-    version: 8.8.5
-    secrets:
-      - ./secrets/grafana.values.secret.yaml
-    values:
-      - ./grafana.values.yaml
+---
+# releases:
+#   - name: grafana
+#     namespace: grafana-system
+#     chart: grafana/grafana
+#     version: 8.8.5
+#     secrets:
+#       - ./secrets/grafana.values.secret.yaml
+#     values:
+#       - ./grafana.values.yaml
 
-  - name: grafana-ingress
-    namespace: grafana-system
-    chart: raw/raw
-    version: 2.0.0
-    values:
-      - ./ingress.values.yaml
+#   - name: grafana-ingress
+#     namespace: grafana-system
+#     chart: raw/raw
+#     version: 2.0.0
+#     values:
+#       - ./ingress.values.yaml
