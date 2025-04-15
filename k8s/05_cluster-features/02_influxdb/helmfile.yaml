@@ -7,7 +7,7 @@ releases:
   - name: influxdb
     namespace: influxdb
     chart: oci://registry-1.docker.io/bitnamicharts/influxdb
-    version: 6.5.0
+    version: 6.6.5
     secrets:
       - ./secrets/influx.values.secret.yaml
     values:
