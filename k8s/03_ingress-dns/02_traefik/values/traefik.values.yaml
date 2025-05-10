@@ -48,7 +48,9 @@ providers:  # @schema additionalProperties: false
   kubernetesCRD:
     # -- Load Kubernetes IngressRoute provider
     enabled: true
-    # -- When the parameter is set, only resources containing an annotation with the same value are processed. Otherwise, resources missing the annotation, having an empty value, or the value traefik are processed. It will also set required annotation on Dashboard and Healthcheck IngressRoute when enabled.
+    # -- When the parameter is set, only resources containing an annotation with the same value are processed. 
+    # -- Otherwise, resources missing the annotation, having an empty value, or the value traefik are processed. 
+    # -- It will also set required annotation on Dashboard and Healthcheck IngressRoute when enabled.
     ingressClass: "traefik-external"
 
   kubernetesIngress:
@@ -208,10 +210,10 @@ metrics:
 # -- https://doc.traefik.io/traefik/observability/tracing/overview/
 tracing:  # @schema additionalProperties: false
   # -- Enables tracing for internal resources. Default: false.
-  addInternals: false
+  addInternals: true
   otlp:
     # -- See https://doc.traefik.io/traefik/v3.0/observability/tracing/opentelemetry/
-    enabled: false
+    enabled: true
     http:
       # -- Set to true in order to send metrics to the OpenTelemetry Collector using HTTP.
       enabled: false
