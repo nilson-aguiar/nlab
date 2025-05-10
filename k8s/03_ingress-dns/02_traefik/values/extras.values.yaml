@@ -37,9 +37,9 @@ resources:
       routes:
         - match: Host(`traefik.local.naguiar.dev`)
           kind: Rule
-          middlewares:
-            - name: traefik-dashboard-basicauth
-              namespace: traefik-system
+          # middlewares:
+            # - name: traefik-dashboard-basicauth
+              # namespace: traefik-system
           services:
             - name: api@internal
               kind: TraefikService
