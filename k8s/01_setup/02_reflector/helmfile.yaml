@@ -7,6 +7,6 @@ releases:
   - name: reflector
     namespace: reflector-system
     chart: emberstack/reflector
-    version: 7.1.288
+    version: 9.1.7
     values:
       - ./reflector.values.yaml
