@@ -12,7 +12,7 @@ releases:
   - name: pihole
     namespace: pihole-system
     chart: mojo2600/pihole
-    version: 2.27.0
+    version: 2.31.0
     values:
       - ./values/pihole.values.yaml
 
