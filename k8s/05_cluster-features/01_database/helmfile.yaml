@@ -8,6 +8,6 @@ releases:
   - name: cloudnative-pg
     namespace: cloudnative-pg
     chart: cloudnative-pg/cloudnative-pg
-    version: 0.23.2
+    version: 0.24.0
     values:
       - ./values/pg.values.yaml
