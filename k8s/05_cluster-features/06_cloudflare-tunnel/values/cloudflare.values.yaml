@@ -1,0 +1,31 @@
+# -- This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replica:
+  # -- This will use DaemonSet to deploy cloudflared to all nodes
+  allNodes: true
+  # -- If previous flag disabled, this will use Deployment to deploy cloudflared only number of following count
+  count: 1
+
+# -- Please find more configuration from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/arguments/
+tunnelConfig:
+  # -- cloudflared tunnel name
+  name: "example-tunnel"
+  metricsUpdateFrequency: 5s
+  autoUpdateFrequency: 24h
+  noAutoUpdate: true
+  gracePeriod: 30s
+  retries: 5
+  # auto, http2, h2mux, quic
+  protocol: auto
+  # info, warn, error, fatal, panic
+  logLevel: info
+  transportLogLevel: warn
+  connectTimeout: 30s
+  warpRouting: false
+
+# -- Cloudflare ingress rules. More information can be found here: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/#how-traffic-is-matched
+ingress:
+  - hostname: "*.naguiar.dev" # or "*.example.com" but you must define a CNAME record for "*" to your DNS
+    service: http://ingress-traefik-internal.traefik-system.svc.cluster.local:80
+
+  - service: http_status:404
+
