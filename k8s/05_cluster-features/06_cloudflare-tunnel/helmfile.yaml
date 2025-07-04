@@ -7,7 +7,7 @@ repositories:
 releases:
   - name: cloudflared
     chart: cloudflare/cloudflared
-    version: 2.0.5
+    version: 2.0.8
     namespace: cloudflare
     values:
       - ./values/cloudflare.values.yaml
