@@ -75,18 +75,3 @@ Kustomize allows you to manage multiple manifest files in a `Kustomize.yaml`, wh
 I don't use Kustomize that much in the video, but it's a tool I do often use and is available in `kubectl`.
 
 
-## Istio
-
-Testing istio configurations with istioctl
-
-```shell
-istioctl install -y \
-    --set profile=ambient \
-    --set values.cni.cniConfDir=/var/lib/rancher/k3s/agent/etc/cni/net.d \
-    --set values.cni.cniBinDir=/var/lib/rancher/k3s/data/current/bin/ \
-    --set meshConfig.accessLogFile=/dev/stdout \
-    --set "components.egressGateways[0].name=istio-egressgateway" \
-    --set "components.egressGateways[0].enabled=true" \
-    --set values.pilot.env.PILOT_ENABLE_IP_AUTOALLOCATE=true \
-    --set values.cni.ambient.dnsCapture=true
-```
