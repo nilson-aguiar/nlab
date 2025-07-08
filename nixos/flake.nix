@@ -17,7 +17,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, disko, ... }@inputs: let
+  outputs = { self, nixpkgs, disko, sops-nix, ... }@inputs: let
     nodes = [
       "homelab-0"
       "homelab-1"
@@ -35,6 +35,7 @@
           modules = [
               # Modules
 	            disko.nixosModules.disko
+              sops-nix.nixosModules.sops
 	            ./hardware-configuration.nix
 	            ./disko-config.nix
 	            ./configuration.nix
