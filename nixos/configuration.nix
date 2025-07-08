@@ -23,24 +23,23 @@
 
     gc = {
       automatic = true;
-      dates = "daily";
+      # dates = "daily";
       options = "--delete-generations +5";
     };
   };
-
   
-  # sops = {
-  #   defaultSopsFile = ./secrets/secrets.yaml;
-  #   defaultSopsFormat = "yaml";
+  sops = {
+    defaultSopsFile = ./secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
 
-  #   #If this execution is running for the first time this file has to be created manually
-  #   age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
+    #If this execution is running for the first time this file has to be created manually
+    age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
 
-  #   secrets = {
-  #     "k3s/token" = { };
-  #     "k3s/tokenFile" = { };
-  #   };
-  # };
+    secrets = {
+      "k3s/token" = { };
+      "k3s/tokenFile" = { };
+    };
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;

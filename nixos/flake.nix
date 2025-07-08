@@ -6,10 +6,10 @@
       url = "github:NixOS/nixpkgs/nixos-25.05";
     };
 
-    # sops-nix = {
-    #   url = "github:Mic92/sops-nix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     disko = {
       url = "github:nix-community/disko"; #Disk config
@@ -17,8 +17,7 @@
     };
   };
 
-#sops-nix,
-  outputs = { self, nixpkgs, disko,  ... }@inputs: let
+  outputs = { self, nixpkgs, disko, sops-nix, ... }@inputs: let
     nodes = [
       "homelab-0"
       "homelab-1"
@@ -36,7 +35,7 @@
           modules = [
               # Modules
 	            disko.nixosModules.disko
-              # sops-nix.nixosModules.sops
+              sops-nix.nixosModules.sops
 	            ./hardware-configuration.nix
 	            ./disko-config.nix
 	            ./configuration.nix
