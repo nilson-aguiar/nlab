@@ -77,24 +77,24 @@
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
-  # services.k3s = {
-  #   enable = true;
-  #   role = "server";
-  #   tokenFile = config.sops.secrets."k3s/tokenFile".path;
-  #   extraFlags = toString ([
-	#     "--write-kubeconfig-mode \"0644\""
-	#     "--cluster-init"
-	#     "--disable servicelb"
-	#     "--disable traefik"
-	#     "--disable local-storage"
-  #   ] ++ (if meta.hostname == "homelab-1" then [
-  #       "--server https://homelab-2:6443" 
-  #   ] else [
-	#       "--server https://homelab-1:6443"
-  #   ]));
+  services.k3s = {
+    enable = true;
+    role = "server";
+    tokenFile = config.sops.secrets."k3s/tokenFile".path;
+    extraFlags = toString ([
+	    "--write-kubeconfig-mode \"0644\""
+	    "--cluster-init"
+	    "--disable servicelb"
+	    "--disable traefik"
+	    "--disable local-storage"
+    ] ++ (if meta.hostname == "homelab-0" then [
+        "--server https://homelab-1:6443" 
+    ] else [
+	      "--server https://homelab-0:6443"
+    ]));
     # Used when initializing the cluster only, then use the if above
     # clusterInit = (meta.hostname == "homelab-0");
-  # };
+  };
 
   services.openiscsi = {
     enable = true;
