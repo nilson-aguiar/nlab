@@ -33,13 +33,14 @@ To set up a node from fresh, you can use [nixos-anywhere](https://github.com/nix
 
 The command I use is as follows:
 
+(you should run the command below in the directory where nixos configuration is located)
 ```shell
 nix run github:nix-community/nixos-anywhere \
 --extra-experimental-features "nix-command flakes" \
--- --flake '.#homelab-0' nixos@192.168.1.100 
+-- --flake '.#homelab-0' nixos@192.168.1.100 --build-on-remote
 ```
 
-`--build-on-remote` can be added in the end of the command in case you don't have a laptop with the same architecture, but cache won't be re-used in this case.
+`--build-on-remote` is added in the end of the command in case you don't have a laptop with the same architecture, but cache won't be re-used in this case.
 
 make sure to replace with your own ip.
 
