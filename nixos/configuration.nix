@@ -7,7 +7,7 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-        inputs.sops-nix.nixosModules.sops
+        # inputs.sops-nix.nixosModules.sops
     ];
 
   nix = {
@@ -29,17 +29,18 @@
   };
 
   
-  sops = {
-    defaultSopsFile = ./secrets/secrets.yaml;
-    defaultSopsFormat = "yaml";
+  # sops = {
+  #   defaultSopsFile = ./secrets/secrets.yaml;
+  #   defaultSopsFormat = "yaml";
 
-    age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
+  #   #If this execution is running for the first time this file has to be created manually
+  #   age.keyFile ="/home/naguiar/.config/sops/age/keys.txt";
 
-    secrets = {
-      "k3s/token" = { };
-      "k3s/tokenFile" = { };
-    };
-  };
+  #   secrets = {
+  #     "k3s/token" = { };
+  #     "k3s/tokenFile" = { };
+  #   };
+  # };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -77,24 +78,24 @@
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
-  services.k3s = {
-    enable = true;
-    role = "server";
-    tokenFile = config.sops.secrets."k3s/tokenFile".path;
-    extraFlags = toString ([
-	    "--write-kubeconfig-mode \"0644\""
-	    "--cluster-init"
-	    "--disable servicelb"
-	    "--disable traefik"
-	    "--disable local-storage"
-    ] ++ (if meta.hostname == "homelab-1" then [
-        "--server https://homelab-2:6443" 
-    ] else [
-	      "--server https://homelab-1:6443"
-    ]));
+  # services.k3s = {
+  #   enable = true;
+  #   role = "server";
+  #   tokenFile = config.sops.secrets."k3s/tokenFile".path;
+  #   extraFlags = toString ([
+	#     "--write-kubeconfig-mode \"0644\""
+	#     "--cluster-init"
+	#     "--disable servicelb"
+	#     "--disable traefik"
+	#     "--disable local-storage"
+  #   ] ++ (if meta.hostname == "homelab-1" then [
+  #       "--server https://homelab-2:6443" 
+  #   ] else [
+	#       "--server https://homelab-1:6443"
+  #   ]));
     # Used when initializing the cluster only, then use the if above
     # clusterInit = (meta.hostname == "homelab-0");
-  };
+  # };
 
   services.openiscsi = {
     enable = true;
