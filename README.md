@@ -55,7 +55,7 @@ then open the copied file and update the ip for the server
 When changes are made you can update the node using:
 
 ```shell
-sudo nixos-rebuild boot --refresh --flake github:nilson-aguiar/nlab?dir=nixos
+sudo nixos-rebuild switch --upgrade --refresh --flake github:nilson-aguiar/nlab?dir=nixos
 ```
 
 ## helm
