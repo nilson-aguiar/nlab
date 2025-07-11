@@ -11,7 +11,7 @@ controllers:
     #     command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "stop", "auto", "exit" ]
     #     image:
     #       repository: ghcr.io/home-operations/plex
-    #       tag: 1.41.4.9463-630c9f557
+    #       tag: 1.41.8@sha256:40e620ffcdc65331a0c2a7ed9a95700da7d527244f33c21bd35fc30aa25f19ea
     containers:
       app:
         image:
@@ -75,7 +75,7 @@ service:
 persistence:
   config:
 #    existingClaim: plex-config
-    size: 2Gi
+    size: 10Gi
     storageClass: longhorn
     retain: true
     accessMode: ReadWriteMany
@@ -85,7 +85,7 @@ persistence:
   cache:
     enabled: true
 #    existingClaim: plex-cache
-    size: 1Gi
+    size: 10Gi
     storageClass: longhorn
     retain: true
     accessMode: ReadWriteMany
