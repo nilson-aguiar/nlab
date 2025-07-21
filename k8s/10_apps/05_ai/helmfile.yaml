@@ -1,0 +1,24 @@
+---
+repositories:
+  # - name: bjw-s
+  #   oci: true
+  #   url: ghcr.io/bjw-s/helm
+  
+  - name: open-webui
+    url: https://helm.openwebui.com/
+
+---
+# templates:
+#   bjw: &bjw
+#     namespace: ai
+#     chart: bjw-s/app-template
+#     version: 3.5.1
+
+
+releases:
+  - name: open-webui
+    chart: open-webui/open-webui
+    namespace: ai
+    version: 6.26.0
+    values:
+      - ./values/openwebui.values.yaml
