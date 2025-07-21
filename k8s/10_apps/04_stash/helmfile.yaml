@@ -1,0 +1,19 @@
+---
+repositories:
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+
+---
+templates:
+  bjw: &bjw
+    namespace: stash
+    chart: bjw-s/app-template
+    version: 3.5.1
+
+
+releases:
+  - name: stash
+    <<: *bjw
+    values:
+      - ./stash.values.yaml
