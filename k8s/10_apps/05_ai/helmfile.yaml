@@ -19,6 +19,6 @@ releases:
   - name: open-webui
     chart: open-webui/open-webui
     namespace: ai
-    version: 6.26.0
+    version: 6.29.0
     values:
       - ./values/openwebui.values.yaml
