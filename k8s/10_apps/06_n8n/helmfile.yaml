@@ -1,0 +1,23 @@
+---
+# repositories:
+#   - name: n8n
+#     oci: true
+#     url: 
+
+---
+# templates:
+#   bjw: &bjw
+#     namespace: stash
+#     chart: bjw-s/app-template
+#     version: 3.5.1
+
+
+releases:
+  - name: n8n
+    namespace: n8n
+    chart: oci://8gears.container-registry.com/library/n8n
+    version: 1.0.10
+    secrets:
+      - ./secrets/n8n.values.secrets.yaml
+    values:
+      - ./values/n8n.values.yaml
