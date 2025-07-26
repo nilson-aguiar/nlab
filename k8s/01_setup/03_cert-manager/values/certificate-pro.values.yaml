@@ -20,4 +20,5 @@ certificate:
       - media-flix
       - tinfoil-hat
       - stash
+      - monitoring
     autoNamespaces: *namespaces

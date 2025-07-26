@@ -1,0 +1,38 @@
+repositories:
+  - name: open-telemetry 
+    url: https://open-telemetry.github.io/opentelemetry-helm-charts
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+---
+templates:
+  bjw: &bjw
+    namespace: monitoring
+    chart: bjw-s/app-template
+    version: 3.5.1
+
+
+releases:
+
+  - name: opentelemetry-collector
+    namespace: monitoring
+    chart: open-telemetry/opentelemetry-collector
+    version: 0.129.0
+    values:
+      - ./values/otlp.values.yaml
+
+  - name: otlp-ingress
+    namespace: monitoring
+    chart: raw/raw
+    version: 2.0.0
+    values:
+      - ./values/otlp.ingress.values.yaml
+
+  - name: open-observe
+    <<: *bjw
+    secrets:
+      - ./secrets/openobserve.values.secret.yaml
+    values:
+      - ./values/openobserve.values.yaml

@@ -1,0 +1,88 @@
+controllers:
+  open-observe:
+    containers:
+      app:
+        image:
+          repository: public.ecr.aws/zinclabs/openobserve
+          tag: v0.14.7
+        env:
+          TZ: Europe/Amsterdam
+          ZO_DATA_DIR: /data
+        ports:
+          - name: http
+            containerPort: &port 5080
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: { drop: ["ALL"] }
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10000
+    runAsGroup: 2000
+    fsGroup: 2000
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile: { type: RuntimeDefault }
+service:
+  app:
+    controller: open-observe
+    ports:
+      http:
+        port: *port
+
+persistence:
+  data:
+    type: emptyDir
+    globalMounts:
+      - path: "/data"
+    # size: 10Gi
+    # storageClass: longhorn
+    # retain: true
+    # accessMode: ReadWriteMany
+  tmp:
+    type: emptyDir
+
+starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
+hostSuffix: &hostSuffix "local.naguiar.dev"
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: true
+          contentTypeNosniff: true
+          forceSTSHeader: true
+          stsIncludeSubdomains: true
+          stsPreload: true
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`oo.local.naguiar.dev`)
+            kind: Rule
+            # middlewares:
+            #   - name: default-headers
+            services:
+              - name: open-observe
+                port: *port
+        tls:
+          secretName: certificate-tls

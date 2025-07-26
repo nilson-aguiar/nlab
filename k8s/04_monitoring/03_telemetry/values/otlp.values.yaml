@@ -1,0 +1,58 @@
+# Default values for opentelemetry-collector.
+
+image:
+  # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
+  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  # When digest is set to a non-empty value, images will be pulled by digest (regardless of tag value).
+  digest: ""
+imagePullSecrets: []
+
+# OpenTelemetry Collector executable
+command:
+  name: "otelcol-k8s"
+  extraArgs: []
+
+# Valid values are "daemonset", "deployment", and "statefulset".
+mode: "daemonset"
+
+# When enabled, the chart will set the GOMEMLIMIT env var to 80% of the configured resources.limits.memory.
+# If no resources.limits.memory are defined then enabling does nothing.
+# It is HIGHLY recommend to enable this setting and set a value for resources.limits.memory.
+useGOMEMLIMIT: true
+
+# Resource limits & requests.
+# It is HIGHLY recommended to set resource limits.
+resources: {}
+# resources:
+#   limits:
+#     cpu: 250m
+#     memory: 512Mi
+
+service:
+  # Enable the creation of a Service.
+  # By default, it's enabled on mode != daemonset.
+  # However, to enable it on mode = daemonset, its creation must be explicitly enabled
+  enabled: true
+  type: ClusterIP
+  trafficDistribution: PreferClose
+  externalTrafficPolicy: Cluster
+
+ingress:
+  enabled: false
+
+rollout:
+  rollingUpdate: {}
+  # When 'mode: daemonset', maxSurge cannot be used when hostPort is set for any of the ports
+  # maxSurge: 25%
+  # maxUnavailable: 0
+  strategy: RollingUpdate
+
+config:     
+  exporters:
+    otlp:
+      endpoint: "http://open-observe.monitoring.svc.cluster.local:5080"
+      headers:
+        Authorization: "Basic YWRtaW5AZXhhbXBsZS5jb206ZzBjeHlRdUJ1cnh3WjEzUQ=="
