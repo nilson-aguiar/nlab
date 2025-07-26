@@ -33,7 +33,6 @@ ingress:
 main:
   config:
     n8n:
-      port: 80
       ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       RUNNERS_ENABLED: true
     node:
@@ -138,7 +137,7 @@ main:
 # # # # # # # # # # # # # # # #
 #
 # Worker related settings
-#
+#  -- Requires redis to be in place
 worker:
   enabled: false
 
