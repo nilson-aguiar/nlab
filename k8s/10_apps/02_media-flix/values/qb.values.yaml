@@ -25,10 +25,13 @@ controllers:
         probes:
           liveness:
             enabled: true
+            port: *qbPort
           readiness:
             enabled: true
+            port: *qbPort
           startup:
             enabled: true
+            port: *qbPort
             spec:
               failureThreshold: 30
               periodSeconds: 10

@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres16
+  name: postgres
 spec:
   instances: 2
   imageName: ghcr.io/cloudnative-pg/postgresql:16.9
@@ -13,8 +13,6 @@ spec:
   storage:
     size: 32Gi
     storageClass: longhorn
-#  superuserSecret:
-#    name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
@@ -27,3 +25,8 @@ spec:
       memory: 2Gi
   monitoring:
     enablePodMonitor: false
+  bootstrap:
+    recovery:
+      volume:
+        persistentVolumeClaim:
+          name: postgres-backup
