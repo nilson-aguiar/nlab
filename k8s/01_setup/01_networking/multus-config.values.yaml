@@ -14,7 +14,8 @@ resources:
     metadata:
       name: lan-bridge
     spec:
-      config: '{
+      config: |-
+        {
           "cniVersion": "1.0.0",
           "name": "lan-bridge",
           "type": "macvlan",
@@ -22,11 +23,10 @@ resources:
           "mode": "bridge",
           "ipam": {
             "type": "whereabouts",
-            "range": "192.168.1.128/26",
-            "node_slice_size": "/28",
+            "range": "192.168.1.128/28",
             "configuration_path": "/var/lib/rancher/k3s/agent/etc/cni/net.d/whereabouts.d/whereabouts.conf"
           }
-        }'
+        }
 # templates -- Define templates which will be executed using the `tpl` function
 templates: []
 
