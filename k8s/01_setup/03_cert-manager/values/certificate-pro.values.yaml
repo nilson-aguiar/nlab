@@ -19,4 +19,5 @@ certificate:
       - home-assistant
       - media-flix
       - tinfoil-hat
+      - stash
     autoNamespaces: *namespaces
