@@ -1,7 +1,8 @@
-# -- Global command arguments to be passed to all traefik's pods
-globalArguments:
-  - "--global.checknewversion=false"
-  - "--global.sendanonymoususage=false"
+global:
+  checkNewVersion: false
+  # -- Please take time to consider whether or not you wish to share anonymous data with us
+  # See https://doc.traefik.io/traefik/contributing/data-collection/
+  sendAnonymousUsage: false
 
 
 # -- Additional arguments to be passed at Traefik's binary
