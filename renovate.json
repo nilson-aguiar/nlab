@@ -7,9 +7,24 @@
     "github>nilson-aguiar/nlab//.github/renovate/allowed-versions.json5"
   ],
   "helm-values": {
-    "fileMatch": ["^k8s/.+\\.ya?ml$"]
+    "fileMatch": [
+      "^k8s/.+\\.ya?ml$"
+    ]
   },
   "kubernetes": {
-    "fileMatch": ["^k8s/.+\\.ya?ml$"]
-  }
+    "fileMatch": [
+      "^k8s/.+\\.ya?ml$"
+    ]
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "k8s/10_apps/02_media-flix/postgres-cluster/cluster.yaml"
+      ],
+      "matchStrings": [
+        "imageName: (?<depName>ghcr.io/cloudnative-pg/postgresql):(?<currentValue>.+)"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ]
 }
