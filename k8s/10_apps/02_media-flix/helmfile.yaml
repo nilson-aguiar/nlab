@@ -27,11 +27,10 @@ releases:
     values:
       - ./values/storage.values.yaml
 
-# Commenting it out since it's applying changes without need
-#  - name: media-qb
-#    <<: *bjw
-#    values:
-#      - ./values/qb.values.yaml
+  - name: media-qb
+    <<: *bjw
+    values:
+      - ./values/qb.values.yaml
 
   - name: sonarr
     <<: *bjw
