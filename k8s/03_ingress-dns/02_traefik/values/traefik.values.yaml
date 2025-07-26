@@ -79,7 +79,7 @@ service:
 
 metrics:
   ## -- Enable metrics for internal resources. Default: false
-  addInternals: false
+  addInternals: true
 
   ## -- Prometheus is enabled by default.
   ## -- It can be disabled by setting "prometheus: null"
@@ -125,70 +125,31 @@ metrics:
       additionalLabels: {}
       namespace: ""
 
-  #  influxdb2:
-  #    ## Address instructs exporter to send metrics to influxdb v2 at this address.
-  #    address: localhost:8086
-  #    ## Token with which to connect to InfluxDB v2.
-  #    token: xxx
-  #    ## Organisation where metrics will be stored.
-  #    org: ""
-  #    ## Bucket where metrics will be stored.
-  #    bucket: ""
-  #    ## The interval used by the exporter to push metrics to influxdb. Default=10s
-  #    # pushInterval: 30s
-  #    ## Additional labels (influxdb tags) on all metrics.
-  #    # additionalLabels:
-  #    #   env: production
-  #    #   foo: bar
-  #    ## Enable metrics on entry points. Default=true
-  #    # addEntryPointsLabels: false
-  #    ## Enable metrics on routers. Default=false
-  #    # addRoutersLabels: true
-  #    ## Enable metrics on services. Default=true
-  #    # addServicesLabels: false
-  #  statsd:
-  #    ## Address instructs exporter to send metrics to statsd at this address.
-  #    address: localhost:8125
-  #    ## The interval used by the exporter to push metrics to influxdb. Default=10s
-  #    # pushInterval: 30s
-  #    ## The prefix to use for metrics collection. Default="traefik"
-  #    # prefix: traefik
-  #    ## Enable metrics on entry points. Default=true
-  #    # addEntryPointsLabels: false
-  #    ## Enable metrics on routers. Default=false
-  #    # addRoutersLabels: true
-  #    ## Enable metrics on services. Default=true
-  #    # addServicesLabels: false
   otlp:
     # -- Set to true in order to enable the OpenTelemetry metrics
-    enabled: false
+    enabled: true
     # -- Enable metrics on entry points. Default: true
-    addEntryPointsLabels:  # @schema type:[boolean, null]
+    # addEntryPointsLabels:  # @schema type:[boolean, null]
     # -- Enable metrics on routers. Default: false
-    addRoutersLabels:  # @schema type:[boolean, null]
+    # addRoutersLabels:  # @schema type:[boolean, null]
     # -- Enable metrics on services. Default: true
-    addServicesLabels:  # @schema type:[boolean, null]
+    # addServicesLabels:  # @schema type:[boolean, null]
     # -- Explicit boundaries for Histogram data points. Default: [.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10]
-    explicitBoundaries: []
+    # explicitBoundaries: []
     # -- Interval at which metrics are sent to the OpenTelemetry Collector. Default: 10s
-    pushInterval: ""
+    # pushInterval: "10s"
+    # -- Service name used in OTLP backend. Default: traefik.
+    # serviceName:  traefik # @schema type:[string, null]
     http:
       # -- Set to true in order to send metrics to the OpenTelemetry Collector using HTTP.
-      enabled: false
+      enabled: true
       # -- Format: <scheme>://<host>:<port><path>. Default: http://localhost:4318/v1/metrics
-      endpoint: ""
+      endpoint: http://opentelemetry-collector.monitoring.svc.cluster.local:4318/v1/metrics
       # -- Additional headers sent with metrics by the reporter to the OpenTelemetry Collector.
       headers: {}
       ## Defines the TLS configuration used by the reporter to send metrics to the OpenTelemetry Collector.
       tls:
-        # -- The path to the certificate authority, it defaults to the system bundle.
-        ca: ""
-        # -- The path to the public certificate. When using this option, setting the key option is required.
-        cert: ""
-        # -- The path to the private key. When using this option, setting the cert option is required.
-        key: ""
-        # -- When set to true, the TLS connection accepts any certificate presented by the server regardless of the hostnames it covers.
-        insecureSkipVerify:  # @schema type:[boolean, null]
+        insecureSkipVerify: true # @schema type:[boolean, null]
     grpc:
       # -- Set to true in order to send metrics to the OpenTelemetry Collector using gRPC
       enabled: false
@@ -212,26 +173,31 @@ metrics:
 tracing:  # @schema additionalProperties: false
   # -- Enables tracing for internal resources. Default: false.
   addInternals: true
+  # # -- Service name used in selected backend. Default: traefik.
+  # serviceName:  # @schema type:[string, null]
+  # # -- Defines additional resource attributes to be sent to the collector.
+  # resourceAttributes: {}
+  # # -- Defines the list of request headers to add as attributes. It applies to client and server kind spans.
+  # capturedRequestHeaders: []
+  # # -- Defines the list of response headers to add as attributes. It applies to client and server kind spans.
+  # capturedResponseHeaders: []
+  # # -- By default, all query parameters are redacted. Defines the list of query parameters to not redact.
+  # safeQueryParams: []
+  # # -- The proportion of requests to trace, specified between 0.0 and 1.0. Default: 1.0.
+  # sampleRate:  # @schema type:[number, null]; minimum:0; maximum:1
   otlp:
     # -- See https://doc.traefik.io/traefik/v3.0/observability/tracing/opentelemetry/
     enabled: true
     http:
       # -- Set to true in order to send metrics to the OpenTelemetry Collector using HTTP.
-      enabled: false
+      enabled: true
       # -- Format: <scheme>://<host>:<port><path>. Default: http://localhost:4318/v1/metrics
-      endpoint: ""
+      endpoint: http://opentelemetry-collector.monitoring.svc.cluster.local:4318/v1/traces
       # -- Additional headers sent with metrics by the reporter to the OpenTelemetry Collector.
-      headers: {}
+      # headers: {}
       ## Defines the TLS configuration used by the reporter to send metrics to the OpenTelemetry Collector.
-      tls:
-        # -- The path to the certificate authority, it defaults to the system bundle.
-        ca: ""
-        # -- The path to the public certificate. When using this option, setting the key option is required.
-        cert: ""
-        # -- The path to the private key. When using this option, setting the cert option is required.
-        key: ""
-        # -- When set to true, the TLS connection accepts any certificate presented by the server regardless of the hostnames it covers.
-        insecureSkipVerify: false
+      # tls:
+        # insecureSkipVerify: true 
     grpc:
       # -- Set to true in order to send metrics to the OpenTelemetry Collector using gRPC
       enabled: false
@@ -250,10 +216,7 @@ tracing:  # @schema additionalProperties: false
         # -- When set to true, the TLS connection accepts any certificate presented by the server regardless of the hostnames it covers.
         insecureSkipVerify: false
 
-
 autoscaling:
-  # -- Create HorizontalPodAutoscaler object.
-  # See EXAMPLES.md for more details.
   enabled: false
 
 # -- Whether Role Based Access Control objects like roles and rolebindings should be created

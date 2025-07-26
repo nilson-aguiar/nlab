@@ -8,6 +8,12 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           ZO_DATA_DIR: /data
+          ZO_SCHEMA_MAPPING: |
+            {
+              "__hash__": {
+                "type": "keyword"
+              }
+            }
         ports:
           - name: http
             containerPort: &port 5080

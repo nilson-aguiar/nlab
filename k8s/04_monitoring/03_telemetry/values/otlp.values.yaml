@@ -50,9 +50,28 @@ rollout:
   # maxUnavailable: 0
   strategy: RollingUpdate
 
-config:     
-  exporters:
+config:
+  receivers:
     otlp:
-      endpoint: "http://open-observe.monitoring.svc.cluster.local:5080"
+      protocols:
+        grpc: {}
+        http: {}
+  exporters:
+    otlphttp/openobserve:
+      endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
       headers:
-        Authorization: "Basic YWRtaW5AZXhhbXBsZS5jb206ZzBjeHlRdUJ1cnh3WjEzUQ=="
+        Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206QklveEszQUczaXVLbGpuTA==
+        stream-name: default
+      tls:
+        insecure: true
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: []
+        exporters: [otlphttp/openobserve]
+      metrics:
+        receivers: [otlp]
+        processors: []
+        exporters: [otlphttp/openobserve]
+  
