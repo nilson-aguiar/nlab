@@ -25,13 +25,7 @@ spec:
         role: server
     spec:
       serviceAccountName: homeassistant-sa
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       containers:
-        - name: bluez
-          image: ghcr.io/mysticrenji/bluez-service:latest
-          securityContext:
-            privileged: true
         - name: home-assistant-app
           image: "homeassistant/home-assistant:tag-here"
           imagePullPolicy: IfNotPresent
@@ -64,19 +58,12 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 10
           startupProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - >
-                  if [ -S /run/dbus/system_bus_socket ]; then
-                    exit 0;
-                  else
-                    exit 1;
-                  fi
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            tcpSocket:
+              port: 8123
+            initialDelaySeconds: 0
             failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
           volumeMounts:
             - mountPath: /config
               name: ha-config-data
@@ -85,9 +72,6 @@ spec:
               readOnly: true
 #            - mountPath: /media
 #              name: media-volume
-#            - mountPath: /run/dbus
-#              name: d-bus
-#              readOnly: true
 #            - mountPath: /dev/ttyUSB1
 #              name: zigbee
 #            - mountPath: /dev/video0
