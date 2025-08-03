@@ -25,23 +25,18 @@ spec:
         role: server
     spec:
       serviceAccountName: homeassistant-sa
-#      hostNetwork: true
-#      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
-#        - name: bluez
-#          image: ghcr.io/mysticrenji/bluez-service:latest
-#          securityContext:
-#            privileged: true
+        - name: bluez
+          image: ghcr.io/mysticrenji/bluez-service:latest
+          securityContext:
+            privileged: true
         - name: home-assistant-app
           image: "homeassistant/home-assistant:tag-here"
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
-            capabilities:
-              add:
-                - NET_ADMIN
-                - NET_RAW
-                - NET_BROADCAST
           envFrom:
             - configMapRef:
                 name: home-assistant-env
@@ -69,18 +64,25 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 10
           startupProbe:
-            tcpSocket:
-              port: 8123
-            initialDelaySeconds: 0
-            failureThreshold: 30
-            timeoutSeconds: 1
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - >
+                  if [ -S /run/dbus/system_bus_socket ]; then
+                    exit 0;
+                  else
+                    exit 1;
+                  fi
+            initialDelaySeconds: 10
             periodSeconds: 5
+            failureThreshold: 30
           volumeMounts:
             - mountPath: /config
               name: ha-config-data
-#            - mountPath: /run/dbus
-#              name: d-bus
-#              readOnly: true
+            - mountPath: /run/dbus
+              name: d-bus
+              readOnly: true
 #            - mountPath: /media
 #              name: media-volume
 #            - mountPath: /run/dbus
@@ -98,9 +100,9 @@ spec:
         - name: configmap-file
           configMap:
             name: home-assistant-configmap
-#        - name: d-bus
-#          hostPath:
-#            path: /run/dbus
+        - name: d-bus
+          hostPath:
+            path: /run/dbus
 #        - name: media-volume
 #          hostPath:
 #            path: /tmp/media
