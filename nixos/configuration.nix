@@ -168,6 +168,7 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
+  hardware.bluetooth.enable = true;
   
 
   # Copy the NixOS configuration file and link it from the resulting system
