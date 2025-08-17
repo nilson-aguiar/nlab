@@ -1,0 +1,13 @@
+image:
+  repository: jauderho/yt-dlp
+  tag: 2025.07.21
+
+persistence:
+  storageClaimName: stash-media
+  subPath: media
+
+configs:
+  schedule: "*/1 * * * *"
+  activeDeadlineSeconds: 1800
+  terminationGracePeriodSeconds: 300
+

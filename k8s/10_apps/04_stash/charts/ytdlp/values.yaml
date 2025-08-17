@@ -1,0 +1,16 @@
+image:
+  repository: jauderho/yt-dlp
+  tag: latest
+  pullPolicy: IfNotPresent
+
+persistence:
+  storageClaimName: standard
+  subPath: media
+
+configs:
+  baseUrl: "http://localhost:8080"
+  schedule: "*/1 * * * *"
+  activeDeadlineSeconds: 120
+  terminationGracePeriodSeconds: 60
+  values: []
+
