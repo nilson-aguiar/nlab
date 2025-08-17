@@ -1,0 +1,71 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+# ==============================================================================
+#  CronJob to Run yt-dlp
+# ==============================================================================
+# This CronJob creates a new Job every minute to download a video.
+# ---
+metadata:
+  name: {{ $.Release.Name }}-stash-update
+
+spec:
+  # Schedule to run every hour.
+  # Format: "minute hour day-of-month month day-of-week"
+  schedule: "0 */1 * * *"
+
+  # If the CronJob misses its scheduled time by more than 60 seconds,
+  # it will not run the job. This prevents a job from running long after
+  # its intended time, for example, after a cluster outage.
+  startingDeadlineSeconds: 60
+
+  # This is a critical setting for your requirement.
+  # "Forbid" prevents a new job from being created if the previous one
+  # has not completed yet. The new job will be skipped.
+  concurrencyPolicy: Forbid
+
+  # Keep a record of the last successful and failed jobs for debugging.
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+
+  # This is the template for the Job that the CronJob will create.
+  jobTemplate:
+    spec:
+      
+      # This is the template for the Pod that the Job will create.
+      template:
+        spec:
+          backoffLimit: 0
+
+          containers:
+          - name: stash-updater
+
+            env:
+              - name: TOKEN
+                value: {{ $.Values.stash.token }}
+            # Using the official yt-dlp image from GitHub's container registry.
+            image: "busybox:stable"
+            imagePullPolicy: {{ $.Values.image.pullPolicy }}
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 2000
+              fsGroup: 2000
+              fsGroupChangePolicy: OnRootMismatch
+              seccompProfile: { type: RuntimeDefault }
+            command:
+              - "sh"
+              - "-c"
+              - |
+                #!/bin/sh
+                wget -q -O - --header="ApiKey: $TOKEN" \
+                  --header="Content-Type: application/json" \
+                  --post-data='{"operationName":"MetadataScan","variables":{"input":{"scanGenerateClipPreviews":true,"scanGenerateCovers":true,"scanGenerateImagePreviews":true,"scanGeneratePhashes":true,"scanGeneratePreviews":true,"scanGenerateSprites":true,"scanGenerateThumbnails":true}},"query":"mutation MetadataScan($input: ScanMetadataInput!) {\n  metadataScan(input: $input)\n}"}' \
+                  "http://$STASH_SERVICE_HOST:$STASH_SERVICE_PORT/graphql"
+
+
+          # The restart policy for a pod created by a Job must be OnFailure or Never.
+          # OnFailure: Restarts the container if it fails, until the Job's
+          #            activeDeadlineSeconds is reached.
+          restartPolicy: Never
+

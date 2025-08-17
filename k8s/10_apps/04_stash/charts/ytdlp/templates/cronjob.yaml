@@ -1,0 +1,142 @@
+{{/* Loop through each item in the .Values.configs.values list */}}
+{{- range .Values.configs.values }}
+---
+apiVersion: batch/v1
+kind: CronJob
+# ==============================================================================
+#  CronJob to Run yt-dlp
+# ==============================================================================
+# This CronJob creates a new Job every minute to download a video.
+# ---
+metadata:
+  name: {{ $.Release.Name }}-ytdlp-cronjob-{{ regexReplaceAll "_" . "-" | trimSuffix "-" }}
+
+spec:
+  # Schedule to run every minute.
+  # Format: "minute hour day-of-month month day-of-week"
+  schedule: "{{ $.Values.configs.schedule }}"
+
+  # If the CronJob misses its scheduled time by more than 60 seconds,
+  # it will not run the job. This prevents a job from running long after
+  # its intended time, for example, after a cluster outage.
+  startingDeadlineSeconds: 60
+
+  # This is a critical setting for your requirement.
+  # "Forbid" prevents a new job from being created if the previous one
+  # has not completed yet. The new job will be skipped.
+  concurrencyPolicy: Forbid
+
+  # Keep a record of the last successful and failed jobs for debugging.
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+
+  # This is the template for the Job that the CronJob will create.
+  jobTemplate:
+    spec:
+      # This is the crucial timeout setting.
+      # The Job (and its Pod) will be terminated if it runs for more than
+      # 1800 seconds (30 minutes). Kubernetes will send a SIGTERM signal,
+      # allowing for a graceful shutdown.
+      activeDeadlineSeconds: {{ $.Values.configs.activeDeadlineSeconds }}
+
+
+      # This is the template for the Pod that the Job will create.
+      template:
+        spec:
+          backoffLimit: 0
+          terminationGracePeriodSeconds: {{ $.Values.configs.terminationGracePeriodSeconds }}
+
+          # ====================================================================
+          #  Custom DNS Configuration
+          # ====================================================================
+          # To use your own DNS settings, you must set the dnsPolicy to "None".
+          # This tells Kubernetes not to use the cluster's default DNS service.
+          dnsPolicy: "None"
+          # Here you can specify your custom DNS resolver configuration.
+          dnsConfig:
+            # Replace these with the IP addresses of your desired DNS servers.
+            # Example uses Google's public DNS servers.
+            nameservers:
+              - "8.8.8.8"
+              - "8.8.4.4"
+          # ====================================================================
+
+          containers:
+          - name: ytdlp-runner
+
+            env:
+              - name: VIDEO_URL
+                # IMPORTANT: Replace this value with the actual YouTube URL.
+                value: {{ $.Values.configs.baseUrl}}/{{ . }}
+              - name: CHANNEL
+                value: {{ . }}
+              - name: TZ
+                value: Europe/Amsterdam
+            # Using the official yt-dlp image from GitHub's container registry.
+            image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+            imagePullPolicy: {{ $.Values.image.pullPolicy }}
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 2000
+              fsGroup: 2000
+              fsGroupChangePolicy: OnRootMismatch
+              seccompProfile: { type: RuntimeDefault }
+            command:
+              - "sh"
+              - "-c"
+              - |
+                #!/bin/sh
+
+                # for file in ${CHANNEL}*.part; do
+                #  echo "Renaming $file -> ${file%.part}";
+                #  mv "$file" "${file%.part}" || true; 
+                # done || true
+                
+                # Define the cleanup function that will be called on termination.
+                _cleanup() {
+                  echo "Caught TERM signal! Sending INT signal to yt-dlp..."
+                  # Check if the child process exists before sending the signal.
+                  if kill -0 "$child" 2>/dev/null; then
+                    # Send the SIGINT signal to the yt-dlp process.
+                    kill -SIGINT "$child"
+                    # Wait for the yt-dlp process to terminate after receiving the signal.
+                    # This is the crucial change to ensure graceful shutdown.
+                    wait "$child"
+                    echo "yt-dlp process has terminated."
+                  fi
+                }
+
+                # Trap the TERM signal (sent by Kubernetes) and call the cleanup function.
+                trap _cleanup TERM
+
+                # Start yt-dlp in the background and store its process ID (PID).
+                echo "Starting yt-dlp..."
+                yt-dlp -o "/downloads/%(title)s - [%(id)s].%(ext)s" "$VIDEO_URL" &
+                child=$!
+                
+                # Wait for the child process to complete. By adding '|| true', we ensure
+                # that this script always exits with code 0, even if yt-dlp fails.
+                # This forces the Kubernetes Job to be marked as 'Complete'.
+                wait "$child" || true
+
+              
+            # Mount the persistent volume into the container at the /downloads path.
+            volumeMounts:
+            - name: download-storage
+              mountPath: /downloads
+              subPath: {{ $.Values.persistence.subPath }}
+
+          # Define the volume to be used by the container.
+          volumes:
+            - name: download-storage
+              # This links the volume to the PersistentVolumeClaim defined above.
+              persistentVolumeClaim:
+                claimName: {{ $.Values.persistence.storageClaimName }}
+
+          # The restart policy for a pod created by a Job must be OnFailure or Never.
+          # OnFailure: Restarts the container if it fails, until the Job's
+          #            activeDeadlineSeconds is reached.
+          restartPolicy: Never
+
+{{- end }}

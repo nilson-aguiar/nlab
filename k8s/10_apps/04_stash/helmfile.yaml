@@ -3,6 +3,8 @@ repositories:
   - name: bjw-s
     oci: true
     url: ghcr.io/bjw-s/helm
+  - name: raw 
+    url: https://bedag.github.io/helm-charts/
 
 ---
 templates:
@@ -17,3 +19,12 @@ releases:
     <<: *bjw
     values:
       - ./stash.values.yaml
+
+  - name: stash-downloader
+    namespace: stash
+    chart: ./charts/ytdlp  # Path to your local chart
+    version: 0.1.0
+    values:
+      - cronjob.values.yaml  # Default values from chart
+    secrets:
+      - secrets/cronjob.values.secret.yaml  # Optional: for sensitive data
