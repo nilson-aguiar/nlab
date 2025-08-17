@@ -1,0 +1,158 @@
+controllers:
+  gluetun-vpn:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: qmcgaw/gluetun
+          tag: v3.39.1
+        env:
+          # VPN Provider
+          VPN_SERVICE_PROVIDER: mullvad
+          
+          # Mullvad WireGuard configuration
+          WIREGUARD_PRIVATE_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: vpn-credentials
+                key: wireguard_private_key
+          WIREGUARD_ADDRESSES:
+            valueFrom:
+              secretKeyRef:
+                name: vpn-credentials
+                key: wireguard_addresses
+          
+          # Server selection
+          SERVER_COUNTRIES: Netherlands,Germany,Sweden
+          SERVER_CITIES: Amsterdam,Berlin
+          
+          # Port forwarding (if supported by your provider)
+          VPN_PORT_FORWARDING: "on"
+          VPN_PORT_FORWARDING_LISTENING_PORT: "6881"
+          
+          # Health checks
+          HEALTH_VPN_DURATION_INITIAL: 30s
+          HEALTH_TARGET_ADDRESS: google.com:443
+          
+          # DNS settings
+          DOT: "off"
+          
+          # Firewall settings - allow local network access
+          FIREWALL_OUTBOUND_SUBNETS: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          FIREWALL_VPN_INPUT_PORTS: "6881"
+          
+          # HTTP control server for status/control
+          HTTP_CONTROL_SERVER_ADDRESS: ":8000"
+          
+          # Log level
+          LOG_LEVEL: info
+          
+          # Timezone
+          TZ: Europe/Amsterdam
+
+        ports:
+          - name: http-control
+            containerPort: 8000
+            protocol: TCP
+          - name: torrent-port
+            containerPort: 6881
+            protocol: TCP
+          - name: torrent-port-udp
+            containerPort: 6881
+            protocol: UDP
+
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /v1/openvpn/status
+                port: 8000
+              initialDelaySeconds: 30
+              periodSeconds: 30
+              timeoutSeconds: 5
+              failureThreshold: 3
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /v1/openvpn/status
+                port: 8000
+              initialDelaySeconds: 15
+              periodSeconds: 10
+              timeoutSeconds: 5
+
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile: { type: RuntimeDefault }
+  dnsPolicy: "None"
+  dnsConfig:
+    nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+  terminationGracePeriodSeconds: 30
+
+service:
+  app:
+    controller: gluetun-vpn
+    type: ClusterIP
+    ports:
+      http-control:
+        enabled: true
+        port: 8000
+        protocol: TCP
+      torrent:
+        enabled: true
+        port: 6881
+        protocol: TCP
+
+persistence:
+  gluetun-data:
+    type: emptyDir
+    globalMounts:
+      - path: /gluetun
+
+# Optional: Create a status dashboard
+rawResources:
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`tinfoil-gluetun-status.local.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: gluetun-vpn
+                port: 8000
+        tls:
+          secretName: certificate-tls

@@ -27,6 +27,13 @@ releases:
     values:
       - ./values/storage.values.yaml
 
+  - name: gluetun-vpn
+    <<: *bjw
+    values:
+      - ./values/gluetun-vpn.values.yaml
+    secrets:
+      - ./secrets/gluetun-vpn.secrets.yaml
+
   - name: media-qb
     <<: *bjw
     values:
