@@ -16,7 +16,7 @@ releases:
   - name: n8n
     namespace: n8n
     chart: oci://8gears.container-registry.com/library/n8n
-    version: 1.0.10
+    version: 1.0.12
     secrets:
       - ./secrets/n8n.values.secrets.yaml
     values:
