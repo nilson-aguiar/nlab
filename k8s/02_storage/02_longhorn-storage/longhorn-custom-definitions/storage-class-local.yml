@@ -1,0 +1,22 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: longhorn-strict-local
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: driver.longhorn.io
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  dataLocality: "strict-local"
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "1440" # 1 day
+  fsType: "ext4"
+  # diskSelector: "nvme"
+  recurringJobSelector: '[
+      {
+        "name":"postgres-replica-storage",
+        "isGroup":true
+      }
+    ]'

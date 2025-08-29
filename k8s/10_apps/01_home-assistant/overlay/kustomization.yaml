@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - ../base
 
-namespace: home-assistant
+# namespace: home-assistant
 images:
   - name: homeassistant/home-assistant
     newTag: 2025.8.2

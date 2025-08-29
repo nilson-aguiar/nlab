@@ -1,0 +1,50 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - homelab-0
+            - homelab-1
+            - homelab-2
+  env:
+    - name: TZ
+      value: Europe/Amsterdam
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  storage:
+    size: 32Gi
+    storageClass: longhorn-strict-local
+#  superuserSecret:
+#    name: cloudnative-pg-secret
+  enableSuperuserAccess: true
+  postgresql:
+    parameters:
+      max_connections: "400"
+      shared_buffers: 256MB
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 2Gi
+  monitoring:
+    enablePodMonitor: false
+  # see https://cloudnative-pg.io/documentation/1.22/kubernetes_upgrade/
+  nodeMaintenanceWindow:
+    reusePVC: false # rebuild from other replica instead
+  # bootstrap:
+  #   recovery:
+  #     volumeSnapshots:
+  #       storage:
+  #         name: postgres-backup
+  #         kind: VolumeSnapshot
+  #         apiGroup: snapshot.storage.k8s.io

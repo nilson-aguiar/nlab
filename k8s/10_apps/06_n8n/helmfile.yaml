@@ -1,8 +1,7 @@
 ---
-# repositories:
-#   - name: n8n
-#     oci: true
-#     url: 
+repositories:
+  - name: community-charts
+    url: https://community-charts.github.io/helm-charts
 
 ---
 # templates:
@@ -15,8 +14,8 @@
 releases:
   - name: n8n
     namespace: n8n
-    chart: oci://8gears.container-registry.com/library/n8n
-    version: 1.0.10
+    chart: community-charts/n8n
+    version: 1.14.3
     secrets:
       - ./secrets/n8n.values.secrets.yaml
     values:

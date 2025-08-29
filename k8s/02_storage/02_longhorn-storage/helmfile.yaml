@@ -1,8 +1,6 @@
 repositories:
   - name: longhorn
     url: https://charts.longhorn.io
-  - name: raw
-    url: https://bedag.github.io/helm-charts/
 
 ---
 releases:
@@ -14,9 +12,6 @@ releases:
     values:
       - ./longhorn.values.yaml
 
-  - name: longhorn-ingress
+  - name: longhorn-custom-definitions
     namespace: longhorn-system
-    chart: raw/raw
-    version: 2.0.0
-    values:
-      - ./ingress.values.yaml
+    chart: ./longhorn-custom-definitions

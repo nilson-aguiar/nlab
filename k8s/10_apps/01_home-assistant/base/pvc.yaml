@@ -3,7 +3,6 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: home-assistant-data
-  namespace: home-assistant
 spec:
   accessModes:
     - ReadWriteMany

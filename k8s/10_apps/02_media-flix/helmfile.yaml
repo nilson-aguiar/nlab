@@ -11,10 +11,6 @@ templates:
     version: 3.5.1
 
 releases:
-  - name: media-postgres
-    namespace: media-flix
-    chart: postgres-cluster
-
   - name: prowlarr
     <<: *bjw
     values:

@@ -1,0 +1,29 @@
+repositories:
+  - name: rke2
+    url: https://rke2-charts.rancher.io
+  
+---
+releases:
+  
+  - name: webhook-certificate
+    namespace: kube-system
+    chart: ./webhook-certificate
+
+  - name: snapshot-controller-crd
+    namespace: kube-system
+    chart: rke2/rke2-snapshot-controller-crd
+    version: 4.0
+
+  - name: snapshot-controller
+    namespace: kube-system
+    chart: rke2/rke2-snapshot-controller
+    version: 4.0
+
+  - name: snapshot-validation-webhook
+    namespace: kube-system
+    chart: rke2/rke2-snapshot-validation-webhook
+    version: 1.9
+    values:
+      - tls:
+          autogenerate: false
+          certificateSecret: "snapshot-validation-webhook-tls"

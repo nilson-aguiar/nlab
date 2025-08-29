@@ -6,7 +6,6 @@ metadata:
     app: home-assistant
     role: server
   name: home-assistant
-  namespace: home-assistant
 spec:
   revisionHistoryLimit: 3
   replicas: 1

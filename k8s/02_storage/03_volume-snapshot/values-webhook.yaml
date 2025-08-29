@@ -1,0 +1,9 @@
+webhook:
+  generateCerts: false
+  # Use externally managed certificates
+  existingSecret: snapshot-validation-webhook-tls
+  # Or provide static certs here if needed
+  # caCert: |
+  #   -----BEGIN CERTIFICATE-----
+  #   [your static CA certificate]
+  #   -----END CERTIFICATE-----

@@ -8,6 +8,14 @@ releases:
   - name: cloudnative-pg
     namespace: cloudnative-pg
     chart: cloudnative-pg/cloudnative-pg
-    version: 0.25.0
+    version: 0.26.0
     values:
       - ./values/pg.values.yaml
+
+  - name: postgres-db
+    namespace: cloudnative-pg
+    chart: ./postgres-cluster
+
+  # - name: postgres-backup
+  #   namespace: cloudnative-pg
+  #   chart: ./backup-restore

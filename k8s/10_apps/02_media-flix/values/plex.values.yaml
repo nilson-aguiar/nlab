@@ -73,8 +73,15 @@ service:
 
 
 persistence:
+  config-bkp:
+    size: 10Gi
+    storageClass: longhorn-strict-local
+    retain: true
+    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: "/config/Library/Application Support/bkp"
   config:
-#    existingClaim: plex-config
+    # existingClaim: plex-config
     size: 10Gi
     storageClass: longhorn
     retain: true
@@ -84,7 +91,7 @@ persistence:
   # Separate PVC for cache to avoid backing up cache files
   cache:
     enabled: true
-#    existingClaim: plex-cache
+    # existingClaim: plex-cache
     size: 10Gi
     storageClass: longhorn
     retain: true

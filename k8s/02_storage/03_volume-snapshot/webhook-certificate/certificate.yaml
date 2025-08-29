@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: snapshot-validation-webhook-tls
+  namespace: kube-system
+spec:
+  # Certificate will be stored in this secret
+  secretName: snapshot-validation-webhook-tls
+  # Use a self-signed issuer for internal services
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  # Must match the webhook service name
+  dnsNames:
+    - snapshot-validation-webhook-rke2-snapshot-validation-webhook
+    - snapshot-validation-webhook-rke2-snapshot-validation-webhook.kube-system
+    - snapshot-validation-webhook-rke2-snapshot-validation-webhook.kube-system.svc
+    - snapshot-validation-webhook-rke2-snapshot-validation-webhook.kube-system.svc.cluster.local
+  # Additional configuration for webhook certificates
+  commonName: snapshot-validation-webhook.kube-system.svc.cluster.local
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days

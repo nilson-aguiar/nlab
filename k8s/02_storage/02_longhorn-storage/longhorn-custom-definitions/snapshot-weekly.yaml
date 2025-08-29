@@ -1,0 +1,11 @@
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: snapshot-weekly
+spec:
+  cron: "0 3 ? * MON"
+  task: "snapshot"
+  groups:
+  - weekly
+  retain: 4
+  concurrency: 2

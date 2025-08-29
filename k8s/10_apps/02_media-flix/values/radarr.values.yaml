@@ -21,13 +21,9 @@ controllers:
           INIT_POSTGRES_SUPER_PASS:
             valueFrom:
               secretKeyRef:
-                name: postgres16-superuser
+                name: postgres-superuser
                 key: password
-          INIT_POSTGRES_HOST:
-            valueFrom:
-              secretKeyRef:
-                name: postgres16-superuser
-                key: host
+          INIT_POSTGRES_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
         envFrom:
           - secretRef:
               name: radarr-init
@@ -48,11 +44,7 @@ controllers:
           RADARR__UPDATE__BRANCH: master
           TZ: Europe/Amsterdam
           RADARR__POSTGRES__PORT: "5432"
-          RADARR__POSTGRES__HOST:
-            valueFrom:
-              secretKeyRef:
-                name: postgres16-app
-                key: host
+          RADARR__POSTGRES__HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
         envFrom:
           - secretRef:
               name: radarr-secret

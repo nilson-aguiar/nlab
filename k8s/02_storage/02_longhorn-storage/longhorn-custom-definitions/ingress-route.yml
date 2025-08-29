@@ -1,21 +1,20 @@
----
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: home-assistant
   annotations:
     external-dns.alpha.kubernetes.io/target: 192.168.1.200
     kubernetes.io/ingress.class: traefik-external
+  name: longhorn-ingress-route
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`ha.local.naguiar.dev`)
+    - match: Host(`longhorn.local.naguiar.dev`)
       kind: Rule
       middlewares:
-        - name: default-headers
+        - name: longhorn-default-headers
       services:
-        - name: home-assistant
-          port: http
+        - name: longhorn-frontend
+          port: 80
   tls:
     secretName: certificate-tls
