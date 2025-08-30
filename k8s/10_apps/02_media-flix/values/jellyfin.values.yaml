@@ -61,20 +61,18 @@ service:
 
 persistence:
   config:
-#    existingClaim: jellyfin-config
-    size: 500Mi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteMany
-#    globalMounts:
-#      - path: "/config"
+    existingClaim: jellyfin-config
+    # size: 500Mi
+    # storageClass: longhorn
+    # retain: true
+    # accessMode: ReadWriteOnce
   # Separate PVC for cache to avoid backing up cache files
   cache:
-#    existingClaim: jellyfin-cache
-    size: 1Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteMany
+   existingClaim: jellyfin-cache
+    # size: 1Gi
+    # storageClass: longhorn
+    # retain: true
+    # accessMode: ReadWriteOnce
   tmp:
     type: emptyDir
 #  transcode:

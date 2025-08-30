@@ -76,11 +76,11 @@ controllers:
 persistence:
   config:
     enabled: true
-#    existingClaim: radarr-config
-    size: 5Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteMany
+    existingClaim: radarr-config
+    # size: 5Gi
+    # storageClass: longhorn
+    # retain: true
+    # accessMode: ReadWriteOnce
   tmp:
     type: emptyDir
   media:

@@ -42,6 +42,13 @@ releases:
     secrets:
       - ./secrets/radarr.secrets.yaml
 
+  - name: tdarr
+    <<: *bjw
+    values:
+      - ./values/tdarr.values.yaml
+    # secrets:
+      # - ./secrets/tdarr.secrets.yaml
+
   - name: plex
     <<: *bjw
     values:

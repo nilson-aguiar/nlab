@@ -76,11 +76,11 @@ controllers:
 persistence:
   config:
     enabled: true
-#    existingClaim: sonarr-config
-    size: 5Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteMany
+    existingClaim: sonarr-config
+    # size: 5Gi
+    # storageClass: longhorn
+    # retain: true
+    # accessMode: ReadWriteMany
   tmp:
     type: emptyDir
   media:
