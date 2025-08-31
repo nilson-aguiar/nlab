@@ -24,7 +24,7 @@
     gc = {
       automatic = true;
       # dates = "daily";
-      options = "--delete-generations +5";
+      options = "--delete-generations +2";
     };
   };
   
