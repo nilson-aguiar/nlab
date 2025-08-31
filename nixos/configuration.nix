@@ -136,6 +136,7 @@
      git
      sops
      age
+     intel-gpu-tools
   ];
 
   environment.etc = {
