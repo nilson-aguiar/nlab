@@ -195,4 +195,10 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "24.05"; # Did you read the comment?
 
+  system.activationScripts.create-nfd-modules-link = ''
+    mkdir -p /lib/modules/$(uname -r)
+    mkdir -p /host-lib/modules/$(uname -r)
+    ln -sfn $(find /nix/store -name modules.builtin -path "*/lib/modules/$(uname -r)/modules.builtin") /lib/modules/$(uname -r)/modules.builtin
+    ln -sfn $(find /nix/store -name modules.builtin -path "*/lib/modules/$(uname -r)/modules.builtin") /host-lib/modules/$(uname -r)/modules.builtin
+  '';
 }
