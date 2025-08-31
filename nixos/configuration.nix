@@ -196,7 +196,8 @@
   system.stateVersion = "24.05"; # Did you read the comment?
 
   system.activationScripts.create-nfd-modules-link = ''
+    rm -rf /lib/modules/$(uname -r)
     mkdir -p /lib/modules/$(uname -r)
-    ln -sfn $(find /nix/store -name modules.builtin -path "*/lib/modules/$(uname -r)/modules.builtin") /lib/modules/$(uname -r)/modules.builtin
+    ln -sfn $(find /nix/store -name modules.builtin -path "*/lib/modules/$(uname -r)") /lib/modules/$(uname -r)
   '';
 }
