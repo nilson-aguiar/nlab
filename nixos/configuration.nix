@@ -198,6 +198,6 @@
   system.activationScripts.create-nfd-modules-link = ''
     rm -rf /lib/modules/$(uname -r)
     mkdir -p /lib/modules/$(uname -r)
-    ln -sfn $(find /nix/store -name modules.builtin -path "*/lib/modules/$(uname -r)") /lib/modules/$(uname -r)
+    ln -sfn $(find /nix/store -type d -path "*/lib/modules/$(uname -r)" | grep -v modules-shrunk | head -n1) /lib/modules/$(uname -r)
   '';
 }
