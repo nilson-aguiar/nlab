@@ -16,6 +16,9 @@
       "^k8s/.+\\.ya?ml$"
     ]
   },
+  "nix": {
+    "enabled": true
+  },
   "regexManagers": [
     {
       "fileMatch": [
