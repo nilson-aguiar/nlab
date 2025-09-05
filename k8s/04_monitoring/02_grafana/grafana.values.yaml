@@ -52,9 +52,10 @@ ingress:
 persistence:
   type: pvc
   enabled: true
+  storageClass: longhorn-strict-local
 #  existingClaim: grafana
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   size: 10Gi
   finalizers:
     - kubernetes.io/pvc-protection
@@ -67,9 +68,9 @@ datasources:
  datasources.yaml:
    apiVersion: 1
    datasources:
-   - name: Prometheus
+   - name: VictoriaMetrics
      type: prometheus
-     url: http://prometheus-server.prometheus-system.svc.cluster.local
+     url: http://victoriametrics.monitoring.svc.cluster.local:8428
      access: proxy
      isDefault: true
 #    deleteDatasources: []

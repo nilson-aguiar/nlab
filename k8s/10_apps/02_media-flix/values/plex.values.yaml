@@ -21,7 +21,6 @@ controllers:
           TZ: Europe/Amsterdam
           PLEX_ADVERTISE_URL: https://plex.local.naguiar.dev:443 #,http://192.168.42.128:32400
           PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24,10.42.1.0/24
-         
         probes:
           liveness: &plexProbes
             enabled: true
@@ -51,7 +50,7 @@ controllers:
           requests:
             cpu: 400m
           limits:
-#            gpu.intel.com/i915: 1
+            gpu.intel.com/i915: 1
             memory: 4Gi
 defaultPodOptions:
   securityContext:
@@ -73,6 +72,11 @@ service:
 
 
 persistence:
+  dri:
+    type: hostPath
+    hostPath: /dev/dri
+    globalMounts:
+      - path: /dev/dri
   config:
     existingClaim: plex-config
     # size: 10Gi

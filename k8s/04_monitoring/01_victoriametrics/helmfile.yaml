@@ -1,0 +1,21 @@
+
+repositories:
+  - name: victoriametrics
+    url: https://victoriametrics.github.io/helm-charts/
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: victoriametrics
+    namespace: monitoring
+    chart: victoriametrics/victoria-metrics-single
+    version: 0.24.5
+    values:
+      - ./values.yaml
+
+  - name: victoriametrics-ingress
+    namespace: monitoring
+    chart: raw/raw
+    version: 2.0.0
+    values:
+      - ./ingress.values.yaml

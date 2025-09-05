@@ -37,7 +37,7 @@ controllers:
           requests:
             cpu: 100m
           limits:
-#            gpu.intel.com/i915: 1
+            gpu.intel.com/i915: 1
             memory: 1Gi
 defaultPodOptions:
   securityContext:
@@ -60,6 +60,12 @@ service:
 
 
 persistence:
+  dri:
+    type: hostPath
+    hostPath: /dev/dri
+    globalMounts:
+      - path: /dev/dri
+    
   config:
     existingClaim: jellyfin-config
     # size: 500Mi

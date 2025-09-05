@@ -64,6 +64,10 @@ config:
         stream-name: default
       tls:
         insecure: true
+    prometheusremotewrite:
+      endpoint: http://victoriametrics.monitoring.svc.cluster.local:8428/api/v1/write
+      tls:
+        insecure: true
   service:
     pipelines:
       traces:
@@ -71,6 +75,10 @@ config:
         processors: []
         exporters: [otlphttp/openobserve]
       metrics:
+        receivers: [otlp]
+        processors: []
+        exporters: [prometheusremotewrite]
+      logs:
         receivers: [otlp]
         processors: []
         exporters: [otlphttp/openobserve]

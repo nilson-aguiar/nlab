@@ -1,0 +1,4 @@
+apiVersion: v2
+name: nfd-custom-rules
+description: A Helm chart for custom NodeFeatureRules for NFD
+version: 0.1.0

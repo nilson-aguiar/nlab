@@ -38,13 +38,12 @@ service:
 
 persistence:
   data:
-    type: emptyDir
     globalMounts:
       - path: "/data"
-    # size: 10Gi
-    # storageClass: longhorn
-    # retain: true
-    # accessMode: ReadWriteMany
+    size: 10Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteOnce
   tmp:
     type: emptyDir
 
