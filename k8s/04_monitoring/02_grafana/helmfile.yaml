@@ -9,7 +9,7 @@ releases:
   - name: grafana
     namespace: grafana-system
     chart: grafana/grafana
-    version: 8.8.5
+    version: 9.4.5
     secrets:
       - ./secrets/grafana.values.secret.yaml
     values:
