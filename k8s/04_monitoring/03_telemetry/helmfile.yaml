@@ -19,7 +19,7 @@ releases:
   - name: opentelemetry-collector
     namespace: monitoring
     chart: open-telemetry/opentelemetry-collector
-    version: 0.129.0
+    version: 0.133.0
     secrets:
       - ./secrets/otlp.values.secret.yaml
     values:
