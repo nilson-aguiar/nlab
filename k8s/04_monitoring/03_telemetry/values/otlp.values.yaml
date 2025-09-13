@@ -60,14 +60,13 @@ config:
     otlphttp/openobserve:
       endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
       headers:
-        Authorization: Basic YWRtaW5AZXhhbXBsZS5jb206QklveEszQUczaXVLbGpuTA==
         stream-name: default
       tls:
         insecure: true
-    prometheusremotewrite:
-      endpoint: http://victoriametrics.monitoring.svc.cluster.local:8428/api/v1/write
-      tls:
-        insecure: true
+#    prometheusremotewrite:
+#      endpoint: http://victoriametrics.monitoring.svc.cluster.local:8428/api/v1/write
+#      tls:
+#        insecure: true
   service:
     pipelines:
       traces:
@@ -77,7 +76,7 @@ config:
       metrics:
         receivers: [otlp]
         processors: []
-        exporters: [prometheusremotewrite]
+        exporters: [otlphttp/openobserve]
       logs:
         receivers: [otlp]
         processors: []

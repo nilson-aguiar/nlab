@@ -1,5 +1,18 @@
 controllers:
   stash:
+#    initContainers:
+#      repair-db:
+#        securityContext:
+#          runAsNonRoot: false
+#          runAsUser: 568
+#          runAsGroup: 568
+#          fsGroup: 568
+#          allowPrivilegeEscalation: false
+##        entrypoint: [ "until </tmp/done; do sleep 1; done" ]
+#        command: [ "/config/repair.sh" ]
+#        image:
+#          repository: keinos/sqlite3
+#          tag: 3.50.4
     containers:
       app:
         image:
@@ -39,10 +52,11 @@ service:
 
 persistence:
   config:
-    size: 1Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteMany
+    existingClaim: stash-config
+#    size: 2Gi
+#    storageClass: longhorn
+#    retain: true
+#    accessMode: ReadWriteOnce
     globalMounts:
       - path: "/config"
   tmp:
