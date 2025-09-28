@@ -9,7 +9,7 @@ kind: CronJob
 # This CronJob creates a new Job every minute to download a video.
 # ---
 metadata:
-  name: {{ $.Release.Name }}-ytdlp-cronjob-{{ regexReplaceAll "_" . "-" | trimSuffix "-" }}
+  name: {{ $.Release.Name }}-ytdlp-{{ regexReplaceAll "_" . "-" | trimSuffix "-" }}-cronjob
 
 spec:
   # Schedule to run every minute.
@@ -60,6 +60,39 @@ spec:
               - "8.8.8.8"
               - "8.8.4.4"
           # ====================================================================
+
+          initContainers:
+          - name: init-rename-part-files
+            image: busybox:1.36
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 2000
+              fsGroup: 2000
+              fsGroupChangePolicy: OnRootMismatch
+              seccompProfile: { type: RuntimeDefault }
+            env:
+              - name: CHANNEL
+                value: {{ . }}
+              - name: TZ
+                value: Europe/Amsterdam
+            command:
+              - "sh"
+              - "-c"
+              - |
+                #!/bin/sh
+                set -eu
+                cd /downloads
+                for file in "${CHANNEL}"*.part; do
+                  # If no files match, break the loop gracefully
+                  [ -e "$file" ] || { echo "No .part files to rename for ${CHANNEL}"; break; }
+                  echo "Renaming $file -> ${file%.part}"
+                  mv "$file" "${file%.part}" || true
+                done
+            volumeMounts:
+            - name: download-storage
+              mountPath: /downloads
+              subPath: {{ $.Values.persistence.subPath }}
 
           containers:
           - name: ytdlp-runner
