@@ -15,7 +15,7 @@ releases:
   - name: metallb-configs
     namespace: metallb-system
     chart: raw/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ./metallb-configs.values.yaml
 
@@ -30,6 +30,6 @@ releases:
   - name: multus-config
     namespace: kube-system
     chart: raw/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ./multus-config.values.yaml

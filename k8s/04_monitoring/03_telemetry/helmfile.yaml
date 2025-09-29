@@ -28,7 +28,7 @@ releases:
   - name: otlp-ingress
     namespace: monitoring
     chart: raw/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ./values/otlp.ingress.values.yaml
 
