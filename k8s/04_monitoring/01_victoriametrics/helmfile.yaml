@@ -9,7 +9,7 @@ releases:
   - name: victoriametrics
     namespace: monitoring
     chart: victoriametrics/victoria-metrics-single
-    version: 0.24.6
+    version: 0.25.1
     values:
       - ./values.yaml
 
