@@ -14,7 +14,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/haveagitgat/tdarr
-          tag: 2.50.02
+          tag: 2.51.03
         env:
           TZ: "Europe/Amsterdam"
           PUID: "2000"
