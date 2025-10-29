@@ -94,10 +94,6 @@ service:
       http:
         port: *radarrPort
 
-
-starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
-hostSuffix: &hostSuffix "local.naguiar.dev"
-
 rawResources:
   middleware:
     enabled: true

@@ -1,17 +1,17 @@
 controllers:
   plex:
-    # initContainers:
-    #   repair-db:
-    #     securityContext:
-    #       runAsNonRoot: false
-    #       runAsUser: 0
-    #       runAsGroup: 0
-    #       fsGroup: 0
-    #       allowPrivilegeEscalation: true
-    #     command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "stop", "auto", "exit" ]
-    #     image:
-    #       repository: ghcr.io/home-operations/plex
-    #       tag: 1.41.8@sha256:40e620ffcdc65331a0c2a7ed9a95700da7d527244f33c21bd35fc30aa25f19ea
+#    initContainers:
+#      repair-db:
+#        securityContext:
+#          runAsNonRoot: false
+#          runAsUser: 0
+#          runAsGroup: 0
+#          fsGroup: 0
+#          allowPrivilegeEscalation: true
+#        command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "deflate", "automatic", "exit" ]
+#        image:
+#          repository: ghcr.io/home-operations/plex
+#          tag: 1.42.2@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
     containers:
       app:
         image:
@@ -23,7 +23,7 @@ controllers:
           PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24,10.42.1.0/24
         probes:
           liveness: &plexProbes
-            enabled: true
+            enabled: false
             custom: true
             spec:
               httpGet:
@@ -32,7 +32,7 @@ controllers:
               initialDelaySeconds: 0
               periodSeconds: 10
               timeoutSeconds: 10
-              failureThreshold: 3       
+              failureThreshold: 3
           readiness: *plexProbes
           startup:
             enabled: true

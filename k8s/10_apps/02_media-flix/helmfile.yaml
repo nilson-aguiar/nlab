@@ -59,6 +59,11 @@ releases:
     values:
       - ./values/jellyfin.values.yaml
 
+  - name: jellyseerr
+    <<: *bjw
+    values:
+      - ./values/jellyseerr.values.yaml
+
   - name: overseerr
     <<: *bjw
     values:

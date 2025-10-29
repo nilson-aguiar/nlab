@@ -1,0 +1,88 @@
+controllers:
+  jellyseerr:
+    replicas: 1
+
+    pod:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        runAsNonRoot: true
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+
+    containers:
+      app:
+        image:
+          repository: ghcr.io/fallenbagel/jellyseerr
+          tag: 2.7.3
+        env:
+          TZ: "Europe/Amsterdam"
+          PORT: 5055
+        ports:
+          - name: http
+            containerPort: 5055
+        resources:
+          requests:
+            cpu: 25m
+            memory: 256Mi
+          limits:
+            memory: 2048Mi
+
+rawResources:
+  middleware:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    nameOverride: default-headers
+    spec:
+      spec:
+        headers:
+          browserXssFilter: true
+          contentTypeNosniff: true
+          forceSTSHeader: true
+          stsIncludeSubdomains: true
+          stsPreload: true
+          stsSeconds: 15552000
+          referrerPolicy: no-referrer
+          contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
+          customFrameOptionsValue: SAMEORIGIN
+          customRequestHeaders:
+            X-Forwarded-Proto: https
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`jellyseerr.local.naguiar.dev`)
+            kind: Rule
+            middlewares:
+              - name: jellyseerr-default-headers
+            services:
+              - name: jellyseerr
+                port: 5055
+        tls:
+          secretName: certificate-tls
+
+service:
+  app:
+    controller: jellyseerr
+    ports:
+      http:
+        port: 5055
+
+persistence:
+  config:
+    enabled: true
+    size: 5Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: /app/config
