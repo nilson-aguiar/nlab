@@ -2,12 +2,9 @@
 replica:
   # -- This will use DaemonSet to deploy cloudflared to all nodes
   allNodes: true
-  # -- If previous flag disabled, this will use Deployment to deploy cloudflared only number of following count
-  count: 1
 
 # -- Please find more configuration from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/arguments/
 tunnelConfig:
-  # -- cloudflared tunnel name
   name: "example-tunnel"
   metricsUpdateFrequency: 5s
   autoUpdateFrequency: 24h
@@ -24,8 +21,6 @@ tunnelConfig:
 
 # -- Cloudflare ingress rules. More information can be found here: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/#how-traffic-is-matched
 ingress:
-  - hostname: "*.naguiar.dev" # or "*.example.com" but you must define a CNAME record for "*" to your DNS
+  - hostname: "*.naguiar.dev"
     service: http://ingress-traefik-internal.traefik-system.svc.cluster.local:80
-
   - service: http_status:404
-

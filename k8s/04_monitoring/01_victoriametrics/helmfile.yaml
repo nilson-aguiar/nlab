@@ -1,21 +1,17 @@
-
 repositories:
-  - name: victoriametrics
+  - name: vm
     url: https://victoriametrics.github.io/helm-charts/
-  - name: raw
-    url: https://bedag.github.io/helm-charts/
 
 releases:
-  - name: victoriametrics
-    namespace: monitoring
-    chart: victoriametrics/victoria-metrics-single
-    version: 0.25.2
+  - name: victoria-metrics         # The name of the release
+    namespace: monitoring   # The namespace to install into
+    chart: vm/victoria-metrics-k8s-stack
+    version: 0.39.0         # Use a specific version! Check ArtifactHub for the latest
     values:
       - ./values.yaml
-
-  - name: victoriametrics-ingress
-    namespace: monitoring
-    chart: raw/raw
-    version: 2.0.2
-    values:
-      - ./ingress.values.yaml
+    secrets:
+      - ./secrets/vm.values.secret.yaml
+#
+#  - name: victoria-metrics-ingress
+#    namespace: monitoring
+#    chart: ./kustomize

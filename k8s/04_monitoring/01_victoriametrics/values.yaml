@@ -1,14 +1,34 @@
+# --- vmsingle (The Database) ---
+vmsingle:
+  spec:
+    retentionPeriod: "30d"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "512Mi"
+      limits:
+        memory: "1536Mi"
 
-server:
-  persistentVolume:
+grafana:
+  enabled: true
+
+  persistence:
     enabled: true
-    size: 10Gi
+    size: 5Gi
+
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: "100m"
+      memory: "256Mi"
     limits:
-      cpu: 500m
-      memory: 1Gi
-  ingress:
-    enabled: false
+      memory: "512Mi"
+
+# --- vmagent (The Scraper) ---
+vmagent:
+  spec:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+      limits:
+        memory: "1024Mi"
