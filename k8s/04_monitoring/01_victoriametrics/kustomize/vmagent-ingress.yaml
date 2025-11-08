@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: victoriametrics-ingress
+  name: vmagent
   namespace: monitoring
   annotations:
     external-dns.alpha.kubernetes.io/target: 192.168.1.200
@@ -10,10 +10,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`vmsingle.local.naguiar.dev`)
+    - match: Host(`vmagent.local.naguiar.dev`)
       kind: Rule
       services:
-        - name: vmsingle-vm-victoria-metrics-k8s-stack
-          port: 8428
+        - name: vmagent-vm-victoria-metrics-k8s-stack
+          port: 8429
   tls:
     secretName: certificate-tls

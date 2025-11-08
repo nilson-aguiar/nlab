@@ -3,15 +3,25 @@ repositories:
     url: https://victoriametrics.github.io/helm-charts/
 
 releases:
-  - name: victoria-metrics         # The name of the release
+
+# In case of needing to upgrade the CRDs use:
+#  to diff: helm show crds vm/victoria-metrics-k8s-stack --version 0.63.4  | kubectl diff -f -
+#  to apply: helm show crds vm/victoria-metrics-k8s-stack --version 0.63.4 | kubectl apply -f - --server-side
+  - name: vm         # The name of the release
     namespace: monitoring   # The namespace to install into
     chart: vm/victoria-metrics-k8s-stack
-    version: 0.39.0         # Use a specific version! Check ArtifactHub for the latest
+    version: 0.63.4         # Use a specific version! Check ArtifactHub for the latest
     values:
       - ./values.yaml
     secrets:
       - ./secrets/vm.values.secret.yaml
-#
-#  - name: victoria-metrics-ingress
-#    namespace: monitoring
-#    chart: ./kustomize
+#    diff:
+#      suppress:
+#        - kind: PersistentVolumeClaim
+#          name: vm-grafana
+#          paths:
+#            - /spec/volumeName
+
+  - name: vm-ingress
+    namespace: monitoring
+    chart: ./kustomize

@@ -11,8 +11,6 @@ certificate:
     enabled: true
     allowedNamespaces: &namespaces
       - traefik-system
-      - prometheus-system
-      - grafana-system
       - longhorn-system
       - pihole-system
       - influxdb

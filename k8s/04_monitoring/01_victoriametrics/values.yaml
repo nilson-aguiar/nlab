@@ -11,6 +11,9 @@ vmsingle:
 
 grafana:
   enabled: true
+  plugins:
+    - victoriametrics-metrics-datasource
+    - victoriametrics-logs-datasource
 
   persistence:
     enabled: true
@@ -32,3 +35,13 @@ vmagent:
         memory: "256Mi"
       limits:
         memory: "1024Mi"
+
+#defaultScrapeService:
+#  namespace: monitoring
+
+victoria-metrics-operator:
+  admissionWebhooks:
+    certManager:
+      enabled: true
+      issuerName: letsencrypt-stg
+      issuerKind: ClusterIssuer
