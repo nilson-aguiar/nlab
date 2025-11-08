@@ -4,10 +4,10 @@ repositories:
     url: ghcr.io/argoproj/argo-helm
 
 ---
- releases:
-   - name: argocd
-     chart: argo/argo-cd
-     version: 9.1.0
-     namespace: argocd
-     values:
-       - ./values/argocd.values.yaml
+# releases:
+#   - name: argocd
+#     chart: argo/argo-cd
+#     version: 9.1.0
+#     namespace: argocd
+#     values:
+#       - ./values/argocd.values.yaml
