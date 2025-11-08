@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: victoriametrics-ingress
+  namespace: monitoring
+  annotations:
+    external-dns.alpha.kubernetes.io/target: 192.168.1.200
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.local.naguiar.dev`)
+      kind: Rule
+      services:
+        - name: vm-grafana
+          port: 8080
+  tls:
+    secretName: certificate-tls

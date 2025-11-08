@@ -45,6 +45,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;
+  boot.kernel.sysctl."fs.file-max" = 2097152;
+
   networking.hostName = meta.hostname; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -125,6 +128,15 @@
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4mwQ+Bh0GitBnPeEY44A5eZr4hRKqrvmfenEsW05h12Xtbl5SL5ucWr3ZP04yN1f2NjmLjUow4SK+LaKfL3JTMkiEFyQ14pkGgc5UNXDZ7PDaAWZ6RUo4SfY+veFn9rWs3kV1cSv5W9izbOB9qyYXeDARcbf+0AzdD1/WWNx7GcfiBJ6QDWccOb+YP2YrdPRffFoRtBeS2gIjVn2KP++H7wgsUvaCVwk024f/cZEyDjntlLnfI3WVmsrp7TdQLuP2Sk2cEYTJkKzC4CpAjEf2RNgJL4Zk1I//tikHKrpXOXo7EQAU9/mck2iOks2Npx4jwHKJC96kmGxZOW+nxFxVGEabnHArxHsWhN3xsd802YD93VX2fqTnJ3TpAOPyRyMP7T5rmJ44S/kKMogQisUjgF1aca4+WhiiGm5Rek31Qst7G6HEOcQzgkz47HhyUKCZBJsacCxMmcs0wjLwf/lPJ0CEUhSFO2VKhQ5Nzkfk/70/1fgi97ircIjaGI+Vdl3NplTkeMM7BXgM4yB0ShHs9vBZa7/TwN22gJi2IQUHk4Rb+Y2SJsl6tXTmS9azsGDVme+ECSZGANka4Xs3/C5ANA5N+eW3ijfnRZbKCaDoFZc0dzDGlFWN8IKDcCLUxq6qCXvI5ji3mjPD2eHdB2Z0V0vQpBTX27bSuS1jcKVX9Q== home"
     ];
   };
+
+  security.pam.loginLimits = [
+    { domain = "*"; type = "soft"; item = "nofile"; value = "65536"; }
+    { domain = "*"; type = "hard"; item = "nofile"; value = "65536"; }
+  ];
+
+  systemd.extraConfig = ''
+    DefaultLimitNOFILE=65536:524288
+  '';
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
