@@ -165,7 +165,7 @@ configs:
       #   ...
     #   -----END CERTIFICATE-----
 
-    create: false
+    create: true
 
   # ConfigMap for Config Management Plugins
   # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
@@ -500,7 +500,7 @@ dex:
         - ALL
 
   readinessProbe:
-    enabled: true
+    enabled: false
 
 ## Redis
 redis:

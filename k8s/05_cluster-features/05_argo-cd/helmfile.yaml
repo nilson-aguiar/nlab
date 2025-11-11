@@ -3,11 +3,19 @@ repositories:
     oci: true
     url: ghcr.io/argoproj/argo-helm
 
----
-# releases:
-#   - name: argocd
-#     chart: argo/argo-cd
-#     version: 9.1.0
-#     namespace: argocd
-#     values:
-#       - ./values/argocd.values.yaml
+apiVersions:
+  - monitoring.coreos.com/v1
+
+releases:
+  - name: argocd
+    chart: argo/argo-cd
+    version: 9.1.0
+    namespace: argocd
+    secrets:
+      - ./secrets/argo.values.secret.yaml
+    values:
+      - ./values/argocd.values.yaml
+
+  - name: argo-ingress
+    namespace: argocd
+    chart: ./kustomize

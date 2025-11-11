@@ -13,6 +13,8 @@ releases:
     namespace: pihole-system
     chart: mojo2600/pihole
     version: 2.31.0
+    secrets:
+      - ./secrets/pihole.value.secret.yaml
     values:
       - ./values/pihole.values.yaml
 
