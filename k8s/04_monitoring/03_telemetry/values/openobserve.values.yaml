@@ -4,7 +4,7 @@ controllers:
       app:
         image:
           repository: public.ecr.aws/zinclabs/openobserve
-          tag: v0.15.2
+          tag: v0.16.2
         env:
           TZ: Europe/Amsterdam
           ZO_DATA_DIR: /data
