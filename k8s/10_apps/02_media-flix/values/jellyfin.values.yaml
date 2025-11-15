@@ -125,7 +125,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`jellyfin.local.naguiar.dev`)
+          - match: Host(`jellyfin.local.naguiar.dev`) || Host(`jellyfin.nlab.naguiar.dev`)
             kind: Rule
             middlewares:
               - name: jellyfin-default-headers

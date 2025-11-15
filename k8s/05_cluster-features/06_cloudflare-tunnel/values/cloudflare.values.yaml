@@ -21,6 +21,6 @@ tunnelConfig:
 
 # -- Cloudflare ingress rules. More information can be found here: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/#how-traffic-is-matched
 ingress:
-  - hostname: "*.naguiar.dev"
+  - hostname: "*.nlab.naguiar.dev"
     service: http://ingress-traefik-internal.traefik-system.svc.cluster.local:80
   - service: http_status:404

@@ -1,8 +1,8 @@
 repositories:
   - name: mojo2600
     url: https://mojo2600.github.io/pihole-kubernetes/
-  - name: bitnami
-    url: https://charts.bitnami.com/bitnami
+  - name: external-dns
+    url: https://kubernetes-sigs.github.io/external-dns/
   - name: raw
     url: https://bedag.github.io/helm-charts/
 

@@ -12,7 +12,7 @@ logLevel: info
 pihole:
   server: http://pihole-web.pihole-system.svc.cluster.local
   tlsSkipVerify: true
-policy: upsert-only
+policy: sync
 provider: pihole
 serviceAccount:
   create: true
@@ -25,3 +25,5 @@ traefik:
   disableLegacy: true
   disableNew: false
 txtOwnerId: homelab
+domainFilters:
+  - local.naguiar.dev
