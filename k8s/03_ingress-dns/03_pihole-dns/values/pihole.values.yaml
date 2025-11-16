@@ -3,36 +3,16 @@ DNS1: 192.168.1.1
 DNS2: ""
 
 
-
-# Default values for pihole.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-# -- The number of replicas
 replicaCount: 1
-# -- The `spec.strategyTpye` for updates
 strategyType: RollingUpdate
-# -- The maximum number of Pods that can be created over the desired number of `ReplicaSet` during updating.
 maxSurge: 1
-# -- The maximum number of Pods that can be unavailable during updating
 maxUnavailable: 1
 
-image:
-  # -- the repostory to pull the image from
-  repository: "pihole/pihole"
-  # -- the docker tag, if left empty it will get it from the chart's appVersion
-  tag: ""
-  # -- the pull policy
-  pullPolicy: IfNotPresent
-
 dualStack:
-  # -- set this to true to enable creation of DualStack services or creation of separate IPv6 services if `serviceDns.type` is set to `"LoadBalancer"`
   enabled: false
 
 dnsHostPort:
-  # -- set this to true to enable dnsHostPort
   enabled: true
-  # -- default port for this pod
   port: 53
 
 # -- Configuration for the DNS service on port 53

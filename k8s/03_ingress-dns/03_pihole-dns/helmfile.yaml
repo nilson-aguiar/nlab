@@ -1,6 +1,8 @@
 repositories:
   - name: mojo2600
     url: https://mojo2600.github.io/pihole-kubernetes/
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
   - name: external-dns
     url: https://kubernetes-sigs.github.io/external-dns/
   - name: raw
@@ -21,8 +23,8 @@ releases:
 # Automatic DNS for pihole
   - name: externaldns-pihole
     namespace: pihole-system
-    chart: bitnami/external-dns
-    version: 9.0.3
+    chart: external-dns/external-dns
+    version: 1.19.0
     values:
       - ./values/externaldns.values.yaml
 
