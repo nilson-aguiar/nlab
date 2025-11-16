@@ -2,9 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    ":disableRateLimiting",
-    ":timezone(Europe/Amsterdam)",
-    "github>nilson-aguiar/nlab//.github/renovate/allowed-versions.json5"
+    ":timezone(Europe/Amsterdam)"
   ],
   "helm-values": {
     "fileMatch": [
@@ -29,5 +27,34 @@
       ],
       "datasourceTemplate": "docker"
     }
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "linuxserver/qbittorrent"
+      ],
+      "allowedVersions": "<10"
+    },
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Group Nix flake inputs",
+      "matchManagers": [
+        "nix"
+      ],
+      "groupName": "nix"
+    }
+  ],
+  "labels": [
+    "dependencies"
   ]
 }
