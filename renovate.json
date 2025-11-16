@@ -52,6 +52,13 @@
         "nix"
       ],
       "groupName": "nix"
+    },
+    {
+      "description": "Group k8s updates by application",
+      "matchPaths": [
+        "k8s/([^/]+)/([^/]+)/.*"
+      ],
+      "groupName": "{{{path.2}}}"
     }
   ],
   "labels": [
