@@ -40,3 +40,12 @@ releases:
       - ./secrets/certificate-pro.values.secret.yaml
     values:
       - ./values/certificate-pro.values.yaml
+
+  - name: certificate-cloudflare
+    namespace: cert-manager-system
+    chart: ./charts/issuer  # Path to your local chart
+    version: 0.1.0
+    secrets:
+      - ./secrets/certificate-pro-external.values.secret.yaml
+    values:
+      - ./values/certificate-pro.values.yaml
