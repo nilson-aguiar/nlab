@@ -14,7 +14,7 @@ additionalArguments:
 
 logs:
   access:
-    enabled: true
+    enabled: false
     format: json
 
 deployment:
