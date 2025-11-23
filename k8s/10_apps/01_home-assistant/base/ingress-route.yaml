@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`ha.local.naguiar.dev`)
+    - match: Host(`ha.local.naguiar.dev`) || Host(`ha.naguiar.dev`)
       kind: Rule
       middlewares:
         - name: default-headers
