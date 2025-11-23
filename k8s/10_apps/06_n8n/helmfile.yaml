@@ -4,12 +4,6 @@ repositories:
     url: https://community-charts.github.io/helm-charts
 
 ---
-# templates:
-#   bjw: &bjw
-#     namespace: stash
-#     chart: bjw-s/app-template
-#     version: 3.5.1
-
 
 releases:
   - name: n8n

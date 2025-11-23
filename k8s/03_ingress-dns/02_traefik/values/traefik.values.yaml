@@ -12,6 +12,11 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
 
+logs:
+  access:
+    enabled: true
+    format: json
+
 deployment:
   enabled: true
   kind: DaemonSet
@@ -34,9 +39,6 @@ ingressClass:  # @schema additionalProperties: false
   isDefaultClass: false
   name: "traefik-external"
 
-logs:
-  access:
-    enabled: false
 
 experimental:
   # -- Enable traefik experimental plugins

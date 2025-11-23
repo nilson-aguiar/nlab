@@ -245,7 +245,7 @@ ingress:
   className: "traefik-external"
   annotations:
     # Use the default-headers middleware for security headers
-    traefik.ingress.kubernetes.io/router.middlewares: traefik-system-default-headers@kubernetescrd
+#    traefik.ingress.kubernetes.io/router.middlewares: traefik-system-default-headers@kubernetescrd
     # Let external-dns create a DNS record
     external-dns.alpha.kubernetes.io/target: "192.168.1.200"
   hosts:

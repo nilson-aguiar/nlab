@@ -13,7 +13,7 @@ spec:
     - match: Host(`victoriametrics.local.naguiar.dev`)
       kind: Rule
       services:
-        - name: victoria-metrics-kube-state-metrics
+        - name: vm-kube-state-metrics
           port: 8080
   tls:
     secretName: certificate-tls

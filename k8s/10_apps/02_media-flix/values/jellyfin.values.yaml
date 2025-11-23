@@ -9,7 +9,7 @@ controllers:
           TZ: Europe/Amsterdam
           PUID: 568
           GUID: 568
-          JELLYFIN_PublishedServerUrl: "https://jellyfin.local.naguiar.dev"
+          JELLYFIN_PublishedServerUrl: "https://jellyfin.naguiar.dev"
         probes:
           liveness: &jellyfinProbes
             enabled: true
@@ -139,19 +139,20 @@ rawResources:
     apiVersion: traefik.io/v1alpha1
     kind: IngressRoute
     annotations:
-      external-dns.alpha.kubernetes.io/target: 192.168.1.200
       kubernetes.io/ingress.class: traefik-external
     spec:
       spec:
         entryPoints:
+          - web
           - websecure
         routes:
-          - match: Host(`jellyfin.nlab.naguiar.dev`)
+          - match: Host(`jellyfin.naguiar.dev`)
             kind: Rule
-            middlewares:
-              - name: jellyfin-default-headers
+#            middlewares:
+#              - name: jellyfin-default-headers
             services:
               - name: jellyfin
                 port: *jellyfinPort
         tls:
+#          certResolver: cloudflare
           secretName: certificate-cloudflare-tls

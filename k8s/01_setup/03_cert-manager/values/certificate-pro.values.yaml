@@ -20,4 +20,5 @@ certificate:
       - stash
       - n8n
       - monitoring
+      - argocd
     autoNamespaces: *namespaces
