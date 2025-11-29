@@ -1,7 +1,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: argocd
+  name: n8n
   annotations:
     external-dns.alpha.kubernetes.io/target: 192.168.1.200
     kubernetes.io/ingress.class: traefik-external
@@ -9,11 +9,11 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`argocd.local.naguiar.dev`) || Host(`argocd.naguiar.dev`)
+    - match: Host(`n8n.local.naguiar.dev`) || Host(`n8n.naguiar.dev`)
       kind: Rule
       services:
-        - name: argocd-server
-          port: 8080
+        - name: n8n
+          port: 5687
           scheme: http
   tls:
     secretName: certificate-tls

@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`grafana.local.naguiar.dev`)
+    - match: Host(`grafana.local.naguiar.dev`) || Host(`grafana.naguiar.dev`)
       kind: Rule
       services:
         - name: vm-grafana

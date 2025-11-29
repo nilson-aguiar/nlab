@@ -14,3 +14,8 @@ releases:
       - ./secrets/n8n.values.secrets.yaml
     values:
       - ./values/n8n.values.yaml
+
+
+  - name: n8n-ingress
+    namespace: n8n
+    chart: ./kustomize
