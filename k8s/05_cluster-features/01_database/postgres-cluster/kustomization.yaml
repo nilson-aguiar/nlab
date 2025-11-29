@@ -5,8 +5,3 @@ resources:
   - service.yaml
 #  - secret.yaml
 
-labels:
-  - includeSelectors: true
-    pairs:
-      app: db-cluster
-      app.kubernetes.io/name: db-cluster
