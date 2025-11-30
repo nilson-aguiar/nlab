@@ -129,7 +129,26 @@ main:
     labels: {}
 
   # -- Additional init containers for the main pod
-  initContainers: []
+  initContainers: 
+    - name: init-db
+      image: "ghcr.io/home-operations/postgres-init:17"
+      env:
+        - name: INIT_POSTGRES_SUPER_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgres-superuser
+              key: password
+        - name: INIT_POSTGRES_HOST
+          value: "postgres-rw.cloudnative-pg.svc.cluster.local"
+        - name: INIT_POSTGRES_DBNAME
+          value: "n8n"
+        - name: INIT_POSTGRES_USER
+          value: "n8n"
+        - name: INIT_POSTGRES_PASS
+          valueFrom:
+            secretKeyRef:
+              name: n8n-postgresql
+              key: postgres-password
 
 
 worker:

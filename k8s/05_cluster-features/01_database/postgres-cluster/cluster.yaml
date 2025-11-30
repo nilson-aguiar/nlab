@@ -3,6 +3,13 @@ kind: Cluster
 metadata:
   name: postgres
 spec:
+  inheritedMetadata:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "n8n,media-flix"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "n8n,media-flix"
+
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.4
   affinity:
