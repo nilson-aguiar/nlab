@@ -1,0 +1,29 @@
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+
+templates:
+  bjw: &bjw
+    namespace: affine
+    chart: bjw-s/app-template
+    version: 3.5.1
+
+
+releases:
+
+  # 2. Redis for Affine
+  - name: affine-redis
+    <<: *bjw
+    values:
+      - ./values/redis.values.yaml
+
+  # 3. Affine Application
+  - name: affine
+    <<: *bjw
+    secrets:
+      - ./secrets/affine.values.secret.yaml
+    values:
+      - ./values/affine.values.yaml

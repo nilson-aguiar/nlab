@@ -21,4 +21,5 @@ certificate:
       - n8n
       - monitoring
       - argocd
+      - affine
     autoNamespaces: *namespaces
