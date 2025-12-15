@@ -130,7 +130,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`sonarr.local.naguiar.dev`)
+          - match: Host(`sonarr.local.naguiar.dev`) || Host(`sonarr.naguiar.dev`)
             kind: Rule
             middlewares:
               - name: sonarr-default-headers

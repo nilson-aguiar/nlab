@@ -126,7 +126,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`radarr.local.naguiar.dev`)
+          - match: Host(`radarr.local.naguiar.dev`) || Host(`radarr.naguiar.dev`)
             kind: Rule
             middlewares:
               - name: radarr-default-headers

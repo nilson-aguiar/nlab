@@ -108,8 +108,8 @@ rawResources:
         routes:
           - match: Host(`stash.local.naguiar.dev`)
             kind: Rule
-            middlewares:
-              - name: stash-default-headers
+#            middlewares:
+#              - name: stash-default-headers
             services:
               - name: stash
                 port: *stashPort
