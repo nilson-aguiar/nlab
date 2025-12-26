@@ -223,7 +223,7 @@ worker:
 
 webhook:
   mode: regular
-  url: ""
+  url: "https://n8n.naguiar.dev"
   count: 2
   allNodes: false
   mcp:
