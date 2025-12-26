@@ -12,7 +12,7 @@ releases:
   - name: intel-device-plugins
     namespace: kube-system
     chart: intel/intel-device-plugins-operator
-    version: 0.34.0
+    version: 0.34.1
     values:
       - ./values/intel-plugins.values.yaml
 
