@@ -506,7 +506,8 @@ redis:
   enabled: true
   name: redis
   pdb:
-    enabled: false
+    enabled: true
+    minAvailable: 1
 
   ## Prometheus redis-exporter sidecar
   exporter:

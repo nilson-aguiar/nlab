@@ -19,11 +19,13 @@ releases:
     chart: rke2/rke2-snapshot-controller
     version: 4.0
 
-  - name: snapshot-validation-webhook
-    namespace: kube-system
-    chart: rke2/rke2-snapshot-validation-webhook
-    version: 1.9
-    values:
-      - tls:
-          autogenerate: false
-          certificateSecret: "snapshot-validation-webhook-tls"
+#  - name: snapshot-validation-webhook
+#    namespace: kube-system
+#    chart: rke2/rke2-snapshot-validation-webhook
+#    version: 1.9
+#    values:
+#      - tls:
+#          autogenerate: false
+#          certificateSecret: "snapshot-validation-webhook-tls"
+#        webhook:
+#          failurePolicy: Ignore

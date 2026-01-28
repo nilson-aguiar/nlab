@@ -17,7 +17,9 @@ data:
             if [ -f .sops.yaml ]; then
               export SOPS_AGE_KEY_FILE=/home/argocd/.config/sops/age/keys.txt
             fi
-            helm plugin uninstall $(helm plugin list -q)
+            # Uncomment line below in case a plugin has been updated an it's failing to install it
+            # helm plugin uninstall $(helm plugin list -q)
+            helm repo update
             helmfile init --force
       generate:
         command: [sh, -c]
