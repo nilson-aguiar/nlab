@@ -138,9 +138,9 @@
     { domain = "*"; type = "hard"; item = "nofile"; value = "65536"; }
   ];
 
-  systemd.extraConfig = ''
-    DefaultLimitNOFILE=65536:524288
-  '';
+  systemd.settings.Manager = {
+    DefaultLimitNOFILE = "65536:524288";
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
