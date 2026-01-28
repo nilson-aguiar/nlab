@@ -9,7 +9,7 @@ apiVersions:
 releases:
   - name: argocd
     chart: argo/argo-cd
-    version: 9.2.1
+    version: 9.3.7
     namespace: argocd
     secrets:
       - ./secrets/argo.values.secret.yaml
