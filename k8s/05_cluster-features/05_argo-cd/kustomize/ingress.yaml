@@ -13,7 +13,6 @@ spec:
       kind: Rule
       services:
         - name: argocd-server
-          port: 8080
-          scheme: http
+          port: 80
   tls:
     secretName: certificate-tls

@@ -129,6 +129,7 @@ configs:
   ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
   params:
     create: true
+    server.insecure: true
 
   rbac:
     create: true
@@ -738,10 +739,53 @@ repoServer:
   pdb:
     enabled: false
 
+  # -- Additional volumes for repo server
+  volumes:
+    - name: helmfile-cmp-plugin
+      configMap:
+        name: helmfile-cmp-plugin
+    - name: helmfile-cmp-tmp
+      emptyDir: {}
+    - name: sops-age-key
+      hostPath:
+        path: /home/naguiar/.config/sops/age
+        type: Directory
+
   # -- Additional containers to be added to the repo server pod
   ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
   ## Note: Supports use of custom Helm templates
-  extraContainers: []
+  extraContainers:
+    - name: helmfile-plugin
+      command:
+        - /var/run/argocd/argocd-cmp-server
+      image: travisghansen/argo-cd-helmfile:latest
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
+          name: helmfile-cmp-plugin
+        - mountPath: /tmp
+          name: helmfile-cmp-tmp
+        - mountPath: /home/argocd/.config/sops/age
+          name: sops-age-key
+          readOnly: true
+      env:
+        - name: HELM_CACHE_HOME
+          value: /tmp/helm/cache
+        - name: HELM_CONFIG_HOME
+          value: /tmp/helm/config
+        - name: HELMFILE_CACHE_HOME
+          value: /tmp/helmfile/cache
+        - name: HELMFILE_TEMPDIR
+          value: /tmp/helmfile/tmp
+        - name: SOPS_AGE_KEY_FILE
+          value: /home/argocd/.config/sops/age/keys.txt
     # - name: cmp-my-plugin
     #   command:
     #     - "/var/run/argocd/argocd-cmp-server"
