@@ -45,8 +45,21 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.kernelModules = [ 
+    "br_netfilter" 
+    "ip_conntrack" 
+    "ip_vs" 
+    "ip_vs_rr" 
+    "ip_vs_wrr" 
+    "ip_vs_sh" 
+    "overlay" 
+  ];
+
   boot.kernel.sysctl."fs.inotify.max_user_watches" = 524288;
   boot.kernel.sysctl."fs.file-max" = 2097152;
+  boot.kernel.sysctl."net.bridge.bridge-nf-call-iptables" = 1;
+  boot.kernel.sysctl."net.bridge.bridge-nf-call-ip6tables" = 1;
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
   networking.hostName = meta.hostname; # Define your hostname.
   # Pick only one of the below networking options.
