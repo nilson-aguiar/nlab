@@ -11,7 +11,7 @@ releases:
   - name: metallb
     chart: metallb/metallb
     namespace: metallb-system
-    version: 0.15.2
+    version: 0.15.3
   - name: metallb-configs
     namespace: metallb-system
     chart: raw/raw
