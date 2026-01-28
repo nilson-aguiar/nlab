@@ -49,3 +49,4 @@ This directory holds all the Kubernetes application configurations, managed by H
 
 1.  **Node Provisioning**: A new machine is set up by installing NixOS and applying a configuration from the `/nixos` directory.
 2.  **Application Deployment**: From a management machine with `helmfile` installed, running `helmfile apply` within a specific directory inside `/k8s` will deploy or update the corresponding application in the cluster. Helmfile handles the decryption of secrets and the rendering of Helm templates.
+3.  **GitOps Registration**: When adding a new application to `k8s/10_apps`, a corresponding ArgoCD Application manifest must be created in `k8s/05_cluster-features/05_argo-cd/applications/`. This ensures the application is automatically managed and synced by ArgoCD. Refer to existing files in that directory for the required format (Application name, namespace, and helmfile plugin configuration).

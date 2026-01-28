@@ -337,7 +337,7 @@ controller:
   resources:
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 2Gi
     requests:
       cpu: 250m
       memory: 256Mi
@@ -843,11 +843,20 @@ repoServer:
   useEphemeralHelmWorkingDir: true
   resources:
     limits:
-      cpu: 50m
-      memory: 128Mi
+      cpu: 1000m
+      memory: 512Mi
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 200m
+      memory: 256Mi
+
+  livenessProbe:
+    failureThreshold: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readinessProbe:
+    failureThreshold: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
 
   containerSecurityContext:
     runAsNonRoot: true

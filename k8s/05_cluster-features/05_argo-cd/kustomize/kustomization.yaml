@@ -4,6 +4,3 @@ kind: Kustomization
 resources:
   - ingress.yaml
   - helmfile-plugin-cm.yaml
-  - ../applications/media-flix.yaml
-
-

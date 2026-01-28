@@ -19,3 +19,7 @@ releases:
   - name: argo-ingress
     namespace: argocd
     chart: ./kustomize
+
+  - name: argo-apps
+    namespace: argocd
+    chart: ./applications
