@@ -43,7 +43,6 @@ spec:
       # This is the template for the Pod that the Job will create.
       template:
         spec:
-          backoffLimit: 0
           terminationGracePeriodSeconds: {{ $.Values.configs.terminationGracePeriodSeconds }}
 
           # ====================================================================
@@ -68,8 +67,6 @@ spec:
               runAsNonRoot: true
               runAsUser: 1000
               runAsGroup: 2000
-              fsGroup: 2000
-              fsGroupChangePolicy: OnRootMismatch
               seccompProfile: { type: RuntimeDefault }
             env:
               - name: CHANNEL
@@ -112,8 +109,6 @@ spec:
               runAsNonRoot: true
               runAsUser: 1000
               runAsGroup: 2000
-              fsGroup: 2000
-              fsGroupChangePolicy: OnRootMismatch
               seccompProfile: { type: RuntimeDefault }
             command:
               - "sh"
