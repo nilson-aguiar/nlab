@@ -103,6 +103,9 @@
 	    "--disable servicelb"
 	    "--disable traefik"
 	    "--disable local-storage"
+	    "--kubelet-arg=kube-reserved=cpu=200m,memory=500Mi"
+	    "--kubelet-arg=system-reserved=cpu=200m,memory=500Mi"
+	    "--kubelet-arg=eviction-hard=memory.available<200Mi,nodefs.available<10%"
     ] ++ (if meta.hostname == "homelab-0" then [
         "--server https://homelab-1:6443" 
     ] else [
@@ -111,6 +114,8 @@
     # Used when initializing the cluster only, then use the if above
     # clusterInit = (meta.hostname == "homelab-0");
   };
+
+  systemd.services.k3s.serviceConfig.Delegate = "yes";
 
   services.openiscsi = {
     enable = true;
