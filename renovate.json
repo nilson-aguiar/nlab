@@ -4,6 +4,7 @@
     "config:recommended",
     ":timezone(Europe/Amsterdam)"
   ],
+  "platformAutomerge": true,
   "helm-values": {
     "managerFilePatterns": [
       "/^k8s/.+\\.ya?ml$/"
@@ -43,7 +44,9 @@
       "description": "Automerge non-major updates",
       "matchUpdateTypes": [
         "minor",
-        "patch"
+        "patch",
+        "digest",
+        "lockFileMaintenance"
       ],
       "automerge": true
     },
