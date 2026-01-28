@@ -484,11 +484,10 @@ dex:
   # -- Resource limits and requests for dex
   resources:
     limits:
-      cpu: 50m
-      memory: 64Mi
+      memory: 256Mi
     requests:
       cpu: 10m
-      memory: 32Mi
+      memory: 256Mi
 
   containerSecurityContext:
     runAsNonRoot: true
@@ -639,10 +638,10 @@ server:
     resources:
       limits:
         cpu: 50m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 256Mi
 
   # -- Additional containers to be added to the server pod
   ## Note: Supports use of custom Helm templates
@@ -831,7 +830,7 @@ repoServer:
     resources:
       limits:
         cpu: 100m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 50m
         memory: 64Mi
@@ -843,11 +842,10 @@ repoServer:
   useEphemeralHelmWorkingDir: true
   resources:
     limits:
-      cpu: 1000m
       memory: 512Mi
     requests:
       cpu: 200m
-      memory: 256Mi
+      memory: 512Mi
 
   livenessProbe:
     failureThreshold: 5

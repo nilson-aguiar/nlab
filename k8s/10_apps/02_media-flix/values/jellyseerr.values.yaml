@@ -24,9 +24,9 @@ controllers:
         resources:
           requests:
             cpu: 25m
-            memory: 256Mi
+            memory: 128Mi
           limits:
-            memory: 2048Mi
+            memory: 512Mi
 
 rawResources:
   middleware:
