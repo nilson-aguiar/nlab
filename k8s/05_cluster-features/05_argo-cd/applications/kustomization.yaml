@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - affine.yaml
-  - ai.yaml
   - argo-cd.yaml
   - cert-manager.yaml
   - cloudflare-tunnel.yaml
