@@ -8,7 +8,7 @@ releases:
   - name: longhorn
     namespace: longhorn-system
     chart: longhorn/longhorn
-    version: 1.10.2
+    version: 1.11.0
     values:
       - ./longhorn.values.yaml
 
