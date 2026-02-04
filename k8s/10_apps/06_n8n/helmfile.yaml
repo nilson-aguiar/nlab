@@ -9,7 +9,7 @@ releases:
   - name: n8n
     namespace: n8n
     chart: community-charts/n8n
-    version: 1.16.27
+    version: 1.16.28
     secrets:
       - ./secrets/n8n.values.secrets.yaml
     values:
