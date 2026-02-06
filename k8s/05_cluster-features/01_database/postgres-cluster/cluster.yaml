@@ -11,7 +11,7 @@ spec:
       reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "n8n,media-flix,affine"
 
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.4
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.11
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

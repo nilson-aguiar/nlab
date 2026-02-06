@@ -7,14 +7,6 @@ controllers:
         runAsNonRoot: false
         runAsUser: 0
         runAsGroup: 0
-        fsGroup: 0
-#        allowPrivilegeEscalation: true
-
-#        runAsUser: 1000
-#        runAsGroup: 1000
-#        runAsNonRoot: true
-#        fsGroup: 1000
-#        fsGroupChangePolicy: OnRootMismatch
 
     initContainers:
       permissions:
@@ -22,7 +14,6 @@ controllers:
           runAsNonRoot: false
           runAsUser: 0
           runAsGroup: 0
-          fsGroup: 0
           allowPrivilegeEscalation: true
         image:
           repository: busybox
@@ -49,7 +40,7 @@ controllers:
             cpu: 25m
             memory: 256Mi
           limits:
-            memory: 2048Mi
+            memory: 2Gi
 
 hostSuffix: &hostSuffix "local.naguiar.dev"
 
