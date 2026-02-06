@@ -3,7 +3,7 @@ auth:
   enabled: false
 architecture: standalone
 
-version: &version 0.25.7 
+version: &version 0.26.0 
 
 # Affine Configuration (for bjw-s/app-template chart)
 controllers:
