@@ -32,7 +32,7 @@ controllers:
         image:
           repository: ghcr.io/toeverything/affine
           tag: *version
-        command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
+        command: ['sh', '-c', 'npm run predeploy']
         env:
           NODE_ENV: production
           # DATABASE_URL constructed with secret
@@ -49,7 +49,7 @@ controllers:
         image:
           repository: ghcr.io/toeverything/affine
           tag: *version
-        command: ["sh", "-c", "cp -a /app/src/. /mnt/src/ && chown -R 1000:1000 /data/config /data/storage /mnt/src"]
+        command: ["sh", "-c", "chown -R 1000:1000 /data/config /data/storage /mnt/src"]
         securityContext:
           runAsUser: 0
     pod:
