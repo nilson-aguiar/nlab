@@ -12,6 +12,53 @@ vmsingle:
 # --- Scrapers Configuration ---
 kubelet:
   enabled: true
+  vmScrapes:
+    # -- Enable scraping /metrics/cadvisor from kubelet's service
+    cadvisor:
+      enabled: true
+      spec:
+#        scheme: "https"
+#        tlsConfig:
+#          insecureSkipVerify: true
+#          caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+#        bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+#        relabelConfigs:
+#          - action: labelmap
+#            regex: __meta_kubernetes_node_label_(.+)
+#          - targetLabel: __address__
+#            replacement: kubernetes.default.svc:443
+#          - sourceLabels: [ __meta_kubernetes_node_name ]
+#            regex: (.+)
+#            targetLabel: __metrics_path__
+#            replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+#        path: /metrics/cadvisor
+#        scrapeTimeout: 30s
+#        honorLabels: true
+#        scheme: https
+#        tlsConfig:
+#          insecureSkipVerify: true
+#          caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#        bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+        metricRelabelConfigs:
+          - action: labeldrop
+            regex: (uid)
+          - action: labeldrop
+            regex: (id|name)
+          - action: drop
+            source_labels: [ __name__ ]
+            regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
+    # -- Enable scraping /metrics/probes from kubelet's service
+    probes:
+      enabled: true
+      spec:
+        path: /metrics/probes
+    # -- Enabled scraping /metrics/resource from kubelet's service
+    resources:
+      enabled: true
+      spec:
+        path: /metrics/resource
+    kubelet:
+      spec: {}
 
 kubeProxy:
   enabled: true
@@ -73,6 +120,10 @@ grafana:
 # --- vmagent (The Scraper) ---
 vmagent:
   spec:
+#    extraArgs:
+#      # Enables detailed logging for scrape configuration and relabeling
+#      promscrape.config.debug: "true"
+#      promscrape.dropOriginalLabels: "false"
     resources:
       requests:
         cpu: "100m"

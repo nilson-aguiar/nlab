@@ -1,0 +1,25 @@
+image:
+  repository: mansuf/mangadex-downloader
+  tag: v3.1.4-optional
+
+persistence:
+  storageClaimName: komga-media
+  subPath: media
+
+configs:
+  baseUrl: "https://mangadex.org/title/"
+#  schedule: "*/1 * * * *"
+  values:
+    one-punch-man:
+      schedule: "0 0 * * 0"
+      titleId: d8a959f7-648e-4c8d-8f23-f1f3f8e129f3
+      fromChapter: 1
+    mieruko-chan:
+      schedule: "0 1 * * 0"
+      titleId: 6670ee28-f26d-4b61-b49c-d71149cd5a6e
+      fromChapter: 67
+
+
+# mansuf/mangadex-downloader:latest-optional
+#  https://mangadex.org/title/6670ee28-f26d-4b61-b49c-d71149cd5a6e/mieruko-chan
+# -d /data/mieruko-chan -cmi --lan pt-br -sv 11 -sc 59 -f cbz -c original

@@ -1,0 +1,69 @@
+{{/* Loop through each item in the .Values.configs.values map */}}
+{{- range $name, $config := .Values.configs.values }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $.Release.Name }}-mangadex-{{ $name | replace "_" "-" }}-cronjob
+spec:
+  schedule: {{ $config.schedule | default $.Values.configs.schedule | quote }}
+  startingDeadlineSeconds: 60
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          dnsPolicy: "None"
+          dnsConfig:
+            nameservers:
+              - "8.8.8.8"
+              - "8.8.4.4"
+          containers:
+          - name: runner
+            image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+            imagePullPolicy: {{ $.Values.image.pullPolicy | default "IfNotPresent" }}
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 2000
+              seccompProfile: { type: RuntimeDefault }
+            env:
+              - name: URL
+                value: {{ $.Values.configs.baseUrl }}
+              - name: TITLE
+                value: {{ $name }}
+              - name: TITLE_ID
+                value: {{ $config.titleId }}
+              - name: INITIAL_CHAPTER
+                value: {{ $config.fromChapter | quote }}
+              - name: FORMAT
+                value: {{ $config.format | default "cbz" }}
+              - name: LANGUAGE
+                value: {{ $config.language | default "pt-br" }}
+            volumeMounts:
+            - name: download-storage
+              mountPath: /downloads
+              subPath: {{ $.Values.persistence.subPath }}
+            # Using args to pass arguments to the container's entrypoint.
+            # Assuming the image entrypoint is the downloader executable.
+            args:
+              - "$(URL)$(TITLE_ID)/$(TITLE)"
+              - "-d"
+              - "/downloads/$(TITLE)"
+              - "-cmi"
+              - "--lan"
+              - "$(LANGUAGE)"
+              - "-sc"
+              - "$(INITIAL_CHAPTER)"
+              - "-f"
+              - "$(FORMAT)"
+              - "-c"
+              - "original"
+          volumes:
+            - name: download-storage
+              persistentVolumeClaim:
+                claimName: {{ $.Values.persistence.storageClaimName }}
+          restartPolicy: Never
+{{- end }}

@@ -50,9 +50,10 @@ controllers:
         resources:
           requests:
             cpu: 400m
+            memory: 512Mi
           limits:
             gpu.intel.com/i915: 1
-            memory: 4Gi
+            memory: 1Gi
 defaultPodOptions:
   securityContext:
     runAsNonRoot: true

@@ -1,0 +1,26 @@
+---
+repositories:
+  - name: bjw-s
+    oci: true
+    url: ghcr.io/bjw-s/helm
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+
+---
+
+releases:
+  - name: komga
+    namespace: reader
+    chart: bjw-s/app-template
+    version: 3.5.1
+    values:
+      - ./komga.values.yaml
+
+  - name: manga-downloader
+    namespace: reader
+    chart: ./charts/manga-downloader
+    version: 0.1.0
+    values:
+      - cronjob.values.yaml
+#    secrets:
+#      - secrets/cronjob.values.secret.yaml
