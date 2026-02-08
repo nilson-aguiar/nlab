@@ -9,6 +9,50 @@ vmsingle:
       limits:
         memory: "1536Mi"
 
+# --- Scrapers Configuration ---
+kubelet:
+  enabled: true
+
+kubeProxy:
+  enabled: true
+
+kubeControllerManager:
+  enabled: true
+
+kubeEtcd:
+  enabled: true
+
+kubeScheduler:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+# --- Rules Configuration ---
+defaultRules:
+  create: true
+  rules:
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubeApiserverAvailability: true
+    kubeApiserverSlos: true
+    kubelet: true
+    kubeProxy: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeRecording: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    network: true
+    node: true
+    vmagent: true
+    vmsingle: true
+    vm-health: true
+
 grafana:
   enabled: true
   plugins:
