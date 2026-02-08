@@ -1,7 +1,7 @@
 # --- vmsingle (The Database) ---
 vmsingle:
   spec:
-    retentionPeriod: "30d"
+    retentionPeriod: "7d"
     resources:
       requests:
         cpu: "250m"
