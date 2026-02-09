@@ -21,3 +21,4 @@ resources:
   - traefik.yaml
   - victoriametrics.yaml
   - volume-snapshot.yaml
+  - reader.yaml

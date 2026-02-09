@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: affine
+  name: reader
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,12 +10,12 @@ spec:
   source:
     repoURL: https://github.com/nilson-aguiar/nlab.git
     targetRevision: main
-    path: k8s/10_apps/08_affine
+    path: k8s/10_apps/07_reader
     plugin:
       name: helmfile
   destination:
     server: https://kubernetes.default.svc
-    namespace: affine
+    namespace: reader
   syncPolicy:
     automated:
       prune: true
