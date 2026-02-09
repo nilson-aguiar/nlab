@@ -8,7 +8,6 @@ resources:
   - cloudflare-tunnel.yaml
   - database.yaml
   - home-assistant.yaml
-  - intel-plugins.yaml
   - longhorn-storage.yaml
   - media-flix.yaml
   - n8n.yaml

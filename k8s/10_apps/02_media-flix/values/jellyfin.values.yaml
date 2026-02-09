@@ -37,7 +37,6 @@ controllers:
           requests:
             cpu: 100m
           limits:
-            gpu.intel.com/i915: 1
             memory: 512Mi
 defaultPodOptions:
   securityContext:

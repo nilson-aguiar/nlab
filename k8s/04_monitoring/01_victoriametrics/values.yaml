@@ -44,6 +44,8 @@ kubelet:
             regex: (uid)
           - action: labeldrop
             regex: (id|name)
+          - action: labeldrop
+            regex: (feature_node_kubernetes_io.*)
           - action: drop
             source_labels: [ __name__ ]
             regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
@@ -58,7 +60,10 @@ kubelet:
       spec:
         path: /metrics/resource
     kubelet:
-      spec: {}
+      spec:
+        metricRelabelConfigs:
+          - action: labeldrop
+            regex: (feature_node_kubernetes_io.*)
 
 kubeProxy:
   enabled: true
