@@ -45,10 +45,7 @@ defaultPodOptions:
     runAsGroup: 568
     fsGroup: 568
     fsGroupChangePolicy: OnRootMismatch
-#    supplementalGroups: [44, 10000]
     seccompProfile: { type: RuntimeDefault }
-#  nodeSelector:
-#    intel.feature.node.kubernetes.io/gpu: "true"
 
 service:
   app:
@@ -133,35 +130,3 @@ rawResources:
                 port: *jellyfinPort
         tls:
           secretName: certificate-tls
-#  external-ingress-route:
-#    enabled: true
-#    apiVersion: traefik.io/v1alpha1
-#    kind: IngressRoute
-#    annotations:
-#      external-dns.alpha.kubernetes.io/target: 192.168.1.200
-#      kubernetes.io/ingress.class: traefik-external
-#    spec:
-#      spec:
-#        entryPoints:
-#          - web
-#          - websecure
-#        routes:
-#          - match: Host(`jellyfin.naguiar.dev`)
-#            kind: Rule
-#            middlewares:
-#              - name: jellyfin-https-redirect
-#            services:
-#              - name: jellyfin
-#                port: *jellyfinPort
-#        tls:
-#          secretName: certificate-cloudflare-tls
-#  redirect-middleware:
-#    enabled: true
-#    apiVersion: traefik.io/v1alpha1
-#    kind: Middleware
-#    nameOverride: https-redirect
-#    spec:
-#      spec:
-#        redirectScheme:
-#          scheme: https
-#          permanent: true
