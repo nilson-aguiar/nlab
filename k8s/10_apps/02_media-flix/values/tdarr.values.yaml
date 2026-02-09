@@ -75,12 +75,22 @@ service:
         port: 8266
 
 persistence:
+  server:
+    enabled: true
+    size: 5Gi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteOnce
+    globalMounts:
+      - path: "/app/server"
   config:
     enabled: true
     size: 5Gi
     storageClass: longhorn
     retain: true
     accessMode: ReadWriteOnce
+    globalMounts:
+      - path: "/app/configs"
   transcode-cache:
     type: emptyDir
   media:
