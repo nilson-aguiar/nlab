@@ -9,7 +9,7 @@ controllers:
         runAsGroup: 0
 
     initContainers:
-      permissions:
+      permissions-config:
         securityContext:
           runAsNonRoot: false
           runAsUser: 0
@@ -18,7 +18,17 @@ controllers:
         image:
           repository: busybox
           tag: latest
-        command: ["/bin/sh", "-c", "chown -R 1000:1000 /config"]
+        command: ["/bin/sh", "-c", "chown -R 1000:1000 /app/configs"]
+      permissions-server:
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+          runAsGroup: 0
+          allowPrivilegeEscalation: true
+        image:
+          repository: busybox
+          tag: latest
+        command: [ "/bin/sh", "-c", "chown -R 1000:1000 /app/server" ]
 
     containers:
       app:
