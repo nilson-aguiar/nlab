@@ -25,14 +25,6 @@ deployment:
   dnsPolicy: ""
   dnsConfig: {}
 
-ports:
-  # web:
-    # redirectTo:
-      # websecure:
-  websecure:
-    tls:
-      enabled: true
-
 # -- Create a default IngressClass for Traefik
 ingressClass:  # @schema additionalProperties: false
   enabled: true
@@ -65,13 +57,6 @@ providers:  # @schema additionalProperties: false
     # -- Toggles support for the Experimental Channel resources (Gateway API release channels documentation).
     # This option currently enables support for TCPRoute and TLSRoute.
     experimentalChannel: false
-    # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-    namespaces: []
-    # -- A label selector can be defined to filter on specific GatewayClass objects only.
-    labelselector: ""
-
-  # file:
-    # enabled: true
 
 service:
   enabled: true
