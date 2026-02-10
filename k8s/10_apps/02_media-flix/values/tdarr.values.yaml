@@ -67,7 +67,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`tdarr.local.naguiar.dev`)
+          - match: Host(`tdarr.local.naguiar.dev`) && Host(`tdarr.naguiar.dev`)
             kind: Rule
             services:
               - name: tdarr
