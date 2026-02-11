@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ds412-ingressroute.yaml
+  - ds412-endpoint.yaml
+  - ds412-service.yaml

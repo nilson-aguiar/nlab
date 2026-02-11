@@ -23,4 +23,5 @@ certificate:
       - argocd
       - affine
       - reader
+      - network-resources
     autoNamespaces: *namespaces

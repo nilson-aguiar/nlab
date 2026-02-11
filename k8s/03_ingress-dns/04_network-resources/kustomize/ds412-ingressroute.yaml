@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ds412-ingressroute
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`ds412.local.naguiar.dev`) || Host(`ds412.naguiar.dev`)
+      kind: Rule
+      services:
+        - name: ds412-service
+          port: 80

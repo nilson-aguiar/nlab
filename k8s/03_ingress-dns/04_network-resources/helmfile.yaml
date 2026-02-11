@@ -1,0 +1,4 @@
+releases:
+  - name: network-resources
+    namespace: network-resources
+    chart: ./kustomize
