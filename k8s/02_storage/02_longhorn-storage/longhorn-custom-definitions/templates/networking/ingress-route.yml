@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`longhorn.local.naguiar.dev`)
+    - match: Host(`longhorn.local.naguiar.dev`) || Host(`longhorn.naguiar.dev`)
       kind: Rule
       middlewares:
         - name: longhorn-default-headers

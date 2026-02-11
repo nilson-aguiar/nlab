@@ -10,7 +10,7 @@ resources:
       entryPoints:
         - websecure
       routes:
-        - match: Host(`pihole.local.naguiar.dev`)
+        - match: Host(`pihole.local.naguiar.dev`) || Host(`pihole.naguiar.dev`)
           kind: Rule
           middlewares:
             - name: pihole-default-headers

@@ -43,7 +43,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`overseerr.local.naguiar.dev`)
+          - match: Host(`overseerr.local.naguiar.dev`) || Host(`overseerr.naguiar.dev`)
             kind: Rule
             services:
               - name: overseerr
