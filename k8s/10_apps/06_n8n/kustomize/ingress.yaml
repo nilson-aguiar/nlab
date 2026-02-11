@@ -13,6 +13,6 @@ spec:
       kind: Rule
       services:
         - name: n8n
-          port: 5687
+          port: http
   tls:
     secretName: certificate-tls
