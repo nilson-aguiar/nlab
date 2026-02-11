@@ -11,6 +11,8 @@ spec:
   routes:
     - match: Host(`ds412.local.naguiar.dev`) || Host(`ds412.naguiar.dev`)
       kind: Rule
+      middlewares:
+        - name: ds412-default-headers
       services:
         - name: ds412-service
           port: 80

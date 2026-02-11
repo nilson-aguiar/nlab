@@ -5,3 +5,4 @@ resources:
   - ds412-ingressroute.yaml
   - ds412-endpoint.yaml
   - ds412-service.yaml
+  - ds412-middleware.yaml
