@@ -22,4 +22,5 @@ certificate:
       - monitoring
       - argocd
       - affine
+      - reader
     autoNamespaces: *namespaces

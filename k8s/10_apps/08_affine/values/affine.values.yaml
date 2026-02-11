@@ -164,4 +164,4 @@ rawResources:
               - name: affine
                 port: 3010
         tls:
-          secretName: affine-tls
+          secretName: certificate-tls
