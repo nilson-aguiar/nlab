@@ -14,6 +14,5 @@ spec:
       services:
         - name: n8n
           port: 5687
-          scheme: http
   tls:
     secretName: certificate-tls
