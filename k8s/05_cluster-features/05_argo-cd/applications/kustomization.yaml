@@ -16,7 +16,7 @@ resources:
   - pihole-dns.yaml
   - reflector.yaml
   - stash.yaml
-  - telemetry.yaml
+#  - telemetry.yaml
   - tinfoil-switch.yaml
   - traefik.yaml
   - victoriametrics.yaml
