@@ -156,10 +156,10 @@ persistence:
     # -- Node selector for the default Longhorn StorageClass. Longhorn uses only nodes with the specified tags for storing volume data. (Examples: "storage,fast")
     selector: ""
 
-#longhornManager:
-#  resources:
-#    limits:
-#      memory: 2Gi
-#    requests:
-#      cpu: 100m
-#      memory: 512Mi
+longhornManager:
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
