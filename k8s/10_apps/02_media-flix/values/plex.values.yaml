@@ -6,7 +6,6 @@ controllers:
           runAsNonRoot: false
           runAsUser: 0
           runAsGroup: 0
-          fsGroup: 0
           allowPrivilegeEscalation: true
         command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "deflate", "automatic", "exit" ]
 #        command: [ "tail", "-f", "/dev/null" ]
@@ -58,8 +57,6 @@ defaultPodOptions:
     runAsNonRoot: true
     runAsUser: 568
     runAsGroup: 568
-    fsGroup: 568
-    fsGroupChangePolicy: OnRootMismatch
     supplementalGroups: [44, 10000]
     seccompProfile: { type: RuntimeDefault }
 #  nodeSelector:
