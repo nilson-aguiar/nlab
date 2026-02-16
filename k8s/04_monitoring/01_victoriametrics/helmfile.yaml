@@ -10,7 +10,7 @@ releases:
   - name: vm         # The name of the release
     namespace: monitoring   # The namespace to install into
     chart: vm/victoria-metrics-k8s-stack
-    version: 0.70.0         # Use a specific version! Check ArtifactHub for the latest
+    version: 0.71.0         # Use a specific version! Check ArtifactHub for the latest
     values:
       - ./values.yaml
     secrets:
