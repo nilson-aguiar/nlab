@@ -87,18 +87,20 @@ service:
 persistence:
   server:
     enabled: true
-    size: 5Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteOnce
+    existingClaim: tdarr-server
+#    size: 5Gi
+#    storageClass: longhorn
+#    retain: true
+#    accessMode: ReadWriteOnce
     globalMounts:
       - path: "/app/server"
   config:
     enabled: true
-    size: 5Gi
-    storageClass: longhorn
-    retain: true
-    accessMode: ReadWriteOnce
+    existingClaim: tdarr-config
+#    size: 5Gi
+#    storageClass: longhorn
+#    retain: true
+#    accessMode: ReadWriteOnce
     globalMounts:
       - path: "/app/configs"
   transcode-cache:
