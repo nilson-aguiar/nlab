@@ -10,3 +10,31 @@ spec:
   - default
   retain: 1
   concurrency: 2
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-daily
+  namespace: longhorn-system
+spec:
+  cron: "0 3 ? * TUE,WED,THU,FRI,SAT,SUN"
+  task: "backup"
+  groups:
+    - daily
+  retain: 6
+  concurrency: 2
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-weekly
+spec:
+  cron: "0 3 ? * MON"
+  task: "backup"
+  groups:
+    - weekly
+    - default
+  retain: 4
+  concurrency: 2
