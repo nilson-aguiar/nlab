@@ -12,7 +12,7 @@ releases:
   - name: komga
     namespace: reader
     chart: bjw-s/app-template
-    version: 3.5.1
+    version: 3.7.3
     values:
       - ./komga.values.yaml
 
