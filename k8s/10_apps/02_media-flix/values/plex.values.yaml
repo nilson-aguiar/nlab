@@ -7,7 +7,9 @@ controllers:
           runAsUser: 0
           runAsGroup: 0
           allowPrivilegeEscalation: true
-        command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "deflate", "automatic", "exit" ]
+        command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "automatic", "exit" ]
+#        command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "deflate", "automatic", "exit" ]
+#        command: [ "/config/Library/Application Support/Plex Media Server/DBRepair.sh", "update", "repair", "automatic", "exit" ]
 #        command: [ "tail", "-f", "/dev/null" ]
         image:
           repository: ghcr.io/home-operations/plex
