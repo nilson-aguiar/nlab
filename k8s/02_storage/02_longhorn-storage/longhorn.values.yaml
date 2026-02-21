@@ -163,3 +163,20 @@ longhornManager:
     requests:
       cpu: 100m
       memory: 512Mi
+
+image:
+  longhorn:
+    manager:
+      # -- Registry for the Longhorn Manager image.
+      registry: ""
+      # -- Repository for the Longhorn Manager image.
+      repository: longhornio/longhorn-manager
+      # -- Tag for the Longhorn Manager image.
+      tag: v1.11.0-hotfix-1
+    instanceManager:
+      # -- Registry for the Longhorn Instance Manager image.
+      registry: ""
+      # -- Repository for the Longhorn Instance Manager image.
+      repository: longhornio/longhorn-instance-manager
+      # -- Tag for the Longhorn Instance Manager image.
+      tag: v1.11.0-hotfix-1
