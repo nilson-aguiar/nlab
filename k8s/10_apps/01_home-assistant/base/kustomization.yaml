@@ -8,6 +8,9 @@ resources:
   - pvc.yaml
   - service.yaml
   - configmap.yaml
+  - matter-pvc.yaml
+  - matter-service.yaml
+  - matter-deployment.yaml
 
 labels:
   - includeSelectors: true

@@ -18,7 +18,11 @@ spec:
   template:
     metadata:
       annotations:
-        k8s.v1.cni.cncf.io/networks: kube-system/lan-bridge
+        k8s.v1.cni.cncf.io/networks: '[{
+          "name": "lan-bridge",
+          "namespace": "kube-system",
+          "ips": ["192.168.1.231/24"]
+        }]'
       labels:
         app: home-assistant
         role: server
@@ -88,27 +92,6 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: ha-config-data
-        - name: matter-server
-          image: "ghcr.io/home-assistant-libs/python-matter-server:tag-here"
-          securityContext:
-            privileged: true
-          envFrom:
-            - configMapRef:
-                name: home-assistant-env
-          ports:
-            - name: matter-server
-              containerPort: 5580
-              protocol: TCP
-            - name: matter-udp
-              containerPort: 5540
-              protocol: UDP
-          volumeMounts:
-            - mountPath: /data
-              name: ha-config-data
-              subPath: matter
-            - mountPath: /run/dbus
-              name: d-bus
-              readOnly: true
 #            - mountPath: /media
 #              name: media-volume
 #            - mountPath: /dev/ttyUSB1

@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: matter-server
+  name: matter-server
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: matter-server
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[{
+          "name": "lan-bridge",
+          "namespace": "kube-system",
+          "ips": ["192.168.1.230/24"]
+        }]'
+      labels:
+        app: matter-server
+    spec:
+      containers:
+        - name: matter-server
+          image: "ghcr.io/home-assistant-libs/python-matter-server:tag-here"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          envFrom:
+            - configMapRef:
+                name: home-assistant-env
+          ports:
+            - name: matter-server
+              containerPort: 5580
+              protocol: TCP
+            - name: matter-udp
+              containerPort: 5540
+              protocol: UDP
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "512Mi"
+          volumeMounts:
+            - mountPath: /data
+              name: matter-data
+            - mountPath: /run/dbus
+              name: d-bus
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: matter-data
+          persistentVolumeClaim:
+            claimName: matter-server-data
+        - name: d-bus
+          hostPath:
+            path: /run/dbus

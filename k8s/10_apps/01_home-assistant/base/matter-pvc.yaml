@@ -1,0 +1,12 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: matter-server-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: secondary
+  resources:
+    requests:
+      storage: 500Mi
