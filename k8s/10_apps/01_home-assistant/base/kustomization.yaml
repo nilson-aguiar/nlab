@@ -12,11 +12,7 @@ resources:
   - matter-service.yaml
   - matter-deployment.yaml
 
-labels:
-  - includeSelectors: true
-    pairs:
-      app: home-assistant
-      app.kubernetes.io/name: home-assistant
+# namespace: home-assistant
 
 # Refer to: https://github.com/mysticrenji/home-assistant-on-kubernetes/blob/main/home-automation/deployment.yaml
 #  for extra ideas
