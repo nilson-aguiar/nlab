@@ -7,6 +7,10 @@ resources:
 images:
   - name: homeassistant/home-assistant
     newTag: 2026.2.3
+  - name: linuxserver/code-server
+    newTag: 4.109.2-ls317
+  - name: ghcr.io/home-assistant-libs/python-matter-server
+    newTag: 8.1.0
 
 #patches:
 #- patch: |-

@@ -10,3 +10,15 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 8443
+      targetPort: code-server
+      protocol: TCP
+      name: code-server
+    - port: 5580
+      targetPort: matter-server
+      protocol: TCP
+      name: matter-server
+    - port: 5540
+      targetPort: matter-udp
+      protocol: UDP
+      name: matter-udp

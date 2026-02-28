@@ -17,5 +17,12 @@ spec:
       services:
         - name: home-assistant
           port: http
+    - match: Host(`hacode.local.naguiar.dev`) || Host(`hacode.naguiar.dev`)
+      kind: Rule
+      middlewares:
+        - name: default-headers
+      services:
+        - name: home-assistant
+          port: code-server
   tls:
     secretName: certificate-tls

@@ -69,6 +69,46 @@ spec:
             - mountPath: /run/dbus
               name: d-bus
               readOnly: true
+        - name: code-server
+          image: "linuxserver/code-server:tag-here"
+          env:
+            - name: PUID
+              value: "0"
+            - name: PGID
+              value: "0"
+            - name: DEFAULT_WORKSPACE
+              value: /config
+          envFrom:
+            - configMapRef:
+                name: home-assistant-env
+          ports:
+            - name: code-server
+              containerPort: 8443
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /config
+              name: ha-config-data
+        - name: matter-server
+          image: "ghcr.io/home-assistant-libs/python-matter-server:tag-here"
+          securityContext:
+            privileged: true
+          envFrom:
+            - configMapRef:
+                name: home-assistant-env
+          ports:
+            - name: matter-server
+              containerPort: 5580
+              protocol: TCP
+            - name: matter-udp
+              containerPort: 5540
+              protocol: UDP
+          volumeMounts:
+            - mountPath: /data
+              name: ha-config-data
+              subPath: matter
+            - mountPath: /run/dbus
+              name: d-bus
+              readOnly: true
 #            - mountPath: /media
 #              name: media-volume
 #            - mountPath: /dev/ttyUSB1
