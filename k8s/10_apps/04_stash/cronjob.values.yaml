@@ -1,6 +1,6 @@
 image:
   repository: jauderho/yt-dlp
-  tag: 2026.03.03
+  tag: 2026.03.13
 
 persistence:
   storageClaimName: stash-media
