@@ -1,0 +1,76 @@
+controllers:
+  main:
+    type: deployment
+    annotations:
+      reloader.stakater.com/auto: "true"
+    pod:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+    containers:
+      main:
+        image:
+          repository: lscr.io/linuxserver/obsidian
+          tag: v1.12.4-ls115
+        env:
+          PUID: 1000
+          PGID: 1000
+          TZ: "UTC"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 2Gi
+
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: 3000
+
+persistence:
+  config:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    globalMounts:
+      - path: /config
+  
+  vaults:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    globalMounts:
+      - path: /vaults
+
+  shm:
+    type: emptyDir
+    globalMounts:
+      - path: /dev/shm
+
+
+rawResources:
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`obsidian.local.naguiar.dev`) || Host(`obsidian.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: obsidian-remote
+                port: 3000
+        tls:
+          secretName: certificate-tls
