@@ -2,15 +2,13 @@ repositories:
   - name: jetstack
     url: https://charts.jetstack.io
   - name: bjw-s
-    oci: true
-    url: ghcr.io/bjw-s/helm
-
+    url: https://bjw-s-labs.github.io/helm-charts
 ---
 releases:
   - name: cloudflare-token
     namespace: cert-manager-system
     chart: bjw-s/app-template
-    version: 3.7.3
+    version: 4.6.2
     secrets:
       - ./secrets/cloudflare.values.secret.yaml
     values:

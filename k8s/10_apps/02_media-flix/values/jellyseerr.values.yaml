@@ -28,7 +28,7 @@ controllers:
           limits:
             memory: 512Mi
 
-rawResources:
+raw:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1

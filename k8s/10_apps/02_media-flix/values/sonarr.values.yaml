@@ -98,7 +98,7 @@ service:
 starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
 hostSuffix: &hostSuffix "local.naguiar.dev"
 
-rawResources:
+raw:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1

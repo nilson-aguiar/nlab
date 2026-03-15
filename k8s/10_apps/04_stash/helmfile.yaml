@@ -1,8 +1,7 @@
 ---
 repositories:
   - name: bjw-s
-    oci: true
-    url: ghcr.io/bjw-s/helm
+    url: https://bjw-s-labs.github.io/helm-charts
   - name: raw 
     url: https://bedag.github.io/helm-charts/
 
@@ -11,7 +10,7 @@ templates:
   bjw: &bjw
     namespace: stash
     chart: bjw-s/app-template
-    version: 3.5.1
+    version: 4.6.2
 
 
 releases:

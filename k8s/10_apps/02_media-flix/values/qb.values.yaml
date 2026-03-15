@@ -90,7 +90,7 @@ persistence:
       - path: /media
 #        subPath: downloads
 
-rawResources:
+raw:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1

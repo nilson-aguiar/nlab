@@ -124,7 +124,7 @@ service:
       http:
         port: 3010
 
-rawResources:
+raw:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1

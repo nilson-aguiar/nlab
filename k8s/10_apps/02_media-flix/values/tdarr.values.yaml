@@ -54,7 +54,7 @@ controllers:
 
 hostSuffix: &hostSuffix "local.naguiar.dev"
 
-rawResources:
+raw:
   ingress-route:
     enabled: true
     apiVersion: traefik.io/v1alpha1

@@ -94,7 +94,7 @@ service:
       http:
         port: *radarrPort
 
-rawResources:
+raw:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1
