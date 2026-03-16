@@ -10,7 +10,7 @@ releases:
   - name: traefik-crds
     namespace: traefik-system
     chart: traefik/traefik-crds
-    version: 1.14.0
+    version: 1.15.0
 
   #  Ingress for local network
   - name: ingress-traefik-internal
