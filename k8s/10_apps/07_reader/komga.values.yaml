@@ -15,7 +15,7 @@ controllers:
       app:
         image:
           repository: gotson/komga
-          tag: 1.24.1
+          tag: 1.24.2
         env:
           TZ: Europe/Amsterdam
           USER: 1000
