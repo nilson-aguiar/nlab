@@ -7,7 +7,7 @@ resources:
       name: traefik-dashboard-basicauth
     spec:
       basicAuth:
-        secret: traefik-auth-secret
+        secret: traefik-auth
   - apiVersion: traefik.io/v1alpha1
     kind: Middleware
     metadata:
@@ -46,4 +46,3 @@ resources:
       tls:
         secretName: certificate-tls
 
-      
