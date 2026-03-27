@@ -78,7 +78,7 @@ rawResources:
     enabled: true
     apiVersion: traefik.io/v1alpha1
     kind: Middleware
-    forceRename: default-headers
+    forceRename: komga-default-headers
     spec:
       spec:
         headers:

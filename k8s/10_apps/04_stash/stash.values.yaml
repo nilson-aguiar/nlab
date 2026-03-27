@@ -79,7 +79,7 @@ rawResources:
     enabled: true
     apiVersion: traefik.io/v1alpha1
     kind: Middleware
-    forceRename: default-headers
+    forceRename: stash-default-headers
     spec:
       spec:
         headers:
