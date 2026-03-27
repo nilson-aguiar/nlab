@@ -84,7 +84,7 @@ persistence:
   tmp:
     type: emptyDir
   media:
-    existingClaim: media-storage-data
+    existingClaim: media-storage
     globalMounts:
       - path: /media
 service:

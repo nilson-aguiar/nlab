@@ -61,7 +61,7 @@ persistence:
     hostPath: /dev/dri
     globalMounts:
       - path: /dev/dri
-    
+
   config:
     existingClaim: jellyfin-config
     # size: 500Mi
@@ -80,7 +80,7 @@ persistence:
 #  transcode:
 #    type: emptyDir
   media:
-    existingClaim: media-storage-data
+    existingClaim: media-storage
     globalMounts:
       - path: /media
         subPath: media

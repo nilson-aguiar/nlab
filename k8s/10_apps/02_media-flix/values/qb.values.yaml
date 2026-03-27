@@ -85,7 +85,7 @@ persistence:
 #    globalMounts:
 #      - readOnly: true
   media:
-    existingClaim: media-storage-data
+    existingClaim: media-storage
     globalMounts:
       - path: /media
 #        subPath: downloads
