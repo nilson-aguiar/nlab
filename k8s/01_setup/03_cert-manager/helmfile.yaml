@@ -2,7 +2,8 @@ repositories:
   - name: jetstack
     url: https://charts.jetstack.io
   - name: bjw-s
-    url: https://bjw-s-labs.github.io/helm-charts
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
 ---
 releases:
   - name: cloudflare-token

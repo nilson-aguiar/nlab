@@ -4,7 +4,8 @@ repositories:
   - name: raw
     url: https://bedag.github.io/helm-charts/
   - name: bjw-s
-    url: https://bjw-s-labs.github.io/helm-charts
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
 
 ---
 templates:
