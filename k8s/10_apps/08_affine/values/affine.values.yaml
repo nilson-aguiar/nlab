@@ -124,12 +124,12 @@ service:
       http:
         port: 3010
 
-raw:
+rawResources:
   middleware:
     enabled: true
     apiVersion: traefik.io/v1alpha1
     kind: Middleware
-    nameOverride: default-headers
+    forceRename: default-headers
     spec:
       spec:
         headers:
