@@ -3,7 +3,7 @@ image:
   tag: 2026.03.17
 
 persistence:
-  storageClaimName: stash-media
+  storageClaimName: stashl
   subPath: media
 
 configs:
