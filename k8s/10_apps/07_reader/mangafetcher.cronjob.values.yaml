@@ -8,8 +8,8 @@ persistence:
 
 configs:
 #  schedule: "*/1 * * * *"
-  values:
-    one-punch-man:
-      schedule: "0 0 * * 0"
-      fromChapter: 137
+  values: []
+#    one-punch-man:
+#      schedule: "0 0 * * 0"
+#      fromChapter: 137
 

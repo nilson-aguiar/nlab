@@ -121,7 +121,7 @@ grafana:
       memory: "256Mi"
     limits:
       memory: "512Mi"
-      
+
 
 # --- vmagent (The Scraper) ---
 vmagent:
