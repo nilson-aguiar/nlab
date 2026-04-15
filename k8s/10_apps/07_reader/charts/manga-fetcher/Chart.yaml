@@ -1,0 +1,6 @@
+---
+apiVersion: v2
+name: manga-fetcher
+description: A Helm chart for manga-fetcher cronjob downloader
+version: 0.1.0
+appVersion: "1.0.0"

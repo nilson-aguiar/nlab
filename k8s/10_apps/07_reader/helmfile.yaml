@@ -21,6 +21,13 @@ releases:
     chart: ./charts/manga-downloader
     version: 0.1.0
     values:
-      - cronjob.values.yaml
+      - mangadex.cronjob.values.yaml
+
+  - name: manga-fetcher
+    namespace: reader
+    chart: ./charts/manga-fetcher
+    version: 0.1.0
+    values:
+      - mangafetcher.cronjob.values.yaml
 #    secrets:
 #      - secrets/cronjob.values.secret.yaml
