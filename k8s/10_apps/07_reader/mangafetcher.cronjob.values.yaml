@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/nilson-aguiar/manga-fetcher
-  tag: sha-7bc2c63
+  tag: 1.2.0
 
 persistence:
   storageClaimName: komga-media
@@ -8,8 +8,8 @@ persistence:
 
 configs:
 #  schedule: "*/1 * * * *"
-  values: []
-#    one-punch-man:
-#      schedule: "0 0 * * 0"
-#      fromChapter: 137
-
+  values:
+    one-punch-man:
+      schedule: "0 0 * * 0"
+      fromChapter: 137
+      provider: taosect

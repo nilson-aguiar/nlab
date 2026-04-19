@@ -34,6 +34,8 @@ spec:
                 value: {{ $name }}
               - name: INITIAL_CHAPTER
                 value: {{ $config.fromChapter | quote }}
+              - name: PROVIDER
+                value: {{ $config.provider | default "composite" | quote }}
             volumeMounts:
             - name: download-storage
               mountPath: /downloads
@@ -47,6 +49,8 @@ spec:
               - "/downloads/$(TITLE)"
               - "--from"
               - "$(INITIAL_CHAPTER)"
+              - "--provider"
+              - "$(PROVIDER)"
           volumes:
             - name: download-storage
               persistentVolumeClaim:
