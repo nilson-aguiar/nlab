@@ -6,7 +6,7 @@ resources:
 # namespace: home-assistant
 images:
   - name: homeassistant/home-assistant
-    newTag: 2026.4.3
+    newTag: 2026.4.4
   - name: linuxserver/code-server
     newTag: 4.109.2-ls317
   - name: ghcr.io/home-assistant-libs/python-matter-server
