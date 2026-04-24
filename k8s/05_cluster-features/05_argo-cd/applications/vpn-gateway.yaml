@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tinfoil-switch
+  name: vpn-gateway
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,18 +10,14 @@ spec:
   source:
     repoURL: https://github.com/nilson-aguiar/nlab.git
     targetRevision: main
-    path: k8s/10_apps/03_tinfoil-switch
+    path: k8s/05_cluster-features/07_vpn-gateway
     plugin:
       name: helmfile
   destination:
     server: https://kubernetes.default.svc
-    namespace: tinfoil-hat
+    namespace: vpn-gateway
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
-
