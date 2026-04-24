@@ -1,0 +1,85 @@
+controllers:
+  main:
+    type: statefulset
+    annotations:
+      reloader.stakater.com/auto: "true"
+    initContainers:
+      postgres-init:
+        image:
+          repository: ghcr.io/home-operations/postgres-init
+          tag: 18
+        env:
+          INIT_POSTGRES_HOST: postgres-rw.cloudnative-pg.svc.cluster.local
+          INIT_POSTGRES_DBNAME: vaultwarden
+          INIT_POSTGRES_USER: vaultwarden
+          INIT_POSTGRES_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: vaultwarden-secret
+                key: dbPassword
+          INIT_POSTGRES_SUPER_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+    containers:
+      main:
+        image:
+          repository: vaultwarden/server
+          tag: latest
+        env:
+          DOMAIN: "https://vaultwarden.local.naguiar.dev"
+          SIGNUPS_ALLOWED: "false"
+          DATABASE_URL:
+            valueFrom:
+              secretKeyRef:
+                name: vaultwarden-secret
+                key: DATABASE_URL
+          ADMIN_TOKEN:
+            valueFrom:
+              secretKeyRef:
+                name: vaultwarden-secret
+                key: adminToken
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        port: 80
+
+persistence:
+  data:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    globalMounts:
+      - path: /data
+
+rawResources:
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`vaultwarden.local.naguiar.dev`) || Host(`vaultwarden.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: vaultwarden
+                port: 80
+        tls:
+          secretName: certificate-tls
