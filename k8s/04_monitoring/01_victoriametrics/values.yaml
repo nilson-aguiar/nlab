@@ -107,6 +107,8 @@ defaultRules:
 
 grafana:
   enabled: true
+  deploymentStrategy:
+    type: Recreate
   plugins:
     - victoriametrics-metrics-datasource
     - victoriametrics-logs-datasource
