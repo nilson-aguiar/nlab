@@ -14,6 +14,7 @@ The infrastructure is built on physical or virtual machines running NixOS, which
 *   **Container Orchestration**: **Kubernetes** (specifically k3s) is the container orchestrator for running all applications.
 *   **Application Deployment**: **Helm** is the package manager for Kubernetes. **Helmfile** is used as a declarative wrapper around Helm to manage releases, their values, and secrets in a structured way.
 *   **Secrets Management**: **SOPS** (Secrets OPerationS) is used to encrypt and decrypt secrets, primarily Helm values files. The encryption method used is **age**. Encrypted files are committed directly to the repository and decrypted at deploy time by Helmfile.
+*   **GitOps**: **ArgoCD** is used for continuous delivery, ensuring the cluster state matches the repository.
 
 ## Repository Structure
 
@@ -23,30 +24,74 @@ The repository is organized into two main directories: `nixos` and `k8s`.
 
 This directory contains all the NixOS configurations for the cluster nodes.
 
-*   It uses Nix Flakes to define the system configuration for each host (e.g., `homelab-0`, `homelab-1`).
-*   These configurations handle everything from user accounts and SSH keys to the installation and configuration of the k3s agent or server on each node.
+*   It uses Nix Flakes to define the system configuration for each host (e.g., `homelab-0`, `homelab-1`, `homelab-2`).
+*   **`flake.nix`**: Entry point for the Nix configuration.
+*   **`configuration.nix`**: Core system settings, including k3s server/agent setup, user accounts, and kernel modules.
+*   **`disko-config.nix`**: Declarative disk partitioning using Disko.
+*   **`secrets/`**: Contains `secrets.yaml` managed by `sops-nix` for system-level secrets (e.g., k3s tokens).
 
 ### `/k8s`
 
 This directory holds all the Kubernetes application configurations, managed by Helmfile. The subdirectories are numbered to imply a logical deployment order.
 
-*   **`helmfile.yaml`**: Each application or component has its own `helmfile.yaml`, which defines the Helm chart to use, the release name, namespace, and paths to value files.
-*   **`values/`**: Contains `values.yaml` files that override the default Helm chart values.
-*   **`secrets/`**: Contains SOPS-encrypted values files (e.g., `n8n.values.secrets.yaml`). These are referenced in the `helmfile.yaml` and automatically decrypted during deployment.
+*   **`01_setup`**: Foundational components (networking, metallb, cert-manager).
+*   **`02_storage`**: Persistent storage (NFS, Longhorn, Volume Snapshots).
+*   **`03_ingress-dns`**: Ingress (Traefik) and internal DNS (Pi-hole).
+*   **`04_monitoring`**: Observability stack (VictoriaMetrics, Telemetry).
+*   **`05_cluster-features`**: Shared services (PostgreSQL, ArgoCD, Cloudflare Tunnel).
+*   **`10_apps`**: User-facing applications (Home Assistant, n8n, Stash, etc.).
 
-#### Key `k8s` Directories:
+Each application directory typically contains:
+*   **`helmfile.yaml`**: Defines the Helm release.
+*   **`values/`**: Standard Helm values.
+*   **`secrets/`**: SOPS-encrypted values (e.g., `*.values.secret.yaml`).
 
-*   **`01_setup`**: Foundational cluster components, like `kube-vip` for creating a load balancer for the Kubernetes API.
-*   **`03_ingress-dns`**: Networking services. This includes `traefik` as the ingress controller and `pihole` for internal DNS resolution.
-*   **`04_monitoring`**: The observability stack. It includes an `opentelemetry-collector` to receive and process traces and metrics from applications.
-*   **`05_cluster-features`**: Core, cluster-wide services like `argo-cd` for GitOps, `influxdb` for data storage, and `smarter-device-manager` for exposing host devices (like USB devices) to pods.
-*   **`10_apps`**: User-facing applications, such as:
-    *   `n8n`: A workflow automation tool.
-    *   `stash`: A custom application using `yt-dlp` to download videos via a CronJob.
-    *   `openwebui`: A web UI for interacting with local AI models via Ollama.
+## Key Commands
+
+### NixOS Management
+
+- **Update/Rebuild Node**:
+  ```bash
+  sudo nixos-rebuild switch --upgrade --refresh --flake github:nilson-aguiar/nlab?dir=nixos
+  ```
+- **Provision New Node** (via `nixos-anywhere`):
+  ```bash
+  nix run github:nix-community/nixos-anywhere -- --flake '.#homelab-0' nixos@<IP> --build-on-remote
+  ```
+
+### Kubernetes Management (Helmfile)
+
+- **Deploy specific app**:
+  Navigate to the app directory (e.g., `k8s/10_apps/01_home-assistant`) and run:
+  ```bash
+  helmfile apply
+  ```
+- **Apply all configurations**:
+  ```bash
+  ./k8s/update-all.sh
+  ```
+- **Check differences**:
+  ```bash
+  ./k8s/diff-all.sh
+  ```
+
+### Secrets Management
+
+- **Edit encrypted secrets**:
+  ```bash
+  sops k8s/10_apps/<app>/secrets/<filename>.values.secret.yaml
+  ```
+
+## Development Conventions
+
+1.  **Surgical Updates**: When modifying application configurations, always check if there is a corresponding `secrets/` file that might need updates alongside `values/`.
+2.  **ArgoCD Registration**: New applications added to `k8s/10_apps` must have a corresponding manifest in `k8s/05_cluster-features/05_argo-cd/applications/` to be managed via GitOps.
+3.  **Namespace Consistency**: Ensure the `namespace` in `helmfile.yaml` matches the intended deployment target.
+4.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
+5.  **SOPS Keys**: System secrets require the age key at `/home/naguiar/.config/sops/age/keys.txt`.
 
 ## Workflow Summary
 
 1.  **Node Provisioning**: A new machine is set up by installing NixOS and applying a configuration from the `/nixos` directory.
 2.  **Application Deployment**: From a management machine with `helmfile` installed, running `helmfile apply` within a specific directory inside `/k8s` will deploy or update the corresponding application in the cluster. Helmfile handles the decryption of secrets and the rendering of Helm templates.
-3.  **GitOps Registration**: When adding a new application to `k8s/10_apps`, a corresponding ArgoCD Application manifest must be created in `k8s/05_cluster-features/05_argo-cd/applications/`. This ensures the application is automatically managed and synced by ArgoCD. Refer to existing files in that directory for the required format (Application name, namespace, and helmfile plugin configuration).
+3.  **GitOps Registration**: Application manifests in `k8s/05_cluster-features/05_argo-cd/applications/` ensure the application is automatically managed and synced by ArgoCD.
