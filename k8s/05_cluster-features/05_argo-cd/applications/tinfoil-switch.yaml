@@ -15,12 +15,15 @@ spec:
       name: helmfile
   destination:
     server: https://kubernetes.default.svc
-    namespace: tinfoil-hat
+    namespace: tinfoil-switch
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
     retry:
       limit: 1
+
