@@ -22,3 +22,4 @@ resources:
   - victoriametrics.yaml
   - volume-snapshot.yaml
   - reader.yaml
+  - vaultwarden.yaml
