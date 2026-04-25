@@ -12,8 +12,8 @@ controllers:
     containers:
       app:
         image:
-          repository: ghcr.io/jorenn92/maintainerr
-          tag: latest
+          repository: ghcr.io/maintainerr/maintainerr
+          tag: 3.6.0
         env:
           TZ: Europe/Amsterdam
         probes:
