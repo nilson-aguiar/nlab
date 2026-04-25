@@ -83,7 +83,7 @@ I don't use Kustomize that much in the video, but it's a tool I do often use and
 ### update
 
 ```bash
-sudo nixos-rebuild switch --upgrade --refresh --flake github:nilson-aguiar/nlab?dir=nixosxos
+sudo nixos-rebuild switch --upgrade --refresh --flake github:nilson-aguiar/nlab?dir=nixos
 ```
 
 

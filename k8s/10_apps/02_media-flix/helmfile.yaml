@@ -68,3 +68,10 @@ releases:
     <<: *bjw
     values:
       - ./values/overseerr.values.yaml
+
+  - name: maintainerr
+    <<: *bjw
+    values:
+      - ./values/maintainerr.values.yaml
+    #secrets:
+     # - ./secrets/maintainerr.secrets.yaml
