@@ -19,7 +19,7 @@ controllers:
         image:
           repository: busybox
           tag: latest
-        command: [ "/bin/sh", "-c", "chown -R 2000:2000 /app/configs" ]
+        command: [ "/bin/sh", "-c", "chown -R 2000:2000 /app/config" ]
 
     containers:
       seerr:
