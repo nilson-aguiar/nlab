@@ -4,7 +4,7 @@ controllers:
       seerr:
         image:
           repository: ghcr.io/seerr-team/seerr
-          tag: latest
+          tag: v3.2.0
         env:
           LOG_LEVEL: info
           PORT: 5055
