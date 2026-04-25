@@ -86,7 +86,7 @@ gluetun:
   enabled: false
   image:
     repository: qmcgaw/gluetun
-    tag: v3.40.0
+    tag: v3.41.1
   # NordVPN specific defaults
   config:
     vpn_service_provider: "nordvpn"
