@@ -24,10 +24,10 @@ service:
 
 persistence:
   config:
-#    existingClaim: seerr-config
-    size: 100Mi
-    retain: true
-    accessMode: ReadWriteOnce
+    existingClaim: seerr
+#    size: 100Mi
+#    retain: true
+#    accessMode: ReadWriteOnce
     advancedMounts:
       seerr:
         seerr:
