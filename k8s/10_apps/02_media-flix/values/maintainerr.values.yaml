@@ -42,7 +42,10 @@ controllers:
 persistence:
   config:
     enabled: true
-    existingClaim: maintainerr-config
+    size: 100Mi
+    retain: true
+    accessMode: ReadWriteOnce
+#    existingClaim: maintainerr-config
     globalMounts:
       - path: /opt/data
 
