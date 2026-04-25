@@ -13,7 +13,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/maintainerr/maintainerr
-          tag: 3.6.0
+          tag: 3.8.0
         env:
           TZ: Europe/Amsterdam
         probes:
