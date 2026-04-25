@@ -20,6 +20,18 @@ controllers:
           repository: busybox
           tag: latest
         command: ["/bin/sh", "-c", "chown -R 2000:2000 /opt/data"]
+      copy-ui:
+        image:
+          repository: ghcr.io/maintainerr/maintainerr
+          tag: 3.8.0
+        command:
+          - /bin/sh
+          - -c
+          - cp -a /opt/app/apps/server/dist/ui/* /tmp/ui/
+        securityContext:
+          runAsUser: 2000
+          runAsGroup: 2000
+          runAsNonRoot: true
 
     containers:
       app:
@@ -60,6 +72,22 @@ persistence:
     existingClaim: maintainerr
     globalMounts:
       - path: /opt/data
+  ui:
+    type: emptyDir
+    advancedMounts:
+      maintainerr:
+        copy-ui:
+          - path: /tmp/ui
+        app:
+          - path: /opt/app/apps/server/dist/ui
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp
+  var-tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /var/tmp
 
 service:
   app:
