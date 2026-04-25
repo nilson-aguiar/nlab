@@ -98,18 +98,18 @@
     role = "server";
     tokenFile = config.sops.secrets."k3s/tokenFile".path;
     extraFlags = toString ([
-	    "--write-kubeconfig-mode \"0644\""
-	    "--cluster-init"
-	    "--disable servicelb"
-	    "--disable traefik"
-	    "--disable local-storage"
-	    "--kubelet-arg=kube-reserved=cpu=200m,memory=500Mi"
-	    "--kubelet-arg=system-reserved=cpu=200m,memory=500Mi"
-	    "--kubelet-arg=eviction-hard=memory.available<200Mi,nodefs.available<10%"
+            "--write-kubeconfig-mode \"0644\""
+            "--cluster-init"
+            "--disable servicelb"
+            "--disable traefik"
+            "--disable local-storage"
+            "--kubelet-arg=kube-reserved=cpu=200m,memory=500Mi"
+            "--kubelet-arg=system-reserved=cpu=200m,memory=500Mi"
+            "--kubelet-arg=eviction-hard=memory.available<200Mi,nodefs.available<10%"
     ] ++ (if meta.hostname == "homelab-0" then [
         "--server https://homelab-1:6443" 
     ] else [
-	      "--server https://homelab-0:6443"
+              "--server https://homelab-0:6443"
     ]));
     # Used when initializing the cluster only, then use the if above
     # clusterInit = (meta.hostname == "homelab-0");
@@ -206,6 +206,25 @@
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
+
+  # Automatically extract the node number from the hostname (e.g., "homelab-1" -> "1")
+  # and use it to set the upgrade time (e.g., "01:00").
+  system.autoUpgrade = let
+    # Extract the last character of the hostname
+    nodeNumberStr = builtins.substring (builtins.stringLength meta.hostname - 1) 1 meta.hostname;
+    # Ensure it's a digit to avoid errors, fallback to "4" (04:00) if not
+    nodeNumber = if builtins.match "[0-9]" nodeNumberStr != null then nodeNumberStr else "4";
+    # Format as HH:00
+    upgradeTime = "0${nodeNumber}:00";
+  in {
+    enable = true;
+    flake = "github:nilson-aguiar/nlab?dir=nixos#${meta.hostname}";
+    dates = upgradeTime;
+    # Add a small randomized delay to spread the load even within the hour
+    randomizedDelaySec = "15min";
+    # Ensure it has permission to pull and apply the flake without writing to the lockfile
+    flags = [ "--no-write-lock-file" ];
+  };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
