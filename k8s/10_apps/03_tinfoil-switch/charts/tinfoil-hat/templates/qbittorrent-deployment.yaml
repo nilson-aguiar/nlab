@@ -16,6 +16,27 @@ spec:
         app: qbittorrent
     spec:
       containers:
+        {{- if .Values.gluetun.enabled }}
+        - name: gluetun
+          image: "{{ .Values.gluetun.image.repository }}:{{ .Values.gluetun.image.tag }}"
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: {{ .Values.gluetun.config.vpn_service_provider | quote }}
+            - name: VPN_TYPE
+              value: {{ .Values.gluetun.config.vpn_type | quote }}
+            - name: SERVER_COUNTRIES
+              value: {{ .Values.gluetun.config.server_countries | quote }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-vpn-secret
+          volumeMounts:
+            - name: tun
+              mountPath: /dev/net/tun
+        {{- end }}
         - name: qbittorrent
           image: "{{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag }}"
           imagePullPolicy: {{ .Values.qbittorrent.image.pullPolicy }}
@@ -44,6 +65,9 @@ spec:
           resources:
             {{- toYaml .Values.qbittorrent.resources | nindent 12 }}
       volumes:
+        - name: tun
+          hostPath:
+            path: /dev/net/tun
         - name: games-storage
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-tinfoil-hat-pvc
