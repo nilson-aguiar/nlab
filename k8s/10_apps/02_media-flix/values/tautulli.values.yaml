@@ -64,10 +64,10 @@ service:
 persistence:
   config:
     enabled: true
-    size: 1Gi
-    retain: true
-    accessMode: ReadWriteOnce
-#    existingClaim: tautulli-config
+#    size: 1Gi
+#    retain: true
+#    accessMode: ReadWriteOnce
+    existingClaim: tautulli
     globalMounts:
       - path: /config
   tmp:
