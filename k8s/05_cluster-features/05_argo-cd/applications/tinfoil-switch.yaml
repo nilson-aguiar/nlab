@@ -15,7 +15,7 @@ spec:
       name: helmfile
   destination:
     server: https://kubernetes.default.svc
-    namespace: tinfoil-switch
+    namespace: tinfoil-hat
   syncPolicy:
     automated:
       prune: true
