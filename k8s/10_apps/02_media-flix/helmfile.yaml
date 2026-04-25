@@ -73,5 +73,5 @@ releases:
     <<: *bjw
     values:
       - ./values/maintainerr.values.yaml
-    secrets:
-      - ./secrets/maintainerr.secrets.yaml
+    #secrets:
+     # - ./secrets/maintainerr.secrets.yaml
