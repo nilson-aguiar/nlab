@@ -76,18 +76,28 @@ Kustomize allows you to manage multiple manifest files in a `Kustomize.yaml`, wh
 I don't use Kustomize that much in the video, but it's a tool I do often use and is available in `kubectl`.
 
 
-## Nixos clean up boot
 
+
+## Nixos 
+
+### update
+
+```bash
+sudo nixos-rebuild switch --upgrade --refresh --flake github:nilson-aguiar/nlab?dir=nixosxos
 ```
+
+
+### clean up boot
+
+```bash
 nixos-rebuild list-generations
 
-nix-collect-garbage  --delete-old
+# Keep only the last two generations:
+sudo nix-env -p /nix/var/nix/profiles/system --delete-generations +2
 
-#nix-collect-garbage  --delete-generations 1 2 3
-
-# recommeneded to sometimes run as sudo to collect additional garbage
-sudo nix-collect-garbage -d
+# Last resort, it will delete all previous generations and only the current
+#sudo nix-collect-garbage -d
 
 # As a separation of concerns - you will need to run this command to clean out boot
-sudo /run/current-system/bin/switch-to-configuration boot
+#sudo /run/current-system/bin/switch-to-configuration boot
 ```
