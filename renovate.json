@@ -40,6 +40,12 @@
   ],
   "packageRules": [
     {
+      "matchManagers": ["helmfile"],
+      "lockFileMaintenance": {
+        "enabled": false
+      }
+    },
+    {
       "matchDatasources": [
         "docker"
       ],
