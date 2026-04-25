@@ -54,6 +54,11 @@ releases:
     values:
       - ./values/plex.values.yaml
 
+  - name: tautulli
+    <<: *bjw
+    values:
+      - ./values/tautulli.values.yaml
+
   - name: jellyfin
     <<: *bjw
     values:
