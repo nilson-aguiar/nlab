@@ -6,6 +6,10 @@
   ],
   "platformAutomerge": false,
   "ignoreTests": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": false
+  },
   "helm-values": {
     "managerFilePatterns": [
       "/^k8s/.+\\.ya?ml$/"
