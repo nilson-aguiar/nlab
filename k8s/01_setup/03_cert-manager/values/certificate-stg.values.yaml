@@ -1,5 +1,5 @@
 cloudflareToken:
-  secretName: cloudflare-token-secret
+  secretName: cloudflare-token
   secretKey: cloudflare-token
 
 clusterIssuer:
