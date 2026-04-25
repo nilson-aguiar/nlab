@@ -9,6 +9,18 @@ controllers:
         fsGroup: 2000
         fsGroupChangePolicy: OnRootMismatch
 
+    initContainers:
+      permissions-config:
+        securityContext:
+          runAsNonRoot: false
+          runAsUser: 0
+          runAsGroup: 0
+          allowPrivilegeEscalation: true
+        image:
+          repository: busybox
+          tag: latest
+        command: ["/bin/sh", "-c", "chown -R 2000:2000 /opt/data"]
+
     containers:
       app:
         image:
