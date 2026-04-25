@@ -81,3 +81,14 @@ qbittorrent:
       storageClassName: ""
       size: 100Mi
       accessMode: ReadWriteOnce
+
+gluetun:
+  enabled: false
+  image:
+    repository: qmcgaw/gluetun
+    tag: v3.40.0
+  # NordVPN specific defaults
+  config:
+    vpn_service_provider: "nordvpn"
+    vpn_type: "openvpn"
+    server_countries: "Netherlands"
