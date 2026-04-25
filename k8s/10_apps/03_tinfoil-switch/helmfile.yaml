@@ -13,4 +13,5 @@ releases:
     values:
       - values.yaml  # Default values from chart
     secrets:
-      - secrets/tinfoil-hat-secrets.yaml  # Optional: for sensitive data
+      - secrets/tinfoil-hat-secrets.yaml
+      - secrets/vpn.values.secret.yaml
