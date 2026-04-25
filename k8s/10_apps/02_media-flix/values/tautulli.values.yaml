@@ -19,13 +19,13 @@ controllers:
         image:
           repository: busybox
           tag: latest
-        command: [ "/bin/sh", "-c", "chown -R 1000:1000 /config" ]
+        command: [ "/bin/sh", "-c", "chown -R 2000:2000 /config" ]
 
     containers:
       app:
         image:
-          repository: ghcr.io/tautulli/tautulli
-          tag: v2.17.0
+          repository: ghcr.io/home-operations/tautulli
+          tag: 2.15.1@sha256:7f991f9b3ec79f57d6032a2453c51f50337b520d77103734a10731f47171e0c2
         env:
           TZ: Europe/Amsterdam
         probes:
