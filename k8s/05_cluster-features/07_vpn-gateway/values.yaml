@@ -1,0 +1,62 @@
+controllers:
+  vpn-gateway:
+    containers:
+      app:
+        image:
+          repository: qmcgaw/gluetun
+          tag: v3.40.0
+        env:
+          VPN_SERVICE_PROVIDER: nordvpn
+          VPN_TYPE: wireguard
+          # NordVPN Wireguard private key will be injected from secret
+          # WIREGUARD_PRIVATE_KEY: ...
+          SERVER_COUNTRIES: Netherlands
+          SHADOWSOCKS: "on"
+          SHADOWSOCKS_LISTENING_ADDRESS: ":1080"
+          HTTPPROXY: "on"
+          HTTPPROXY_LISTENING_ADDRESS: ":8888"
+          DOT: "off"
+          DNS_KEEP_NAMESERVER: "on"
+        envFrom:
+          - secretRef:
+              name: vpn-gateway
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          allowPrivilegeEscalation: true
+          readOnlyRootFilesystem: false
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+
+service:
+  app:
+    controller: vpn-gateway
+    ports:
+      socks:
+        enabled: true
+        port: 1080
+        protocol: TCP
+      http:
+        enabled: true
+        port: 8888
+        protocol: TCP
+
+persistence:
+  tun:
+    type: hostPath
+    hostPath: /dev/net/tun
+    globalMounts:
+      - path: /dev/net/tun
+  gluetun-data:
+    type: emptyDir
+    globalMounts:
+      - path: /gluetun
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp

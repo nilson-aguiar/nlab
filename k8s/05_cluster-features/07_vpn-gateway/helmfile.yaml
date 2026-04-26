@@ -1,0 +1,15 @@
+repositories:
+  - name: bjw-s
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
+
+---
+releases:
+  - name: vpn-gateway
+    namespace: vpn-gateway
+    chart: bjw-s/app-template
+    version: 4.6.2
+    values:
+      - ./values.yaml
+    secrets:
+      - ./secrets/nordvpn.secret.yaml

@@ -7,6 +7,8 @@ metadata:
     app: qbittorrent
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: qbittorrent
@@ -15,6 +17,44 @@ spec:
       labels:
         app: qbittorrent
     spec:
+      initContainers:
+        - name: setup-proxy
+          image: alpine:3.21.3
+          command:
+            - /bin/sh
+            - -c
+            - |
+              CONF_FILE="/config/qBittorrent/qBittorrent.conf"
+              if [ ! -f "$CONF_FILE" ]; then
+                echo "Config file not found, skipping surgical update to avoid resetting defaults."
+                exit 0
+              fi
+
+              set_option() {
+                key=$1
+                value=$2
+                if grep -q "$key" "$CONF_FILE"; then
+                  sed -i "s|$key=.*|$key=$value|" "$CONF_FILE"
+                else
+                  # If [Preferences] exists, add after it. Otherwise append to end.
+                  if grep -q "\[Preferences\]" "$CONF_FILE"; then
+                    sed -i "/\[Preferences\]/a $key=$value" "$CONF_FILE"
+                  else
+                    echo "$key=$value" >> "$CONF_FILE"
+                  fi
+                fi
+              }
+
+              set_option "Proxy\\\\IP" "vpn-gateway.vpn-gateway.svc.cluster.local"
+              set_option "Proxy\\\\Port" "1080"
+              set_option "Proxy\\\\Type" "2"
+              set_option "Proxy\\\\PeerConnections" "true"
+              set_option "Proxy\\\\OnlyForTorrents" "false"
+              set_option "Proxy\\\\ForceProxy" "true"
+              set_option "BitTorrent\\\\AnonMode" "true"
+          volumeMounts:
+            - name: qbittorrent-config
+              mountPath: /config
       containers:
         - name: qbittorrent
           image: "{{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag }}"
