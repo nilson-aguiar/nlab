@@ -8,6 +8,7 @@ version: &version 0.26.6
 # Affine Configuration (for bjw-s/app-template chart)
 controllers:
   main:
+    strategy: Recreate
     replicas: 1
     initContainers:
       init-db:
