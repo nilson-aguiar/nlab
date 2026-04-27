@@ -87,8 +87,19 @@ Each application directory typically contains:
 1.  **Surgical Updates**: When modifying application configurations, always check if there is a corresponding `secrets/` file that might need updates alongside `values/`.
 2.  **ArgoCD Registration**: New applications added to `k8s/10_apps` must have a corresponding manifest in `k8s/05_cluster-features/05_argo-cd/applications/` to be managed via GitOps.
 3.  **Namespace Consistency**: Ensure the `namespace` in `helmfile.yaml` matches the intended deployment target.
-4.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
-5.  **SOPS Keys**: System secrets require the age key at `/home/naguiar/.config/sops/age/keys.txt`.
+4.  **Standardized Deployments (bjw-s)**: For general applications, prefer using the `bjw-s/app-template` (OCI: `ghcr.io/bjw-s-labs/helm`).
+    *   **Secrets Pattern**: Structure sensitive data within `secrets` blocks to leverage the app-template's native secret generation:
+        ```yaml
+        secrets:
+          app-secret:
+            enabled: true
+            stringData:
+              VARIABLE_NAME: "value"
+        ```
+    *   **Encryption**: Encrypt secret files using `helm secrets encrypt -i <file>` before committing.
+5.  **Service Discovery**: When linking applications across namespaces, use the full internal DNS pattern: `<release>-<service>.<namespace>.svc.cluster.local:<port>`.
+6.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
+7.  **SOPS Keys**: System secrets require the age key at `~/.config/sops/age/keys.txt`.
 
 ## Workflow Summary
 
