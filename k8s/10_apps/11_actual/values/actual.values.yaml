@@ -1,0 +1,77 @@
+# k8s/10_apps/11_actual/values/actual.values.yaml
+controllers:
+  main:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: actualbudget/actual-server
+          tag: 26.4.0
+          pullPolicy: IfNotPresent
+        env:
+          TZ: Europe/Amsterdam
+          ACTUAL_PORT: &port 5006
+        envFrom:
+          - secretRef:
+              name: actual-secret
+        ports:
+          - name: http
+            containerPort: *port
+        probes:
+          liveness:
+            enabled: true
+            port: *port
+          readiness:
+            enabled: true
+            port: *port
+          startup:
+            enabled: true
+            port: *port
+            spec:
+              failureThreshold: 30
+              periodSeconds: 5
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+persistence:
+  data:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: longhorn
+    globalMounts:
+      - path: /data
+
+rawResources:
+  ingress-route:
+    enabled: true
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    annotations:
+      external-dns.alpha.kubernetes.io/target: 192.168.1.200
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`actual.local.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: actual
+                port: *port
+        tls:
+          secretName: certificate-tls
