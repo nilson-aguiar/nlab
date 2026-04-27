@@ -40,7 +40,6 @@ ingressRoute:
   entryPoints:
     - websecure
   tls:
-    issuerRef: letsencrypt-prod
     enabled: true
     secretName: certificate-tls
 
