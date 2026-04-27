@@ -75,6 +75,14 @@
         "k8s/([^/]+)/([^/]+)/.*"
       ],
       "groupName": "{{{path.2}}}"
+    },
+    {
+      "description": "Disable minimum release age for specific internal tools",
+      "matchPackageNames": [
+        "ghcr.io/nilson-aguiar/manga-fetcher",
+        "ghcr.io/nilson-aguiar/nbot"
+      ],
+      "minimumReleaseAge": null
     }
   ],
   "labels": [
