@@ -14,7 +14,7 @@ controllers:
           QBITTORRENT_HOST: "http://tinfoil-hat-qbittorrent.tinfoil-hat.svc.cluster.local:8080"
         envFrom:
           - secretRef:
-              name: nbot-secret
+              name: nbot
         ports:
           - name: http
             containerPort: &port 8080
