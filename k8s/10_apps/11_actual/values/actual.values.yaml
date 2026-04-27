@@ -68,7 +68,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`actual.local.naguiar.dev`)
+          - match: Host(`actual.local.naguiar.dev`) || Host(`actual.naguiar.dev`)
             kind: Rule
             services:
               - name: actual
