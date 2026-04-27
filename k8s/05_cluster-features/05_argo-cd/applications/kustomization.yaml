@@ -24,3 +24,4 @@ resources:
   - reader.yaml
   - vaultwarden.yaml
   - nbot.yaml
+  - actual.yaml
