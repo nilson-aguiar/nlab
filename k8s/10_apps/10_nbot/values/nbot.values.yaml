@@ -30,7 +30,7 @@ controllers:
           pullPolicy: IfNotPresent
         env:
           TZ: Europe/Amsterdam
-          QBITTORRENT_HOST: "http://tinfoil-hat-qbittorrent.tinfoil-hat.svc.cluster.local:8080"
+          QBITTORRENT_URL: "http://tinfoil-hat-qbittorrent.tinfoil-hat.svc.cluster.local:8080"
           SPRING_DATASOURCE_USERNAME: "nbot"
           SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-rw.cloudnative-pg.svc.cluster.local:5432/nbot"
         envFrom:
