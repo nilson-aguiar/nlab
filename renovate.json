@@ -77,10 +77,9 @@
       "groupName": "{{{path.2}}}"
     },
     {
-      "description": "Disable minimum release age for specific internal tools",
+      "description": "Disable minimum release age for internal tools",
       "matchPackageNames": [
-        "ghcr.io/nilson-aguiar/manga-fetcher",
-        "ghcr.io/nilson-aguiar/nbot"
+        "/^ghcr\\.io/nilson-aguiar//"
       ],
       "minimumReleaseAge": null
     }
