@@ -1,0 +1,20 @@
+# k8s/10_apps/11_actual/helmfile.yaml
+repositories:
+  - name: bjw-s
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
+
+---
+templates:
+  bjw: &bjw
+    namespace: actual
+    chart: bjw-s/app-template
+    version: 4.6.2
+
+releases:
+  - name: actual
+    <<: *bjw
+    secrets:
+      - ./secrets/actual.secrets.yaml
+    values:
+      - ./values/actual.values.yaml
