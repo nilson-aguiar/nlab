@@ -3,6 +3,25 @@ controllers:
   main:
     annotations:
       reloader.stakater.com/auto: "true"
+    initContainers:
+      init-db:
+        image:
+          repository: ghcr.io/home-operations/postgres-init
+          tag: 18
+        env:
+          INIT_POSTGRES_SUPER_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+          INIT_POSTGRES_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
+          INIT_POSTGRES_USER: "nbot"
+          INIT_POSTGRES_DBNAME: "nbot"
+          INIT_POSTGRES_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: nbot
+                key: SPRING_DATASOURCE_PASSWORD
     containers:
       app:
         image:
@@ -12,6 +31,8 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           QBITTORRENT_HOST: "http://tinfoil-hat-qbittorrent.tinfoil-hat.svc.cluster.local:8080"
+          SPRING_DATASOURCE_USERNAME: "nbot"
+          SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-rw.cloudnative-pg.svc.cluster.local:5432/nbot"
         envFrom:
           - secretRef:
               name: nbot
