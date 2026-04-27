@@ -14,7 +14,7 @@ controllers:
           ACTUAL_PORT: &port 5006
         envFrom:
           - secretRef:
-              name: actual-secret
+              name: actual
         ports:
           - name: http
             containerPort: *port
