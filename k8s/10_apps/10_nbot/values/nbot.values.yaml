@@ -1,6 +1,7 @@
 # k8s/10_apps/10_nbot/values/nbot.values.yaml
 controllers:
   main:
+    strategy: Recreate
     annotations:
       reloader.stakater.com/auto: "true"
     initContainers:
