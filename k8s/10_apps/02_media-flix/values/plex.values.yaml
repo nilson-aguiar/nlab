@@ -1,5 +1,6 @@
 controllers:
   plex:
+    strategy: Recreate
     initContainers:
       repair-db:
         securityContext:

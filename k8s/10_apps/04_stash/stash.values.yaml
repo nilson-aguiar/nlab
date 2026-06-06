@@ -1,5 +1,6 @@
 controllers:
   stash:
+    strategy: Recreate
 #    initContainers:
 #      repair-db:
 #        securityContext:

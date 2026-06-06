@@ -1,5 +1,6 @@
 controllers:
   komga:
+    strategy: Recreate
 #    initContainers:
 #      init:
 #        securityContext:
