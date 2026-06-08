@@ -24,4 +24,7 @@ certificate:
       - affine
       - reader
       - network-resources
+      - vaultwarden
+      - actual
+      - nbot
     autoNamespaces: *namespaces
