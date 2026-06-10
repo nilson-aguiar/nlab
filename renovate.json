@@ -72,9 +72,9 @@
     {
       "description": "Group k8s updates by application",
       "matchFileNames": [
-        "k8s/([^/]+)/([^/]+)/.*"
+        "k8s/**"
       ],
-      "groupName": "{{{path.2}}}"
+      "groupName": "{{{ lookup (split packageFileDir '/') 2 }}}"
     },
     {
       "description": "Disable minimum release age for internal tools",
