@@ -1,6 +1,6 @@
 image:
   repository: jauderho/yt-dlp
-  tag: 2026.03.17
+  tag: 2026.06.09
 
 persistence:
   storageClaimName: stash
