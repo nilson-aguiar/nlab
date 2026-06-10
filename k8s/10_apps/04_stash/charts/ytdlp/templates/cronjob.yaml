@@ -62,7 +62,7 @@ spec:
 
           initContainers:
           - name: init-rename-part-files
-            image: busybox:1.37
+            image: busybox:1.38
             securityContext:
               runAsNonRoot: true
               runAsUser: 1000
