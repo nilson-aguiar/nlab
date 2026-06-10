@@ -11,7 +11,7 @@ releases:
   - name: metallb
     chart: metallb/metallb
     namespace: metallb-system
-    version: 0.15.3
+    version: 0.16.1
   - name: metallb-configs
     namespace: metallb-system
     chart: raw/raw
@@ -23,7 +23,7 @@ releases:
   - name: multus
     namespace: kube-system
     chart: rke2-charts/rke2-multus
-    version: v4.2.411
+    version: v4.2.417
     values:
       - ./multus.values.yaml
 
