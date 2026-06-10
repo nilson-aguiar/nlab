@@ -29,7 +29,7 @@ spec:
   primaryUpdateStrategy: unsupervised
   primaryUpdateMethod: switchover
   storage:
-    size: 80Gi
+    size: 100Gi
     storageClass: longhorn-strict-local
 #  superuserSecret:
 #    name: cloudnative-pg-secret

@@ -112,6 +112,9 @@ grafana:
   plugins:
     - victoriametrics-metrics-datasource
     - victoriametrics-logs-datasource
+  grafana.ini:
+    plugins:
+      allow_loading_unsigned_plugins: victoriametrics-metrics-datasource,victoriametrics-logs-datasource
 
   persistence:
     enabled: true

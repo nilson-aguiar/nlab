@@ -8,11 +8,25 @@ resources:
   - vmagent-ingress.yaml
   - vmsingle-ingress.yaml
 
-#configMapGenerator:
-#  - name: grafana-dashboard-resource-waste
-#    namespace: monitoring
-#    files:
-#      - ../dashboards/resource-waste.json
-#    options:
-#      labels:
-#        grafana_dashboard: "1"
+configMapGenerator:
+  - name: grafana-dashboard-resource-waste
+    namespace: monitoring
+    files:
+      - ../dashboards/resource-waste.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+  - name: grafana-dashboard-argocd
+    namespace: monitoring
+    files:
+      - ../dashboards/argocd.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+  - name: grafana-dashboard-nodes-copy
+    namespace: monitoring
+    files:
+      - ../dashboards/nodes-copy.json
+    options:
+      labels:
+        grafana_dashboard: "1"
