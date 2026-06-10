@@ -29,7 +29,7 @@ spec:
   primaryUpdateStrategy: unsupervised
   primaryUpdateMethod: switchover
   storage:
-    size: 100Gi
+    size: 30Gi
     storageClass: longhorn-strict-local
 #  superuserSecret:
 #    name: cloudnative-pg-secret
@@ -38,6 +38,7 @@ spec:
     parameters:
       max_connections: "400"
       shared_buffers: 256MB
+      max_slot_wal_keep_size: 5GB
   resources:
     requests:
       cpu: 500m
