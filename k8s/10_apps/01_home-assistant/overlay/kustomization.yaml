@@ -12,7 +12,7 @@ images:
   - name: ghcr.io/home-assistant-libs/python-matter-server
     newTag: 8.1.0
   - name: eclipse-mosquitto
-    newTag: 2.0.21
+    newTag: 2.0.22
   - name: koenkk/zigbee2mqtt
     newTag: 1.42.0
 
