@@ -27,7 +27,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/nilson-aguiar/nbot
-          tag: 1.0.0
+          tag: 1.1.0
           pullPolicy: IfNotPresent
         env:
           TZ: Europe/Amsterdam
