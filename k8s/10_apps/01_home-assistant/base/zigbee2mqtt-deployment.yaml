@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt
+  labels:
+    app: zigbee2mqtt
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+    spec:
+      initContainers:
+        - name: init-config
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /app/data/configuration.yaml ]; then
+                echo "Initializing configuration.yaml..."
+                cp /tmp/config/configuration.yaml /app/data/configuration.yaml
+              fi
+          volumeMounts:
+            - name: zigbee2mqtt-data-volume
+              mountPath: /app/data
+            - name: zigbee2mqtt-config-volume
+              mountPath: /tmp/config
+      containers:
+        - name: zigbee2mqtt
+          image: "koenkk/zigbee2mqtt:tag-here"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "Europe/Amsterdam"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "512Mi"
+          volumeMounts:
+            - name: zigbee2mqtt-data-volume
+              mountPath: /app/data
+      restartPolicy: Always
+      volumes:
+        - name: zigbee2mqtt-config-volume
+          configMap:
+            name: zigbee2mqtt-config
+        - name: zigbee2mqtt-data-volume
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-data

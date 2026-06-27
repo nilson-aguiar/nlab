@@ -61,15 +61,9 @@ Each application directory typically contains:
 
 ### Kubernetes Management (Helmfile)
 
-- **Deploy specific app**:
-  Navigate to the app directory (e.g., `k8s/10_apps/01_home-assistant`) and run:
-  ```bash
-  helmfile apply
-  ```
-- **Apply all configurations**:
-  ```bash
-  ./k8s/update-all.sh
-  ```
+> [!WARNING]
+> Do NOT run `helmfile apply` or `./k8s/update-all.sh`. These commands must never be run by the agent. Instead, commit your changes to Git so they can be deployed via ArgoCD.
+
 - **Check differences**:
   ```bash
   ./k8s/diff-all.sh
@@ -84,10 +78,11 @@ Each application directory typically contains:
 
 ## Development Conventions
 
-1.  **Surgical Updates**: When modifying application configurations, always check if there is a corresponding `secrets/` file that might need updates alongside `values/`.
-2.  **ArgoCD Registration**: New applications added to `k8s/10_apps` must have a corresponding manifest in `k8s/05_cluster-features/05_argo-cd/applications/` to be managed via GitOps.
-3.  **Namespace Consistency**: Ensure the `namespace` in `helmfile.yaml` matches the intended deployment target.
-4.  **Standardized Deployments (bjw-s)**: For general applications, prefer using the `bjw-s/app-template` (OCI: `ghcr.io/bjw-s-labs/helm`).
+1.  **GitOps Deployment Only**: **Do NOT run `helmfile apply` or `./k8s/update-all.sh` under any circumstances.** You must commit and push all configuration updates to Git to let ArgoCD deploy them automatically.
+2.  **Surgical Updates**: When modifying application configurations, always check if there is a corresponding `secrets/` file that might need updates alongside `values/`.
+3.  **ArgoCD Registration**: New applications added to `k8s/10_apps` must have a corresponding manifest in `k8s/05_cluster-features/05_argo-cd/applications/` to be managed via GitOps.
+4.  **Namespace Consistency**: Ensure the `namespace` in `helmfile.yaml` matches the intended deployment target.
+5.  **Standardized Deployments (bjw-s)**: For general applications, prefer using the `bjw-s/app-template` (OCI: `ghcr.io/bjw-s-labs/helm`).
     *   **Secrets Pattern**: Structure sensitive data within `secrets` blocks to leverage the app-template's native secret generation:
         ```yaml
         secrets:
@@ -97,12 +92,12 @@ Each application directory typically contains:
               VARIABLE_NAME: "value"
         ```
     *   **Encryption**: Encrypt secret files using `helm secrets encrypt -i <file>` before committing.
-5.  **Service Discovery**: When linking applications across namespaces, use the full internal DNS pattern: `<release>-<service>.<namespace>.svc.cluster.local:<port>`.
-6.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
-7.  **SOPS Keys**: System secrets require the age key at `~/.config/sops/age/keys.txt`.
+6.  **Service Discovery**: When linking applications across namespaces, use the full internal DNS pattern: `<release>-<service>.<namespace>.svc.cluster.local:<port>`.
+7.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
+8.  **SOPS Keys**: System secrets require the age key at `~/.config/sops/age/keys.txt`.
 
 ## Workflow Summary
 
 1.  **Node Provisioning**: A new machine is set up by installing NixOS and applying a configuration from the `/nixos` directory.
-2.  **Application Deployment**: From a management machine with `helmfile` installed, running `helmfile apply` within a specific directory inside `/k8s` will deploy or update the corresponding application in the cluster. Helmfile handles the decryption of secrets and the rendering of Helm templates.
-3.  **GitOps Registration**: Application manifests in `k8s/05_cluster-features/05_argo-cd/applications/` ensure the application is automatically managed and synced by ArgoCD.
+2.  **Application Deployment**: All application configurations and secrets updates are committed to the Git repository. ArgoCD automatically detects the changes and deploys/syncs them in the cluster. Do NOT run `helmfile apply` or `./k8s/update-all.sh` directly.
+3.  **GitOps Registration**: New applications added to `k8s/10_apps` must have a corresponding manifest in `k8s/05_cluster-features/05_argo-cd/applications/` to be registered and managed by ArgoCD.

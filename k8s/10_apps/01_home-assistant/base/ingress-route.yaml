@@ -24,5 +24,12 @@ spec:
       services:
         - name: home-assistant
           port: code-server
+    - match: Host(`z2m.local.naguiar.dev`) || Host(`z2m.naguiar.dev`)
+      kind: Rule
+      middlewares:
+        - name: default-headers
+      services:
+        - name: zigbee2mqtt
+          port: 8080
   tls:
     secretName: certificate-tls

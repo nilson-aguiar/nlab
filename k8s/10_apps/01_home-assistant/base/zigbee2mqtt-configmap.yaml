@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+data:
+  configuration.yaml: |
+    homeassistant: true
+    permit_join: false
+    mqtt:
+      base_topic: zigbee2mqtt
+      server: mqtt://mosquitto:1883
+    serial:
+      # Change the IP and port below to match your SLZB-06U coordinator once it is running on your network
+      port: tcp://192.168.1.150:8888
+      # SLZB-06U uses a Silicon Labs chip (EFR32MG21) which uses the 'ember' adapter (formerly 'ezsp')
+      adapter: ember
+    frontend:
+      port: 8080

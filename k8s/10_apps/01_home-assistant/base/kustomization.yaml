@@ -11,6 +11,14 @@ resources:
   - matter-pvc.yaml
   - matter-service.yaml
   - matter-deployment.yaml
+  - mosquitto-pvc.yaml
+  - mosquitto-configmap.yaml
+  - mosquitto-deployment.yaml
+  - mosquitto-service.yaml
+  - zigbee2mqtt-pvc.yaml
+  - zigbee2mqtt-configmap.yaml
+  - zigbee2mqtt-deployment.yaml
+  - zigbee2mqtt-service.yaml
 
 # namespace: home-assistant
 
