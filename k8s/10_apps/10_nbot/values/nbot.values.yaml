@@ -67,6 +67,16 @@ service:
       http:
         port: *port
 
+persistence:
+  data:
+    enabled: true
+    type: persistentVolumeClaim
+    storageClass: secondary
+    accessMode: ReadWriteMany
+    size: 10Gi
+    globalMounts:
+      - path: /data
+
 rawResources:
   ingress-route:
     enabled: true
@@ -80,7 +90,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`nbot.local.naguiar.dev`)
+          - match: Host(`nbot.local.naguiar.dev`) || Host(`nbot.naguiar.dev`)
             kind: Rule
             services:
               - name: nbot
