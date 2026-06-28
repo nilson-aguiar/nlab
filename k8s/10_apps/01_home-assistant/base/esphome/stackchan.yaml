@@ -42,6 +42,7 @@ api:
 
 ota:
   - platform: esphome
+    password: !secret stackchan__ota_password
 
 # Network & API setup (uses secrets.yaml from your ESPHome Dashboard)
 wifi:
@@ -73,7 +74,7 @@ globals:
 micro_wake_word:
   id: mww
   models:
-    - model: "https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/okay_nabu.json"
+    - model: "https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/hey_jarvis.json"
 
 voice_assistant:
   id: va
