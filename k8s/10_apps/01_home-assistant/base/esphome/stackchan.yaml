@@ -1,0 +1,213 @@
+# Board: M5Stack CoreS3 (M5Stack)
+# Definition: definitions/boards/m5stack-cores3/manifest.yaml
+
+substitutions:
+  name: stackchan
+  friendly_name: Stackchan
+  servo_x_angle_offset: "164"
+  servo_x_position_to_angle: "(x - 34.0f) * 0.3710f - 164.0f"
+  servo_y_angle_offset: "50"
+  servo_y_position_to_angle: "(x - 140.0f) * 90.0f / 260.0f;"
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  project:
+    name: m5stack.stackchan-bsp
+    version: 2026.3.0
+
+esp32:
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+logger:
+
+# Import the official Stack-chan BSP from M5Stack
+packages:
+  remote_package_files:
+    url: https://github.com/m5stack/esphome-yaml
+    files: [examples/kit/stackchan-bsp.factory.yaml]
+    ref: main
+    refresh: 0s
+
+api:
+  encryption:
+    key: !secret stackchan__encryption_key
+
+ota:
+  - platform: esphome
+
+# Network & API setup (uses secrets.yaml from your ESPHome Dashboard)
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: Stackchan Fallback Hotspot
+    password: !secret stackchan__encryption_key
+captive_portal:
+
+# --- Custom Stack-chan Interactive Code ---
+
+globals:
+  - id: eye_x
+    type: int
+    initial_value: "0"
+  - id: eye_y
+    type: int
+    initial_value: "0"
+  - id: is_blinking
+    type: bool
+    initial_value: "false"
+  - id: face_state
+    type: int
+    initial_value: "0" # 0=Idle, 1=Listening, 2=Thinking, 3=Speaking
+
+# Voice assistant pipeline integration
+# On-device wake word detection
+micro_wake_word:
+  id: mww
+  models:
+    - model: "https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/okay_nabu.json"
+
+voice_assistant:
+  id: va
+  microphone: i2s_mic
+  speaker: i2s_speaker
+  micro_wake_word: mww
+  on_listening:
+    - lambda: 'id(face_state) = 1;'
+    # Sweep head left and right to "look" for the speaker
+    - number.set_value:
+        id: servo_x_angle
+        value: 35
+    - delay: 350ms
+    - number.set_value:
+        id: servo_x_angle
+        value: -35
+    - delay: 450ms
+    - number.set_value:
+        id: servo_x_angle
+        value: 0
+  on_stt_vad_end:
+    - lambda: 'id(face_state) = 2;'
+  on_tts_start:
+    - lambda: 'id(face_state) = 3;'
+  on_end:
+    - lambda: 'id(face_state) = 0;'
+    # Reset head position to center when conversation ends
+    - number.set_value:
+        id: servo_x_angle
+        value: 0
+    - number.set_value:
+        id: servo_y_angle
+        value: 0
+
+# Interval to trigger random blinks and eye shifts
+interval:
+  - interval: 100ms
+    then:
+      - lambda: |-
+          static int blink_counter = 0;
+          static int move_counter = 0;
+          static int mouth_counter = 0;
+
+          // Handle Blinking (only during idle)
+          if (id(face_state) == 0) {
+            if (id(is_blinking)) {
+              blink_counter++;
+              if (blink_counter > 2) {
+                id(is_blinking) = false;
+                blink_counter = 0;
+              }
+            } else if (random_float() < 0.03) {
+              id(is_blinking) = true;
+              blink_counter = 0;
+            }
+          }
+
+          // Handle Looking Around (only during idle)
+          if (id(face_state) == 0) {
+            move_counter++;
+            if (move_counter > 30) {
+              move_counter = 0;
+              float r = random_float();
+              if (r < 0.5) { id(eye_x) = 0; id(eye_y) = 0; } // center
+              else if (r < 0.65) { id(eye_x) = -12; id(eye_y) = 0; } // left
+              else if (r < 0.8) { id(eye_x) = 12; id(eye_y) = 0; } // right
+              else if (r < 0.9) { id(eye_x) = 0; id(eye_y) = -8; } // up
+              else { id(eye_x) = 0; id(eye_y) = 8; } // down
+            }
+          }
+
+# Override display to clear test card and draw the custom face
+display:
+  - id: !extend m5cores3_lcd
+    show_test_card: false
+    lambda: |-
+      // Fill background (yellow: 255, 220, 0)
+      it.fill(Color(255, 220, 0));
+
+      int centerX = 160;
+      int centerY = 110;
+      int eyeRadius = 32;
+      int pupilRadius = 14;
+
+      int leftEyeCenter = centerX - 60;
+      int rightEyeCenter = centerX + 60;
+
+      // 1. Draw Eyes based on Voice Assistant State
+      if (id(face_state) == 1) {
+        // LISTENING: Wide open eyes
+        it.circle(leftEyeCenter, centerY, eyeRadius + 4, Color(0, 0, 0));
+        it.circle(rightEyeCenter, centerY, eyeRadius + 4, Color(0, 0, 0));
+        it.filled_circle(leftEyeCenter, centerY, pupilRadius - 2, Color(0, 0, 0));
+        it.filled_circle(rightEyeCenter, centerY, pupilRadius - 2, Color(0, 0, 0));
+      } 
+      else if (id(face_state) == 2) {
+        // THINKING: Tilted processing lines (confused/computing)
+        it.line(leftEyeCenter - 25, centerY - 5, leftEyeCenter + 25, centerY + 5, Color(0, 0, 0));
+        it.line(rightEyeCenter - 25, centerY + 5, rightEyeCenter + 25, centerY - 5, Color(0, 0, 0));
+      } 
+      else if (id(is_blinking) && id(face_state) == 0) {
+        // BLINKING (Idle): Closed eye lines
+        it.line(leftEyeCenter - 25, centerY, leftEyeCenter + 25, centerY, Color(0, 0, 0));
+        it.line(rightEyeCenter - 25, centerY, rightEyeCenter + 25, centerY, Color(0, 0, 0));
+      } 
+      else {
+        // IDLE or SPEAKING: Normal eyes with movement offset
+        it.circle(leftEyeCenter, centerY, eyeRadius, Color(0, 0, 0));
+        it.circle(rightEyeCenter, centerY, eyeRadius, Color(0, 0, 0));
+        it.filled_circle(leftEyeCenter + id(eye_x), centerY + id(eye_y), pupilRadius, Color(0, 0, 0));
+        it.filled_circle(rightEyeCenter + id(eye_x), centerY + id(eye_y), pupilRadius, Color(0, 0, 0));
+      }
+
+      // 2. Draw Mouth based on Voice Assistant State
+      if (id(face_state) == 3) {
+        // SPEAKING: Animating mouth
+        static int mouth_radius = 4;
+        static bool mouth_opening = true;
+        if (mouth_opening) {
+          mouth_radius += 2;
+          if (mouth_radius >= 14) mouth_opening = false;
+        } else {
+          mouth_radius -= 2;
+          if (mouth_radius <= 4) mouth_opening = true;
+        }
+        it.filled_circle(centerX, centerY + 55, mouth_radius, Color(0, 0, 0));
+      } 
+      else if (id(face_state) == 1) {
+        // LISTENING: Small open circle (O mouth)
+        it.circle(centerX, centerY + 55, 8, Color(0, 0, 0));
+      } 
+      else if (id(face_state) == 2) {
+        // THINKING: Small straight line
+        it.line(centerX - 10, centerY + 55, centerX + 10, centerY + 55, Color(0, 0, 0));
+      } 
+      else {
+        // IDLE: Happy smile curve
+        it.line(centerX - 15, centerY + 52, centerX + 15, centerY + 52, Color(0, 0, 0));
+        it.line(centerX - 15, centerY + 52, centerX - 12, centerY + 49, Color(0, 0, 0));
+        it.line(centerX + 15, centerY + 52, centerX + 12, centerY + 49, Color(0, 0, 0));
+      }
