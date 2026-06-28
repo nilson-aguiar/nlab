@@ -16,7 +16,7 @@ images:
   - name: koenkk/zigbee2mqtt
     newTag: 2.12.0
   - name: ghcr.io/esphome/esphome
-    newTag: 2026.6.4
+    newTag: 2026.6.1
 
 #patches:
 #- patch: |-
