@@ -76,6 +76,10 @@ persistence:
     size: 10Gi
     globalMounts:
       - path: /data
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp
 
 rawResources:
   ingress-route:
