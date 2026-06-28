@@ -19,6 +19,9 @@ resources:
   - zigbee2mqtt-configmap.yaml
   - zigbee2mqtt-deployment.yaml
   - zigbee2mqtt-service.yaml
+  - esphome-pvc.yaml
+  - esphome-deployment.yaml
+  - esphome-service.yaml
 
 # namespace: home-assistant
 

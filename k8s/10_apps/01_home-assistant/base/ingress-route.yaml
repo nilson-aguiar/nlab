@@ -31,5 +31,12 @@ spec:
       services:
         - name: zigbee2mqtt
           port: 8080
+    - match: Host(`esphome.local.naguiar.dev`) || Host(`esphome.naguiar.dev`)
+      kind: Rule
+      middlewares:
+        - name: default-headers
+      services:
+        - name: esphome
+          port: 6052
   tls:
     secretName: certificate-tls
