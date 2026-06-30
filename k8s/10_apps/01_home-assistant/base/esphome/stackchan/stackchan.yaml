@@ -10,13 +10,26 @@ esphome:
   project:
     name: m5stack.stackchan-bsp
     version: 2026.3.0
+  # Force the LCD backlight to 30% on every boot. Priority -100 runs late, after
+  # the AXP2101 backlight rail (DLDO1) is initialized, so the set always sticks.
+  on_boot:
+    # List form so this merges (concatenates) with the BSP package's own
+    # on_boot list instead of clashing with it.
+    - priority: -100
+      then:
+        - light.turn_on:
+            id: lcd_backlight
+            brightness: 30%
 
-# Import the official Stack-chan BSP from M5Stack
+# Import the vendored Stack-chan BSP from THIS repo (public, so no token needed).
+# The BSP file is committed at the path below; ESPHome fetches it at compile time.
+# `ref: main` tracks the latest commit — pin it to a commit SHA or tag if you
+# want fully reproducible builds (the file itself pins the m5stack components).
 packages:
-  remote_package_files:
-    url: https://github.com/m5stack/esphome-yaml
-    files: [examples/kit/stackchan-bsp.factory.yaml]
+  bsp:
+    url: https://github.com/nilson-aguiar/nlab
     ref: main
+    files: [k8s/10_apps/01_home-assistant/base/esphome/stackchan/stackchan-bsp.factory.yaml]
     refresh: 0s
 
 api:
@@ -126,16 +139,32 @@ voice_assistant:
     - number.set:
         id: servo_y_angle
         value: 0
-    # Give the speaker time to release the shared I2S bus before re-arming the
-    # mic; otherwise micro_wake_word can silently fail to restart after TTS.
-    - delay: 1s
+    # The mic and speaker share one half-duplex I2S bus, so micro_wake_word and
+    # the speaker cannot run at the same time ("Parent bus is busy"). We must
+    # first wait for the TTS announcement to BEGIN (the speaker has start-up
+    # latency, so is_announcing is briefly false right after on_end), then wait
+    # for it to FINISH, and only then re-arm the mic. Restarting micro_wake_word
+    # too early grabs the bus and the response only plays on the next wake word.
+    - wait_until:
+        condition:
+          media_player.is_announcing:
+        timeout: 3s
+    - wait_until:
+        condition:
+          not:
+            media_player.is_announcing:
+        timeout: 30s
     - micro_wake_word.start:
   # If the pipeline errors (e.g. TTS/playback failure) reset state and resume
   # listening, so the robot never gets stuck and stops answering the wake word.
   on_error:
     - lambda: 'id(face_state) = 0;'
     - light.turn_off: stackchan_light_bar
-    - delay: 1s
+    - wait_until:
+        condition:
+          not:
+            media_player.is_announcing:
+        timeout: 10s
     - micro_wake_word.start:
 
 # Interval to trigger random blinks and eye shifts
@@ -175,6 +204,102 @@ interval:
             }
           }
 
+  # Ambient-light auto-brightness. Runs only when the "Auto Brightness" switch
+  # is on; maps the ambient_light reading (lux) to a backlight level so the LCD
+  # is dim in the dark and bright in daylight. The 30% boot value is the
+  # startup default until the first reading lands (or if the switch is off).
+  - interval: 30s
+    then:
+      - if:
+          condition:
+            switch.is_on: auto_brightness_enabled
+          then:
+            - lambda: |-
+                float lux = id(ambient_light_sensor).state;
+                if (isnan(lux)) return;
+                // Map ~0..500 lux to 15%..100% brightness, clamped.
+                float b = 0.15f + (lux / 500.0f) * 0.85f;
+                if (b < 0.15f) b = 0.15f;
+                if (b > 1.0f) b = 1.0f;
+                auto call = id(lcd_backlight).turn_on();
+                call.set_brightness(b);
+                call.set_transition_length(1000);
+                call.perform();
+
+# Battery monitoring via the AXP2101 PMU. Exposes "Battery Level" (%) to Home
+# Assistant (device_class: battery) and gives an id we read in the display
+# lambda to render the percentage in the top-right corner of the face.
+sensor:
+  - platform: axp2101
+    axp2101_id: axp2101_pmu
+    update_interval: 30s
+    battery_level:
+      id: battery_level_sensor
+      name: "Battery Level"
+    battery_voltage:
+      name: "Battery Voltage"
+    # Charging status is a binary_sensor, but this component wires it up as a
+    # nested key on the same axp2101 sensor platform entry.
+    battery_charging:
+      id: battery_charging_sensor
+      name: "Battery Charging"
+
+# Toggle (exposed to HA) for ambient-light auto-brightness. When on, the 30s
+# interval drives the LCD backlight from the ambient_light sensor; when off, the
+# backlight stays where you (or the 30% boot default) set it.
+switch:
+  - platform: template
+    name: "Auto Brightness"
+    id: auto_brightness_enabled
+    icon: mdi:brightness-auto
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+# Proximity greeting: ltr_als_ps proximity counts rise as someone approaches.
+# analog_threshold converts that to on/off with hysteresis, so the greeting
+# fires once on approach (not repeatedly while someone sits in front).
+binary_sensor:
+  - platform: analog_threshold
+    id: person_near
+    name: "Person Near"
+    sensor_id: proximity_sensor
+    threshold:
+      upper: 500
+      lower: 300
+    on_press:
+      # Only greet when idle so we never interrupt an active conversation.
+      - if:
+          condition:
+            lambda: 'return id(face_state) == 0;'
+          then:
+            - light.turn_on:
+                id: stackchan_light_bar
+                red: 0%
+                green: 100%
+                blue: 60%
+                brightness: 60%
+            - number.set: {id: servo_y_angle, value: 20}
+            - number.set: {id: servo_x_angle, value: 15}
+            - delay: 300ms
+            - number.set: {id: servo_x_angle, value: -15}
+            - delay: 300ms
+            - number.set: {id: servo_x_angle, value: 0}
+            - number.set: {id: servo_y_angle, value: 0}
+            # Only clear the bar if still idle (a conversation may have started
+            # mid-greeting, in which case the voice states own the light now).
+            - if:
+                condition:
+                  lambda: 'return id(face_state) == 0;'
+                then:
+                  - light.turn_off: stackchan_light_bar
+
+# Font used to render the battery percentage on the LCD (BSP defines none).
+# gfonts:// is fetched automatically by ESPHome at compile time.
+font:
+  - file: "gfonts://Roboto"
+    id: font_battery
+    size: 18
+
 # Override display to clear test card and draw the custom face
 display:
   - id: !extend m5cores3_lcd
@@ -182,6 +307,19 @@ display:
     lambda: |-
       // Fill background (black: 0, 0, 0)
       it.fill(Color(0, 0, 0));
+
+      // Battery percentage in the top-right corner (drawn over the black fill,
+      // away from the eyes/mouth so it never overlaps the face).
+      if (id(battery_level_sensor).has_state()) {
+        int batt_level = (int) id(battery_level_sensor).state;
+        bool charging = id(battery_charging_sensor).has_state() &&
+                        id(battery_charging_sensor).state;
+        // Red when low and not charging, otherwise white. "+" prefix = charging.
+        Color batt_color = (batt_level <= 15 && !charging)
+                             ? Color(255, 40, 40) : Color(255, 255, 255);
+        it.printf(316, 4, id(font_battery), batt_color, TextAlign::TOP_RIGHT,
+                  "%s%d%%", charging ? "+" : "", batt_level);
+      }
 
       int centerX = 160;
       int centerY = 110;
