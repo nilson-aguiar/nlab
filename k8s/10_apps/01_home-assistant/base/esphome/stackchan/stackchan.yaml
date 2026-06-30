@@ -2,12 +2,7 @@
 # Definition: definitions/boards/m5stack-cores3/manifest.yaml
 
 substitutions:
-  name: stackchan
   friendly_name: Stackchan
-  servo_x_angle_offset: "164"
-  servo_x_position_to_angle: "(x - 34.0f) * 0.3710f - 164.0f"
-  servo_y_angle_offset: "50"
-  servo_y_position_to_angle: "(x - 140.0f) * 90.0f / 260.0f;"
 
 esphome:
   name: ${name}
@@ -15,18 +10,6 @@ esphome:
   project:
     name: m5stack.stackchan-bsp
     version: 2026.3.0
-  on_boot:
-    priority: -100
-    then:
-      - micro_wake_word.start:
-
-esp32:
-  variant: esp32s3
-  flash_size: 16MB
-  framework:
-    type: esp-idf
-
-logger:
 
 # Import the official Stack-chan BSP from M5Stack
 packages:
@@ -39,9 +22,14 @@ packages:
 api:
   encryption:
     key: !secret stackchan__encryption_key
+  on_client_connected:
+    - delay: 50ms
+    - micro_wake_word.start:
+  on_client_disconnected:
+    - voice_assistant.stop:
 
 ota:
-  - platform: esphome
+  - id: !extend ota_esphome
     password: !secret stackchan__ota_password
 
 # Network & API setup (uses secrets.yaml from your ESPHome Dashboard)
@@ -51,7 +39,6 @@ wifi:
   ap:
     ssid: Stackchan Fallback Hotspot
     password: !secret stackchan__encryption_key
-captive_portal:
 
 # --- Custom Stack-chan Interactive Code ---
 
@@ -73,13 +60,23 @@ globals:
 # On-device wake word detection
 micro_wake_word:
   id: mww
+  microphone:
+    microphone: i2s_mic
   models:
     - model: "https://github.com/esphome/micro-wake-word-models/raw/main/models/v2/hey_jarvis.json"
+  # Wake word detected -> launch the voice assistant pipeline.
+  # Without this trigger nothing starts the conversation.
+  on_wake_word_detected:
+    - voice_assistant.start:
+        wake_word: !lambda return wake_word;
 
 voice_assistant:
   id: va
-  microphone: i2s_mic
-  speaker: i2s_speaker
+  microphone:
+    microphone: i2s_mic
+  # Use the media player the BSP already wraps around i2s_speaker
+  # (speaker: and media_player: are mutually exclusive).
+  media_player: va_media_player
   micro_wake_word: mww
   on_listening:
     - lambda: 'id(face_state) = 1;'
@@ -129,6 +126,16 @@ voice_assistant:
     - number.set:
         id: servo_y_angle
         value: 0
+    # Give the speaker time to release the shared I2S bus before re-arming the
+    # mic; otherwise micro_wake_word can silently fail to restart after TTS.
+    - delay: 1s
+    - micro_wake_word.start:
+  # If the pipeline errors (e.g. TTS/playback failure) reset state and resume
+  # listening, so the robot never gets stuck and stops answering the wake word.
+  on_error:
+    - lambda: 'id(face_state) = 0;'
+    - light.turn_off: stackchan_light_bar
+    - delay: 1s
     - micro_wake_word.start:
 
 # Interval to trigger random blinks and eye shifts
