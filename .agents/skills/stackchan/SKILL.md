@@ -7,7 +7,10 @@ description: Guides development, configuration, and troubleshooting for the M5St
 Use this skill when configuring, deploying, or troubleshooting the M5Stack StackChan CoreS3 robot integration in ESPHome or Home Assistant.
 
 ## BSP Package Import
-Ensure `stackchan.yaml` or any other ESPHome configuration import the official BSP packages:
+
+### Upstream reference (original)
+The official M5Stack BSP. Keep this as the canonical source — use it as the
+starting point and to diff against when re-vendoring or checking for upstream fixes:
 ```yaml
 packages:
   remote_package_files:
@@ -16,6 +19,31 @@ packages:
     ref: main
     refresh: 0s
 ```
+
+### Vendored copy (what this project actually uses)
+A local copy of the upstream BSP has been vendored into this repo and is
+referenced from the project's own GitHub repo instead of m5stack's. The copy
+lives at `k8s/10_apps/01_home-assistant/base/esphome/stackchan/stackchan-bsp.factory.yaml`
+and `stackchan.yaml` imports it like this:
+```yaml
+packages:
+  bsp:
+    url: https://github.com/nilson-aguiar/nlab
+    ref: main
+    files: [k8s/10_apps/01_home-assistant/base/esphome/stackchan/stackchan-bsp.factory.yaml]
+    refresh: 0s
+```
+
+**Why vendored, and changes made vs upstream** (see the header comment in the
+vendored file for the authoritative, always-current list):
+1. `external_components` `source` pinned to a fixed m5stack commit (was tracking
+   `main`) for reproducible builds.
+2. `ltr_als_ps`: added `id:` to the `ambient_light` and proximity (`ps_counts`)
+   sub-sensors so the main config can read them for auto-brightness and the
+   proximity greeting (upstream exposes a name only, no id).
+
+When upstream ships a fix, re-fetch the official file (above), re-apply changes
+1 & 2, bump the pinned commit, and update the vendored copy's header.
 
 ## Key Configuration Constraints
 1. **Power Sequence (AW9523B)**: Set `BOOST_EN` to true first to allow boost circuit to boot up before enabling `BUS_OUT_EN` or `USB_OTG_EN`.
