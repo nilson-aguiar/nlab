@@ -28,6 +28,29 @@ packages:
    - Trigger the `Servo Calibration` button and wait 1s for NVS write.
    - Reset the ESP32 to load calibrated values.
 
+## Log Triage
+ESPHome StackChan logs are ~99% I2C / display / servo / touch chatter at `VERBOSE`
+level, plus TCP-buffer backpressure spam during audio playback. Use the bundled
+`filter-log.sh` (lives next to this file) to cut a log down to the
+voice / audio / wake-word / error signal **before** reading or pasting it — it
+turns a multi-thousand-line dump into a few dozen relevant lines and saves a lot
+of tokens.
+
+```bash
+# default "voice" mode: voice_assistant + audio + wake word + errors
+.agents/skills/stackchan/filter-log.sh <logfile>
+.agents/skills/stackchan/filter-log.sh <logfile> all   # everything minus known noise
+.agents/skills/stackchan/filter-log.sh <logfile> err   # warnings + errors only
+cat <logfile> | .agents/skills/stackchan/filter-log.sh -   # read from stdin
+```
+
+When troubleshooting the voice pipeline, prefer this over reading raw logs. Trace
+the expected turn: wake word → STT (`Starting STT by VAD`) → intent → TTS
+(`Response URL`) → speaker `ANNOUNCING` → `Announcement finished playing` →
+`micro_wake_word` restart. Watch for `Parent bus is busy` — the mic and speaker
+share one half-duplex I2S bus and cannot run at once, so the mic must be fully
+released before the speaker starts (and re-armed only after playback ends).
+
 ## Code References
 - If you need to inspect custom/factory C++ firmware logic or remote controller protocol code, refer to the local clone of the official repository: [/Users/naguiar/workspace/nilson-aguiar/personal/homelab/StackChan](file:///Users/naguiar/workspace/nilson-aguiar/personal/homelab/StackChan).
 
