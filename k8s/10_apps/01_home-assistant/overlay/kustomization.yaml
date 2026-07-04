@@ -6,7 +6,7 @@ resources:
 # namespace: home-assistant
 images:
   - name: homeassistant/home-assistant
-    newTag: 2026.6.4
+    newTag: 2026.7.1
   - name: linuxserver/code-server
     newTag: 4.109.2-ls317
   - name: ghcr.io/home-assistant-libs/python-matter-server
@@ -14,9 +14,9 @@ images:
   - name: eclipse-mosquitto
     newTag: 2.0.22
   - name: koenkk/zigbee2mqtt
-    newTag: 2.12.0
+    newTag: 2.12.1
   - name: ghcr.io/esphome/esphome
-    newTag: 2026.6.1
+    newTag: 2026.6.4
 
 #patches:
 #- patch: |-
