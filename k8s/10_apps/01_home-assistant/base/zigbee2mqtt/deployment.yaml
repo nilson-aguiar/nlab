@@ -15,6 +15,12 @@ spec:
       app: zigbee2mqtt
   template:
     metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[{
+          "name": "lan-bridge",
+          "namespace": "kube-system",
+          "ips": ["192.168.1.233/24"]
+        }]'
       labels:
         app: zigbee2mqtt
     spec:
