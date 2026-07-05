@@ -71,6 +71,9 @@ persistence:
       - path: /data
         subPath: media
         readOnly: false
+      - path: /data
+        subPath: generated
+        readOnly: false
 
 starHostSuffix: &starHostSuffix "*.local.naguiar.dev"
 hostSuffix: &hostSuffix "local.naguiar.dev"
