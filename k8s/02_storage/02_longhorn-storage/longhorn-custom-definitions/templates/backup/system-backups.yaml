@@ -1,7 +1,7 @@
 apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
-  name: backup-monthly
+  name: system-backup-monthly
 spec:
   cron: "0 2 1 * ?"
   task: "system-backup"
