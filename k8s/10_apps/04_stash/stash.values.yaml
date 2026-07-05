@@ -22,7 +22,7 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           STASH_CACHE: /config/cache
-          STASH_GENERATED: /config/generated
+          STASH_GENERATED: /generated
           STASH_METADATA: /config/metadata
           USER: 568
           STASH_PORT: 9999
