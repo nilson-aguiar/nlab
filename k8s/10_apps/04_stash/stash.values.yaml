@@ -63,10 +63,11 @@ persistence:
   tmp:
     type: emptyDir
   media:
-    size: 1Ti
-    storageClass: secondary
-    retain: true
-    accessMode: ReadWriteMany
+    existingClaim: stash
+#    size: 1Ti
+#    storageClass: secondary
+#    retain: true
+#    accessMode: ReadWriteMany
     globalMounts:
       - path: /data
         subPath: media
