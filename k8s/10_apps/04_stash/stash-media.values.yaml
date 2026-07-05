@@ -1,0 +1,13 @@
+resources:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: stash-media
+      namespace: stash
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Ti
+      storageClassName: secondary

@@ -63,7 +63,7 @@ persistence:
   tmp:
     type: emptyDir
   media:
-    existingClaim: stash
+    existingClaim: stash-media
 #    size: 1Ti
 #    storageClass: secondary
 #    retain: true

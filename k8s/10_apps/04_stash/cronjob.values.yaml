@@ -3,7 +3,7 @@ image:
   tag: 2026.06.09
 
 persistence:
-  storageClaimName: stash
+  storageClaimName: stash-media
   subPath: media
 
 configs:
