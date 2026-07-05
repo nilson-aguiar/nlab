@@ -2,33 +2,6 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: home-assistant-configmap
-data:
-  configuration.yaml: |-
-    default_config:
-    frontend:
-      themes: !include_dir_merge_named themes
-    automation: !include automations.yaml
-    http:
-      use_x_forwarded_for: true
-      trusted_proxies:
-        - 10.42.0.0/24
-        - 10.42.1.0/24
-        - 192.168.1.200
-        - 192.168.1.192
-    smartir:
-    climate:
-      - platform: smartir
-        name: "Clima Plus AC"
-        unique_id: clima_plus_ac
-        device_code: 1900
-        controller_data: zigbee2mqtt/IR Remote/set
-
-
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: home-assistant-env
 data:
   TZ: "Europe/Amsterdam"

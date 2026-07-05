@@ -103,9 +103,6 @@ spec:
         - name: ha-config-data
           persistentVolumeClaim:
             claimName: home-assistant-data
-        - name: configmap-file
-          configMap:
-            name: home-assistant-configmap
         - name: d-bus
           hostPath:
             path: /run/dbus
