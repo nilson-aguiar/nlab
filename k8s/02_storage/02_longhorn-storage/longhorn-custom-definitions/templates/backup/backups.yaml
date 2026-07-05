@@ -23,7 +23,7 @@ spec:
   groups:
     - daily
     - default
-  retain: 6
+  retain: 30
   concurrency: 3
 
 ---
@@ -39,3 +39,30 @@ spec:
     - default
   retain: 4
   concurrency: 3
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: snapshot-cleanup
+  namespace: longhorn-system
+spec:
+  cron: "0 4 * * *"
+  task: "snapshot-cleanup"
+  groups:
+    - default
+  concurrency: 2
+
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: snapshot-daily
+  namespace: longhorn-system
+spec:
+  cron: "0 1 * * *"
+  task: "snapshot"
+  groups:
+    - default
+  retain: 7
+  concurrency: 2
