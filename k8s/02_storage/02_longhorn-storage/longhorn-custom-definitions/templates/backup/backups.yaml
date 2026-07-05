@@ -23,7 +23,7 @@ spec:
   groups:
     - daily
     - default
-  retain: 30
+  retain: 6
   concurrency: 3
 
 ---
