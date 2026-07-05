@@ -71,7 +71,7 @@ persistence:
       - path: /data
         subPath: media
         readOnly: false
-      - path: /data
+      - path: /generated
         subPath: generated
         readOnly: false
 
