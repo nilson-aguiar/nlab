@@ -1,0 +1,229 @@
+# Kitchen Exhaustor Package Config
+# Merge of helpers.yaml, scripts.yaml, templates.yaml, and automations.yaml
+# Copy this file to your Home Assistant /config/packages/ directory (e.g. /config/packages/kitchen_exhaustor.yaml)
+
+input_boolean:
+  kitchen_exhaustor_power:
+    name: "Kitchen Exhaustor Power State"
+    icon: mdi:fan
+  kitchen_exhaustor_light:
+    name: "Kitchen Exhaustor Light State"
+    icon: mdi:lightbulb
+
+input_select:
+  kitchen_exhaustor_speed:
+    name: "Kitchen Exhaustor Speed State"
+    options:
+      - "off"
+      - "low"
+      - "medium"
+      - "high"
+    icon: mdi:fan
+
+script:
+  kitchen_exhaustor_turn_on:
+    alias: "Kitchen Exhaustor Turn On"
+    icon: mdi:fan
+    sequence:
+      # 1. Turn on power board if it's currently marked as off
+      - if:
+          - condition: state
+            entity_id: input_boolean.kitchen_exhaustor_power
+            state: "off"
+        then:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "Be0ithEpAuATAQVhAikCqgbgFQPgBwFAM+ADAeAXPwn7m+0i8wgpAv//4AoHAggpAg=="}'
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.kitchen_exhaustor_power
+          - delay: "00:00:01"
+      # 2. Set to Speed 1 (low) by default if speed is currently off
+      - if:
+          - condition: state
+            entity_id: input_select.kitchen_exhaustor_speed
+            state: "off"
+        then:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "BTgjdBE0AuABAQJeAjTgCgEBjQbgAwMAXuAGDwE0AuABAYAb4AcBQCMBjQZAGwJeAjQgAQGNBuAFAw/0mzgjsAg0Av//OCOwCDQC"}'
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.kitchen_exhaustor_speed
+            data:
+              option: "low"
+
+  kitchen_exhaustor_turn_off:
+    alias: "Kitchen Exhaustor Turn Off"
+    icon: mdi:fan-off
+    sequence:
+      # Toggle physical power off if it's marked as on
+      - if:
+          - condition: state
+            entity_id: input_boolean.kitchen_exhaustor_power
+            state: "on"
+        then:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "Be0ithEpAuATAQVhAikCqgbgFQPgBwFAM+ADAeAXPwn7m+0i8wgpAv//4AoHAggpAg=="}'
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.kitchen_exhaustor_power
+      # Sync speed select helper to off
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.kitchen_exhaustor_speed
+        data:
+          option: "off"
+
+  kitchen_exhaustor_set_speed:
+    alias: "Kitchen Exhaustor Set Speed"
+    icon: mdi:fan
+    fields:
+      preset_mode:
+        description: "The preset speed mode to set (off, low, medium, high)"
+        example: "medium"
+    sequence:
+      - choose:
+          # Handle turning off
+          - conditions:
+              - condition: template
+                value_template: "{{ preset_mode == 'off' }}"
+            sequence:
+              - action: script.kitchen_exhaustor_turn_off
+          # Handle speeds low, medium, and high
+          - conditions:
+              - condition: template
+                value_template: "{{ preset_mode in ['low', 'medium', 'high'] }}"
+            sequence:
+              # Ensure power is on before setting speed
+              - if:
+                  - condition: state
+                    entity_id: input_boolean.kitchen_exhaustor_power
+                    state: "off"
+                then:
+                  - action: mqtt.publish
+                    data:
+                      topic: "zigbee2mqtt/IR Remote/set"
+                      payload: '{"ir_code_to_send": "Be0ithEpAuATAQVhAikCqgbgFQPgBwFAM+ADAeAXPwn7m+0i8wgpAv//4AoHAggpAg=="}'
+                  - action: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.kitchen_exhaustor_power
+                  - delay: "00:00:01"
+              # Publish corresponding IR code
+              - action: mqtt.publish
+                data:
+                  topic: "zigbee2mqtt/IR Remote/set"
+                  payload: >-
+                    {% if preset_mode == 'low' %}
+                      {"ir_code_to_send": "BTgjdBE0AuABAQJeAjTgCgEBjQbgAwMAXuAGDwE0AuABAYAb4AcBQCMBjQZAGwJeAjQgAQGNBuAFAw/0mzgjsAg0Av//OCOwCDQC"}
+                    {% elif preset_mode == 'medium' %}
+                      {"ir_code_to_send": "BSAjoBEsAuAXAQGpBuAZA0ABwCfgCwFAG8ABQAvgAwMPHpwgI78IZQL//yAjvwgsAg=="}
+                    {% elif preset_mode == 'high' %}
+                      {"ir_code_to_send": "BRIjoBErAuAXAQGrBuAVA0ABQCNAAcAH4AMBwBPgAwdAC8ADDzacEiPNCCsC//8SI80IKwI="}
+                    {% endif %}
+              # Update helper speed state
+              - action: input_select.select_option
+                target:
+                  entity_id: input_select.kitchen_exhaustor_speed
+                data:
+                  option: "{{ preset_mode }}"
+
+template:
+  - fan:
+      - name: "Kitchen Exhaustor"
+        unique_id: kitchen_exhaustor_fan
+        icon: mdi:fan
+        state: "{{ states('input_boolean.kitchen_exhaustor_power') }}"
+        preset_mode: "{{ states('input_select.kitchen_exhaustor_speed') }}"
+        preset_modes:
+          - "off"
+          - "low"
+          - "medium"
+          - "high"
+        turn_on:
+          - action: script.kitchen_exhaustor_turn_on
+        turn_off:
+          - action: script.kitchen_exhaustor_turn_off
+        set_preset_mode:
+          - action: script.kitchen_exhaustor_set_speed
+            data:
+              preset_mode: "{{ preset_mode }}"
+
+  - light:
+      - name: "Kitchen Exhaustor Light"
+        unique_id: kitchen_exhaustor_light
+        icon: mdi:lightbulb
+        state: "{{ states('input_boolean.kitchen_exhaustor_light') }}"
+        turn_on:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "BesiuRErAuAXAQGqBuAZA0ABQCfgDwHAG0AH4AcDD0Cc6yLxCCsC///rIvEIKwI="}'
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.kitchen_exhaustor_light
+        turn_off:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "BesiuRErAuAXAQGqBuAZA0ABQCfgDwHAG0AH4AcDD0Cc6yLxCCsC///rIvEIKwI="}'
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.kitchen_exhaustor_light
+
+automation:
+  - id: kitchen_exhaustor_remote_monitor
+    alias: "Kitchen Exhaustor Remote Battery Monitor"
+    description: "Monitors IR remote availability and battery levels"
+    trigger:
+      # Trigger instantly if the remote goes offline (e.g. state becomes unavailable/unknown)
+      - platform: state
+        entity_id: sensor.ir_remote_battery
+        to:
+          - "unavailable"
+          - "unknown"
+        id: "offline"
+      # Trigger once a day at 10:00 AM for battery status reports
+      - platform: time
+        at: "10:00:00"
+        id: "daily_check"
+    action:
+      - choose:
+          # Immediate offline warning
+          - conditions:
+              - condition: trigger
+                id: "offline"
+            sequence:
+              - action: notify.persistent_notification
+                data:
+                  title: "IR Remote Offline Alert"
+                  message: "The Kitchen Exhaustor IR Remote has gone offline. Please check its battery."
+          # Daily low battery or persistent offline report
+          - conditions:
+              - condition: trigger
+                id: "daily_check"
+              - condition: or
+                conditions:
+                  - condition: numeric_state
+                    entity_id: sensor.ir_remote_battery
+                    below: 20
+                  - condition: state
+                    entity_id: sensor.ir_remote_battery
+                    state: "unavailable"
+                  - condition: state
+                    entity_id: sensor.ir_remote_battery
+                    state: "unknown"
+            sequence:
+              - action: notify.persistent_notification
+                data:
+                  title: "IR Remote Daily Status Alert"
+                  message: >-
+                    {% if is_state('sensor.ir_remote_battery', 'unavailable') or is_state('sensor.ir_remote_battery', 'unknown') %}
+                      The IR Remote is offline or unavailable.
+                    {% else %}
+                      The IR Remote battery is low (current charge: {{ states('sensor.ir_remote_battery') }}%).
+                    {% endif %}

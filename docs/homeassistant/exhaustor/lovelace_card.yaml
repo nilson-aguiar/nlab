@@ -1,0 +1,83 @@
+type: custom:stack-in-card
+cards:
+  - type: grid
+    title: Kitchen Exhaustor
+    columns: 2
+    square: false
+    cards:
+      - type: tile
+        entity: fan.kitchen_exhaustor
+        features:
+          - type: fan-preset-modes
+            style: icons
+            preset_modes:
+              - "off"
+              - low
+              - medium
+              - high
+        card_mod:
+          style:
+            ha-tile-icon$: |
+              {% if is_state('fan.kitchen_exhaustor', 'off') %}
+              ha-state-icon {
+                --tile-color: var(--disabled-color);
+              }
+              {% else %}
+              ha-state-icon {
+                --tile-color: #f5a623;
+              }
+              {% endif %}
+            hui-card-features $:
+              hui-card-feature:nth-child(1) $:
+                hui-fan-preset-modes-card-feature $:
+                  ha-control-select $: |
+                    #option-off > div > ha-attribute-icon {
+                      --card-mod-icon: mdi:power;
+                    }
+                    #option-low > div > ha-attribute-icon {
+                      --card-mod-icon: mdi:fan-speed-1;
+                    }
+                    #option-medium > div > ha-attribute-icon {
+                      --card-mod-icon: mdi:fan-speed-2;
+                    }
+                    #option-high > div > ha-attribute-icon {
+                      --card-mod-icon: mdi:fan-speed-3;
+                    }
+                    .selected ha-attribute-icon {
+                      --icon-color: #f5a623;
+                    }
+      - type: tile
+        entity: light.kitchen_exhaustor_light
+        card_mod:
+          style:
+            ha-tile-icon$: |
+              {% if is_state('light.kitchen_exhaustor_light', 'on') %}
+              ha-state-icon {
+                --tile-color: #ffd54f;
+              }
+              {% endif %}
+
+  - type: markdown
+    content: "**🔄 Force Sync** _(No IR Sent)_"
+    card_mod:
+      style: |
+        ha-markdown {
+          opacity: 0.6;
+          font-size: 0.9em;
+          padding: 4px 12px 0px 12px;
+        }
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: tile
+        entity: input_boolean.kitchen_exhaustor_power
+        name: Sync Vent Power
+        icon: mdi:sync
+        vertical: false
+      - type: tile
+        entity: input_boolean.kitchen_exhaustor_light
+        name: Sync Light State
+        icon: mdi:sync
+        vertical: false
