@@ -34,6 +34,11 @@ script:
           - action: mqtt.publish
             data:
               topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "0"}'
+          - delay: "00:00:00.500"
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
               payload: '{"ir_code_to_send": "Be0ithEpAuATAQVhAikCqgbgFQPgBwFAM+ADAeAXPwn7m+0i8wgpAv//4AoHAggpAg=="}'
           - action: input_boolean.turn_on
             target:
@@ -45,6 +50,11 @@ script:
             entity_id: input_select.kitchen_exhaustor_speed
             state: "off"
         then:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "0"}'
+          - delay: "00:00:00.500"
           - action: mqtt.publish
             data:
               topic: "zigbee2mqtt/IR Remote/set"
@@ -65,6 +75,11 @@ script:
             entity_id: input_boolean.kitchen_exhaustor_power
             state: "on"
         then:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "0"}'
+          - delay: "00:00:00.500"
           - action: mqtt.publish
             data:
               topic: "zigbee2mqtt/IR Remote/set"
@@ -108,12 +123,22 @@ script:
                   - action: mqtt.publish
                     data:
                       topic: "zigbee2mqtt/IR Remote/set"
+                      payload: '{"ir_code_to_send": "0"}'
+                  - delay: "00:00:00.500"
+                  - action: mqtt.publish
+                    data:
+                      topic: "zigbee2mqtt/IR Remote/set"
                       payload: '{"ir_code_to_send": "Be0ithEpAuATAQVhAikCqgbgFQPgBwFAM+ADAeAXPwn7m+0i8wgpAv//4AoHAggpAg=="}'
                   - action: input_boolean.turn_on
                     target:
                       entity_id: input_boolean.kitchen_exhaustor_power
                   - delay: "00:00:01"
               # Publish corresponding IR code
+              - action: mqtt.publish
+                data:
+                  topic: "zigbee2mqtt/IR Remote/set"
+                  payload: '{"ir_code_to_send": "0"}'
+              - delay: "00:00:00.500"
               - action: mqtt.publish
                 data:
                   topic: "zigbee2mqtt/IR Remote/set"
@@ -162,11 +187,21 @@ template:
           - action: mqtt.publish
             data:
               topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "0"}'
+          - delay: "00:00:00.500"
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
               payload: '{"ir_code_to_send": "BesiuRErAuAXAQGqBuAZA0ABQCfgDwHAG0AH4AcDD0Cc6yLxCCsC///rIvEIKwI="}'
           - action: input_boolean.turn_on
             target:
               entity_id: input_boolean.kitchen_exhaustor_light
         turn_off:
+          - action: mqtt.publish
+            data:
+              topic: "zigbee2mqtt/IR Remote/set"
+              payload: '{"ir_code_to_send": "0"}'
+          - delay: "00:00:00.500"
           - action: mqtt.publish
             data:
               topic: "zigbee2mqtt/IR Remote/set"
