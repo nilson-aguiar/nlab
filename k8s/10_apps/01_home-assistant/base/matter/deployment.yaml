@@ -18,6 +18,10 @@ spec:
       labels:
         app: matter-server
     spec:
+      # matter-server must run on the host network.
+      # If placed behind the lan-bridge MACVLAN, the container's network namespace fails
+      # to reliably process IPv6 Router Advertisements (RAs) from the Thread Border Router.
+      # This results in "Network is unreachable" errors when trying to reach Thread ULAs.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       containers:
