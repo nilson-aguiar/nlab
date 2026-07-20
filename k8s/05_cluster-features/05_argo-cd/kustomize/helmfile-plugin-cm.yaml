@@ -24,9 +24,9 @@ data:
               fi
             done
             # Uncomment line below in case a plugin has been updated an it's failing to install it
-            for plugin in $(helm plugin list | awk 'NR>1 {print $1}'); do helm plugin uninstall "$plugin" || true; done
-            helm repo update || true
-            helmfile init --force
+            # for plugin in $(helm plugin list | awk 'NR>1 {print $1}'); do helm plugin uninstall "$plugin" || true; done
+            # Use flock to prevent concurrent helm plugin installs which cause race conditions
+            flock -x /tmp/helmfile-init.lock -c 'helm repo update || true; helmfile init --force'
       generate:
         command: [sh, -c]
         args:

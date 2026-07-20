@@ -18,15 +18,12 @@ prometheus:
     endpointAdditionalProperties: {}
     honorLabels: false
     interval: 60s
-    path: /metrics
     prometheusInstance: default
     scrapeTimeout: 30s
   servicemonitor:
     enabled: false
     honorLabels: false
     interval: 60s
-    path: /metrics
     prometheusInstance: default
     scrapeTimeout: 30s
-    targetPort: 9402
 
