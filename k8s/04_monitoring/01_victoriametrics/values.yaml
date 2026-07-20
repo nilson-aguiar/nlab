@@ -84,26 +84,46 @@ kubeStateMetrics:
 defaultRules:
   create: true
   rules:
-    etcd: true
-    general: true
-    k8s: true
-    kubeApiserver: true
-    kubeApiserverAvailability: true
-    kubeApiserverSlos: true
-    kubelet: true
-    kubeProxy: true
-    kubePrometheusGeneral: true
-    kubePrometheusNodeRecording: true
-    kubernetesAbsent: true
-    kubernetesApps: true
-    kubernetesResources: true
-    kubernetesStorage: true
-    kubernetesSystem: true
-    network: true
-    node: true
-    vmagent: true
-    vmsingle: true
-    vm-health: true
+    etcd:
+      enabled: true
+    general:
+      enabled: true
+    k8s:
+      enabled: true
+    kubeApiserver:
+      enabled: true
+    kubeApiserverAvailability:
+      enabled: true
+    kubeApiserverSlos:
+      enabled: true
+    kubelet:
+      enabled: true
+    kubeProxy:
+      enabled: true
+    kubePrometheusGeneral:
+      enabled: true
+    kubePrometheusNodeRecording:
+      enabled: true
+    kubernetesAbsent:
+      enabled: true
+    kubernetesApps:
+      enabled: true
+    kubernetesResources:
+      enabled: true
+    kubernetesStorage:
+      enabled: true
+    kubernetesSystem:
+      enabled: true
+    network:
+      enabled: true
+    node:
+      enabled: true
+    vmagent:
+      enabled: true
+    vmsingle:
+      enabled: true
+    vm-health:
+      enabled: true
 
 grafana:
   enabled: true
