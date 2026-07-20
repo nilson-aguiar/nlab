@@ -23,7 +23,14 @@ resources:
           "mode": "bridge",
           "ipam": {
             "type": "whereabouts",
-            "range": "192.168.1.128/28",
+            "ipRanges": [
+              {
+                "range": "192.168.1.128/28"
+              },
+              {
+                "range": "fd00::/64"
+              }
+            ],
             "configuration_path": "/var/lib/rancher/k3s/agent/etc/cni/net.d/whereabouts.d/whereabouts.conf"
           }
         }

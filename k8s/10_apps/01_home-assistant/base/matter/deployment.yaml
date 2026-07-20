@@ -19,7 +19,7 @@ spec:
         k8s.v1.cni.cncf.io/networks: '[{
           "name": "lan-bridge",
           "namespace": "kube-system",
-          "ips": ["192.168.1.230/24"]
+          "ips": ["192.168.1.230/24", "fe80::230/64"]
         }]'
       labels:
         app: matter-server
