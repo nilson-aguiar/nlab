@@ -1,6 +1,11 @@
 # --- vmsingle (The Database) ---
 vmsingle:
   spec:
+    storage:
+      volumeClaimTemplate:
+        metadata:
+          labels:
+            recurring-job-group.longhorn.io/default: disabled
     retentionPeriod: "7d"
     resources:
       requests:
