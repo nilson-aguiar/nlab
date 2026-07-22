@@ -6,6 +6,15 @@ vmsingle:
         metadata:
           labels:
             recurring-job-group.longhorn.io/default: disabled
+    volumes:
+      - name: vmbackup-nfs
+        persistentVolumeClaim:
+          claimName: vmbackup-pvc
+    vmBackup:
+      destination: "fs:///backup/victoriametrics"
+      volumeMounts:
+        - name: vmbackup-nfs
+          mountPath: /backup
     retentionPeriod: "7d"
     resources:
       requests:

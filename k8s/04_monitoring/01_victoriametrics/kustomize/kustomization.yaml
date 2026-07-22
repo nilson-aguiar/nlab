@@ -7,6 +7,7 @@ resources:
   - vm-ingress.yaml
   - vmagent-ingress.yaml
   - vmsingle-ingress.yaml
+  - vmbackup-pvc.yaml
 
 configMapGenerator:
   - name: grafana-dashboard-resource-waste
