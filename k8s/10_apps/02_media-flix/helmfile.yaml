@@ -42,6 +42,13 @@ releases:
     secrets:
       - ./secrets/radarr.secrets.yaml
 
+  - name: lidarr
+    <<: *bjw
+    values:
+      - ./values/lidarr.values.yaml
+    secrets:
+      - ./secrets/lidarr.secrets.yaml
+
   - name: tdarr
     <<: *bjw
     values:
