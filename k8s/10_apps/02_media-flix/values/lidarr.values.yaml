@@ -34,8 +34,8 @@ controllers:
         env:
           LIDARR__APP__INSTANCENAME: Lidarr
           LIDARR__APP__THEME: dark
-          LIDARR__AUTH__METHOD: External
-          LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
+          LIDARR__AUTH__METHOD: None
+          LIDARR__AUTH__REQUIRED: Disabled
           LIDARR__LOG__DBENABLED: "False"
           LIDARR__LOG__LEVEL: info
           LIDARR__SERVER__PORT: &lidarrPort 80
