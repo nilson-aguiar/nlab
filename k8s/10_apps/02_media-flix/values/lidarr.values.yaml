@@ -30,7 +30,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/home-operations/lidarr
-          tag: latest
+          tag: 3.1.0.4875
         env:
           LIDARR__APP__INSTANCENAME: Lidarr
           LIDARR__APP__THEME: dark
