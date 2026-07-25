@@ -9,7 +9,7 @@ templates:
   bjw: &bjw
     namespace: actual
     chart: bjw-s/app-template
-    version: 4.6.2
+    version: 5.0.1
 
 releases:
   - name: actual

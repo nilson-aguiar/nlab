@@ -74,8 +74,12 @@ controllers:
 
 persistence:
   config:
-    enabled: true
-    existingClaim: lidarr-config
+#    name: lidarr-config
+    size: 500Mi
+    storageClass: longhorn
+    retain: true
+    accessMode: ReadWriteOnce
+#    existingClaim: lidarr-config
   tmp:
     type: emptyDir
   media:
@@ -92,10 +96,10 @@ service:
 rawResources:
   middleware:
     enabled: true
-    apiVersion: traefik.io/v1alpha1
-    kind: Middleware
     forceRename: lidarr-default-headers
-    spec:
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: Middleware
       spec:
         headers:
           browserXssFilter: true
@@ -111,12 +115,13 @@ rawResources:
             X-Forwarded-Proto: https
   ingress-route:
     enabled: true
-    apiVersion: traefik.io/v1alpha1
-    kind: IngressRoute
-    annotations:
-      external-dns.alpha.kubernetes.io/target: 192.168.1.200
-      kubernetes.io/ingress.class: traefik-external
-    spec:
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
       spec:
         entryPoints:
           - websecure
