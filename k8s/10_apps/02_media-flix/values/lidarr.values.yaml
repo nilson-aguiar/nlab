@@ -74,7 +74,7 @@ controllers:
 
 persistence:
   config:
-#    name: lidarr-config
+    name: lidarr-config
     size: 500Mi
     storageClass: longhorn
     retain: true
