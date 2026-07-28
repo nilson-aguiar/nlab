@@ -4,6 +4,10 @@ metadata:
   name: {{ .Release.Name }}-tinfoil-hat
   labels:
     app: tinfoil-hat
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
