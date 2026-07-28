@@ -39,6 +39,7 @@ ingressRoute:
   enabled: true
   hostSuffix: local.naguiar.dev
   entryPoints:
+    - web
     - websecure
   tls:
     enabled: true
