@@ -1,25 +1,7 @@
 {{- if .Values.ingressRoute.enabled -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $qbSvcPort := .Values.qbittorrent.service.webui.port -}}
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: default-headers
-spec:
-  headers:
-    browserXssFilter: true
-    contentTypeNosniff: true
-    forceSTSHeader: true
-    stsIncludeSubdomains: true
-    stsPreload: true
-    stsSeconds: 15552000
-    referrerPolicy: no-referrer
-    # contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
-    # customFrameOptionsValue: SAMEORIGIN
-    customRequestHeaders:
-      X-Forwarded-Proto: https
----
+{{- $hostName := .Values.ingressRoute.hostName | default .Release.Namespace -}}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -35,18 +17,14 @@ spec:
     {{- end }}
   routes:
     {{- if .Values.qbittorrent.enabled }}
-    - match: Host(`qb-{{ .Release.Namespace }}.{{ .Values.ingressRoute.hostSuffix }}`)
+    - match: Host(`qb-{{ $hostName }}.{{ .Values.ingressRoute.hostSuffix }}`)
       kind: Rule
-      # middlewares:
-        # - name: default-headers
       services:
         - name: {{ .Release.Name }}-qbittorrent
           port: {{ $qbSvcPort }}
     {{- end }}
-    - match: Host(`{{ .Release.Namespace }}.{{ .Values.ingressRoute.hostSuffix }}`)
+    - match: Host(`{{ $hostName }}.{{ .Values.ingressRoute.hostSuffix }}`)
       kind: Rule
-      # middlewares:
-        # - name: default-headers
       services:
         - name: {{ .Release.Name }}-tinfoil-hat
           port: {{ $svcPort }}

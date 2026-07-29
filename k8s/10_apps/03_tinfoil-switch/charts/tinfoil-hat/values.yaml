@@ -33,6 +33,7 @@ ownfoil:
 ingressRoute:
   annotations: {}
   enabled: false
+  hostName: ""
   hostSuffix: example.com
   entryPoints:
     - websecure
