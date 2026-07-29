@@ -15,11 +15,11 @@ spec:
         app: tinfoil-hat
     spec:
       containers:
-        - name: tinfoil-hat
+        - name: ownfoil
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: 8000
               name: tinfoil
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

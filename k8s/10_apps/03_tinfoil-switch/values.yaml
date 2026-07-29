@@ -20,8 +20,8 @@ service:
     metallb.io/loadBalancerIPs: "192.168.1.205"
 
 image:
-  repository: vinicioslc/tinfoil-hat
-  tag: 1.1.7
+  repository: ghcr.io/ownfoil/ownfoil
+  tag: 2.3.0
 
 persistence:
   enabled: true
