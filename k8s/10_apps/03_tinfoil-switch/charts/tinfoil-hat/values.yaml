@@ -1,5 +1,5 @@
 image:
-  repository: vinicioslc/tinfoil-hat
+  repository: ghcr.io/ownfoil/ownfoil
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -25,12 +25,9 @@ persistence:
   size: 10Gi
   mountPath: /games
 
-config:
-  debug: "*"
-  authUsers: "admin:admin,othertinfoiler:otherpassword"
-  unauthorizedMsg: "No tricks and treats for you!!"
-  welcomeMsg: "The Server Just Works!!"
-  nxPorts: "5000"
+ownfoil:
+  gamesDir: "/games"
+  dataDir: "/games/.ownfoil"
 
 # values override
 ingressRoute:

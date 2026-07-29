@@ -24,16 +24,18 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-            - name: DEBUG
-              value: {{ .Values.config.debug | quote }}
-            - name: AUTH_USERS
-              value: {{ .Values.config.authUsers | quote }}
-            - name: UNAUTHORIZED_MSG
-              value: {{ .Values.config.unauthorizedMsg | quote }}
-            - name: WELCOME_MSG
-              value: {{ .Values.config.welcomeMsg | quote }}
-            - name: NX_PORTS
-              value: {{ .Values.config.nxPorts | quote }}
+            - name: OWNFOIL_GAMES_DIR
+              value: "/games"
+            - name: OWNFOIL_DATA_DIR
+              value: "/games/.ownfoil"
+            {{- if and .Values.ownfoil .Values.ownfoil.secretKey }}
+            - name: OWNFOIL_SECRET_KEY
+              value: {{ .Values.ownfoil.secretKey | quote }}
+            {{- end }}
+            {{- if and .Values.ownfoil .Values.ownfoil.adminPassword }}
+            - name: OWNFOIL_ADMIN_PASSWORD
+              value: {{ .Values.ownfoil.adminPassword | quote }}
+            {{- end }}
           volumeMounts:
             - name: games-storage
               mountPath: {{ .Values.persistence.mountPath }}

@@ -29,12 +29,9 @@ persistence:
   accessMode: ReadWriteMany
   size: 100Gi
 
-config:
-  debug: "*"
-#  authUsers: "admin:admin,othertinfoiler:otherpassword"
-  unauthorizedMsg: "No tricks and treats for you!!"
-  welcomeMsg: "The Server Just Works!!"
-  nxPorts: "5000"
+ownfoil:
+  gamesDir: "/games"
+  dataDir: "/games/.ownfoil"
 
 # values override
 ingressRoute:
