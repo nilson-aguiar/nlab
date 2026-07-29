@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/ownfoil/ownfoil
+  repository: a1ex4/ownfoil
   tag: latest
   pullPolicy: IfNotPresent
 
