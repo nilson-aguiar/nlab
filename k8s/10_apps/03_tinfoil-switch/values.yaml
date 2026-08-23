@@ -21,7 +21,7 @@ service:
 
 image:
   repository: a1ex4/ownfoil
-  tag: 2.3.0
+  tag: 2.4.0
 
 persistence:
   enabled: true
