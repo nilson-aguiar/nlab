@@ -2,10 +2,14 @@
 vmsingle:
   spec:
     storage:
-      volumeClaimTemplate:
-        metadata:
-          labels:
-            recurring-job-group.longhorn.io/default: disabled
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    storageMetadata:
+      labels:
+        recurring-job-group.longhorn.io/default: disabled
     volumes:
       - name: vmbackup-nfs
         persistentVolumeClaim:
