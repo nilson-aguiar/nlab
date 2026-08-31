@@ -13,3 +13,7 @@ configs:
       schedule: "0 0 * * 0"
       fromChapter: 137
       provider: taosect
+    berserk:
+      schedule: "0 0 * * 0"
+      fromChapter: 0
+      provider: mangalivre
