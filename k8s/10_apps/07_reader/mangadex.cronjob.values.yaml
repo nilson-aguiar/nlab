@@ -14,8 +14,10 @@ configs:
       schedule: "0 1 * * 0"
       titleId: 6670ee28-f26d-4b61-b49c-d71149cd5a6e
       fromChapter: 67
-
-
+    berserk:
+      schedule: "0 1 * * 0"
+      titleId: 801513ba-a712-498c-8f57-cae55b38cc92
+      fromChapter: 1
 # mansuf/mangadex-downloader:latest-optional
 #  https://mangadex.org/title/6670ee28-f26d-4b61-b49c-d71149cd5a6e/mieruko-chan
 # -d /data/mieruko-chan -cmi --lan pt-br -sv 11 -sc 59 -f cbz -c original
