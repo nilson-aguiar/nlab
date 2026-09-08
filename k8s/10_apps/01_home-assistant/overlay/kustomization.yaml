@@ -14,7 +14,7 @@ images:
   - name: eclipse-mosquitto
     newTag: 2.0.22
   - name: koenkk/zigbee2mqtt
-    newTag: 2.14.0
+    newTag: 2.14.1
   - name: ghcr.io/esphome/esphome
     newTag: 2026.7.2
 
