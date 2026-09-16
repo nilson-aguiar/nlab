@@ -24,7 +24,7 @@ releases:
   - name: externaldns-pihole
     namespace: pihole-system
     chart: external-dns/external-dns
-    version: 1.21.1
+    version: 1.22.0
     values:
       - ./values/externaldns.values.yaml
 
