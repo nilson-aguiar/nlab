@@ -1,5 +1,5 @@
 image:
-  repository: jauderho/yt-dlp
+  repository: ghcr.io/nilson-aguiar/manga-fetcher
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -7,10 +7,34 @@ persistence:
   storageClaimName: standard
   subPath: media
 
-configs:
-  baseUrl: "http://localhost:8080"
-  schedule: "0 0 * * 0"
-  activeDeadlineSeconds: 120
-  terminationGracePeriodSeconds: 60
-  values: []
+shm:
+  enabled: true
+  sizeLimit: 512Mi
 
+resources:
+  requests:
+    cpu: 100m
+    memory: 2Gi
+  limits:
+    memory: 2Gi
+
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - manga-fetcher
+        topologyKey: "kubernetes.io/hostname"
+
+tolerations: []
+nodeSelector: {}
+
+configs:
+  schedule: "0 0 * * 0"
+  activeDeadlineSeconds: 1800
+  backoffLimit: 1
+  terminationGracePeriodSeconds: 60
+  values: {}

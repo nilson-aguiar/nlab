@@ -5,6 +5,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ $.Release.Name }}-{{ $name | replace "_" "-" }}-cronjob
+  labels:
+    app.kubernetes.io/name: manga-fetcher
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/component: {{ $name | replace "_" "-" }}
 spec:
   schedule: {{ $config.schedule | default $.Values.configs.schedule | quote }}
   startingDeadlineSeconds: 60
@@ -13,13 +17,32 @@ spec:
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      activeDeadlineSeconds: {{ $config.activeDeadlineSeconds | default $.Values.configs.activeDeadlineSeconds | default 1800 }}
+      backoffLimit: {{ $config.backoffLimit | default $.Values.configs.backoffLimit | default 1 }}
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: manga-fetcher
+            app.kubernetes.io/instance: {{ $.Release.Name }}
+            app.kubernetes.io/component: {{ $name | replace "_" "-" }}
         spec:
           dnsPolicy: "None"
           dnsConfig:
             nameservers:
               - "8.8.8.8"
               - "8.8.4.4"
+          {{- with (coalesce $config.affinity $.Values.affinity) }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (coalesce $config.nodeSelector $.Values.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (coalesce $config.tolerations $.Values.tolerations) }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
           - name: runner
             image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
@@ -36,10 +59,19 @@ spec:
                 value: {{ $config.fromChapter | quote }}
               - name: PROVIDER
                 value: {{ $config.provider | default "composite" | quote }}
+            {{- with (coalesce $config.resources $.Values.resources) }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
             volumeMounts:
             - name: download-storage
               mountPath: /downloads
               subPath: {{ $.Values.persistence.subPath }}
+            {{- $shm := coalesce $config.shm $.Values.shm }}
+            {{- if and $shm $shm.enabled }}
+            - name: dshm
+              mountPath: /dev/shm
+            {{- end }}
             # Using args to pass arguments to the container's entrypoint.
             # Assuming the image entrypoint is the downloader executable.
             args:
@@ -55,5 +87,14 @@ spec:
             - name: download-storage
               persistentVolumeClaim:
                 claimName: {{ $.Values.persistence.storageClaimName }}
+            {{- $shm := coalesce $config.shm $.Values.shm }}
+            {{- if and $shm $shm.enabled }}
+            - name: dshm
+              emptyDir:
+                medium: Memory
+                {{- if $shm.sizeLimit }}
+                sizeLimit: {{ $shm.sizeLimit }}
+                {{- end }}
+            {{- end }}
           restartPolicy: Never
 {{- end }}
