@@ -20,7 +20,7 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           USER: 1000
-          JAVA_TOOL_OPTIONS: "-Xmx1400m -Dpdfbox.rendering.tilingpaint.maxedge=1000"
+          JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dpdfbox.rendering.tilingpaint.maxedge=1000"
         ports:
           - name: http
             containerPort: &komgaPort 25600
