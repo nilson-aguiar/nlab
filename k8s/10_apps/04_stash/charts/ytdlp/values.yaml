@@ -12,5 +12,13 @@ configs:
   schedule: "*/1 * * * *"
   activeDeadlineSeconds: 120
   terminationGracePeriodSeconds: 60
+  # Supports either plain strings or objects with optional 'until' date (YYYY-MM-DD):
+  # values:
+  #   - channel: example_channel
+  #     until: "2026-12-31" # Optional final date (runs indefinitely if omitted)
+  #   - example_channel_2
   values: []
+
+stash:
+  token: ""
 

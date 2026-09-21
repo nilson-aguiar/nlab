@@ -1,5 +1,19 @@
 {{/* Loop through each item in the .Values.configs.values list */}}
 {{- range .Values.configs.values }}
+{{- $channel := "" }}
+{{- $until := "" }}
+{{- if kindIs "map" . }}
+  {{- $channel = .channel | default .name }}
+  {{- if .until }}
+    {{- if kindIs "string" .until }}
+      {{- $until = .until }}
+    {{- else }}
+      {{- $until = (date "2006-01-02" .until) }}
+    {{- end }}
+  {{- end }}
+{{- else }}
+  {{- $channel = . }}
+{{- end }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -9,12 +23,18 @@ kind: CronJob
 # This CronJob creates a new Job every minute to download a video.
 # ---
 metadata:
-  name: {{ $.Release.Name }}-ytdlp-{{ regexReplaceAll "_" . "-" | trimSuffix "-" }}-cronjob
+  name: {{ $.Release.Name }}-ytdlp-{{ regexReplaceAll "_" $channel "-" | trimSuffix "-" }}-cronjob
 
 spec:
   # Schedule to run every minute.
   # Format: "minute hour day-of-month month day-of-week"
   schedule: "{{ $.Values.configs.schedule }}"
+  {{- if $until }}
+  {{- $today := now | date "2006-01-02" }}
+  {{- if gt $today $until }}
+  suspend: true
+  {{- end }}
+  {{- end }}
 
   # If the CronJob misses its scheduled time by more than 60 seconds,
   # it will not run the job. This prevents a job from running long after
@@ -70,7 +90,11 @@ spec:
               seccompProfile: { type: RuntimeDefault }
             env:
               - name: CHANNEL
-                value: {{ . }}
+                value: {{ $channel }}
+              {{- if $until }}
+              - name: UNTIL_DATE
+                value: {{ $until | quote }}
+              {{- end }}
               - name: TZ
                 value: Europe/Amsterdam
             command:
@@ -79,6 +103,13 @@ spec:
               - |
                 #!/bin/sh
                 set -eu
+                if [ -n "${UNTIL_DATE:-}" ]; then
+                  CURRENT_DATE=$(date +%Y-%m-%d)
+                  if [ "$CURRENT_DATE" \> "$UNTIL_DATE" ]; then
+                    echo "Channel ${CHANNEL} until date (${UNTIL_DATE}) has passed. Skipping."
+                    exit 0
+                  fi
+                fi
                 cd /downloads
                 for file in "${CHANNEL}"*.part; do
                   # If no files match, break the loop gracefully
@@ -97,9 +128,13 @@ spec:
             env:
               - name: VIDEO_URL
                 # IMPORTANT: Replace this value with the actual YouTube URL.
-                value: {{ $.Values.configs.baseUrl}}/{{ . }}
+                value: {{ $.Values.configs.baseUrl}}/{{ $channel }}
               - name: CHANNEL
-                value: {{ . }}
+                value: {{ $channel }}
+              {{- if $until }}
+              - name: UNTIL_DATE
+                value: {{ $until | quote }}
+              {{- end }}
               - name: TZ
                 value: Europe/Amsterdam
             # Using the official yt-dlp image from GitHub's container registry.
@@ -115,11 +150,15 @@ spec:
               - "-c"
               - |
                 #!/bin/sh
+                set -eu
 
-                # for file in ${CHANNEL}*.part; do
-                #  echo "Renaming $file -> ${file%.part}";
-                #  mv "$file" "${file%.part}" || true; 
-                # done || true
+                if [ -n "${UNTIL_DATE:-}" ]; then
+                  CURRENT_DATE=$(date +%Y-%m-%d)
+                  if [ "$CURRENT_DATE" \> "$UNTIL_DATE" ]; then
+                    echo "Channel ${CHANNEL} until date (${UNTIL_DATE}) has passed. Skipping download."
+                    exit 0
+                  fi
+                fi
                 
                 # Define the cleanup function that will be called on termination.
                 _cleanup() {
@@ -147,6 +186,7 @@ spec:
                 # that this script always exits with code 0, even if yt-dlp fails.
                 # This forces the Kubernetes Job to be marked as 'Complete'.
                 wait "$child" || true
+
 
               
             # Mount the persistent volume into the container at the /downloads path.
