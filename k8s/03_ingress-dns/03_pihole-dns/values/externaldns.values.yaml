@@ -19,7 +19,6 @@ domainFilters:
 extraArgs:
   - --pihole-server=http://pihole-web.pihole-system.svc.cluster.local
   - --pihole-tls-skip-verify
-  - --pihole-api-version=6
 
 env:
   - name: EXTERNAL_DNS_PIHOLE_PASSWORD
