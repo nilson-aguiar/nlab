@@ -111,8 +111,8 @@ defaultSettings:
   # -- Maximum number of snapshots per volume (default 250). Keeps high-churn volumes from growing unbounded.
   # Steady state is ~12-14 (7 snapshot-daily + backup + system-backup snapshots), so keep headroom above that.
   snapshotMaxCount: 20
-  # -- Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). Orphaned resources on failed or unknown nodes are not automatically cleaned up. 
-  
+  # -- Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). Orphaned resources on failed or unknown nodes are not automatically cleaned up.
+
 
 metrics:
   serviceMonitor:
@@ -175,19 +175,15 @@ preUpgradeChecker:
   # -- Setting that allows Longhorn to perform upgrade version checks after starting the Longhorn Manager DaemonSet Pods. Disabling this setting also disables `preUpgradeChecker.jobEnabled`. Longhorn recommends keeping this setting enabled.
   upgradeVersionCheck: false
 
-image:
-  longhorn:
-    manager:
-      # -- Registry for the Longhorn Manager image.
-      registry: ""
-      # -- Repository for the Longhorn Manager image.
-      repository: longhornio/longhorn-manager
-      # -- Tag for the Longhorn Manager image.
-      tag: v1.11.0-hotfix-1
-    instanceManager:
-      # -- Registry for the Longhorn Instance Manager image.
-      registry: ""
-      # -- Repository for the Longhorn Instance Manager image.
-      repository: longhornio/longhorn-instance-manager
-      # -- Tag for the Longhorn Instance Manager image.
-      tag: v1.11.0-hotfix-1
+
+# This was used in the past to use a hotfix, disabled again as the hotfix is not needed anymore, should be kept for future reference
+#image:
+#  longhorn:
+#    manager:
+#      registry: ""
+#      repository: longhornio/longhorn-manager
+#      tag: v1.11.0-hotfix-1
+#    instanceManager:
+#      registry: ""
+#      repository: longhornio/longhorn-instance-manager
+#      tag: v1.11.0-hotfix-1
