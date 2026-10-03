@@ -157,12 +157,21 @@ grafana:
     enabled: true
     size: 5Gi
 
+  readinessProbe:
+    httpGet:
+      path: /api/health
+      port: 3000
+    initialDelaySeconds: 10
+    timeoutSeconds: 5
+    periodSeconds: 10
+    failureThreshold: 3
+
   resources:
     requests:
-      cpu: "100m"
-      memory: "256Mi"
-    limits:
+      cpu: "250m"
       memory: "512Mi"
+    limits:
+      memory: "1536Mi"
 
 
 # --- vmagent (The Scraper) ---
