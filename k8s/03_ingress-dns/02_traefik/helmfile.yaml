@@ -11,13 +11,13 @@ releases:
   - name: traefik-crds
     namespace: traefik-system
     chart: traefik/traefik-crds
-    version: 1.17.0
+    version: 1.18.0
 
   #  Ingress for local network
   - name: ingress-traefik-internal
     namespace: traefik-system
     chart: traefik/traefik
-    version: 39.0.8
+    version: 39.0.9
     secrets:
       - ./secrets/traefik.values.secret.yaml
     values:
@@ -26,7 +26,7 @@ releases:
   - name: traefik-auth
     namespace: traefik-system
     chart: bjw-s/app-template
-    version: 5.0.1
+    version: 5.2.1
     secrets:
       - ./secrets/auth.values.secret.yaml
 
