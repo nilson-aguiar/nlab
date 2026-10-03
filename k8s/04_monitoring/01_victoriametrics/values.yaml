@@ -9,17 +9,16 @@ vmsingle:
           storage: 20Gi
     storageMetadata:
       labels:
-        recurring-job-group.longhorn.io/default: disabled
-    volumes:
-      - name: vmbackup-nfs
-        persistentVolumeClaim:
-          claimName: vmbackup-pvc
-    vmBackup:
-      destination: "fs:///backup/victoriametrics"
-      volumeMounts:
-        - name: vmbackup-nfs
-          mountPath: /backup
+        # Make Longhorn read recurring-job labels from this PVC and assign a job-less
+        # group, so the "default" snapshot/backup group is NOT auto-applied.
+        # VictoriaMetrics rewrites its parts constantly, so Longhorn snapshots of this
+        # volume grow huge (previously ~230GB for ~3GB of data) and filled the node disk.
+        recurring-job.longhorn.io/source: enabled
+        recurring-job-group.longhorn.io/no-snapshots: enabled
     retentionPeriod: "7d"
+    extraArgs:
+      # Switch to read-only mode instead of filling the volume completely.
+      storage.minFreeDiskSpaceBytes: "1GB"
     resources:
       requests:
         cpu: "250m"
