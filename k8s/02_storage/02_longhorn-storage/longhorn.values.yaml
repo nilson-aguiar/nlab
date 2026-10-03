@@ -109,7 +109,8 @@ defaultSettings:
   # -- Remove snapshots marked as removed during filesystem trim, so freed blocks are returned to the host disk.
   removeSnapshotsDuringFilesystemTrim: "true"
   # -- Maximum number of snapshots per volume (default 250). Keeps high-churn volumes from growing unbounded.
-  snapshotMaxCount: 10
+  # Steady state is ~12-14 (7 snapshot-daily + backup + system-backup snapshots), so keep headroom above that.
+  snapshotMaxCount: 20
   # -- Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). Orphaned resources on failed or unknown nodes are not automatically cleaned up. 
   
 
