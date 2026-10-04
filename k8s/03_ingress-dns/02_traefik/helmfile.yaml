@@ -1,3 +1,4 @@
+
 repositories:
   - name: traefik
     oci: true
@@ -8,10 +9,10 @@ repositories:
 
 ---
 releases:
-  - name: traefik-crds
-    namespace: traefik-system
-    chart: traefik/traefik-crds
-    version: 1.18.0
+#  - name: traefik-crds
+#    namespace: traefik-system
+#    chart: traefik/traefik-crds
+#    version: 1.18.0
 
   #  Ingress for local network
   - name: ingress-traefik-internal
@@ -28,7 +29,10 @@ releases:
     chart: bjw-s/app-template
     version: 5.2.1
     secrets:
-      - ./secrets/auth.values.secret.yaml
+      - ./secrets/auth.values.secret.yaml- NAME: TRAEFIK-CRDS
+      - #    NAMESPACE: TRAEFIK-SYSTEM
+      - #    CHART: TRAEFIK/TRAEFIK-CRDS
+      - #    VERSION: 1.18.0
 
   - name: traefik-extra-resources
     namespace: traefik-system
