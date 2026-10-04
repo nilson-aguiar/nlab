@@ -29,10 +29,7 @@ releases:
     chart: bjw-s/app-template
     version: 5.2.1
     secrets:
-      - ./secrets/auth.values.secret.yaml- NAME: TRAEFIK-CRDS
-      - #    NAMESPACE: TRAEFIK-SYSTEM
-      - #    CHART: TRAEFIK/TRAEFIK-CRDS
-      - #    VERSION: 1.18.0
+      - ./secrets/auth.values.secret.yaml
 
   - name: traefik-extra-resources
     namespace: traefik-system
