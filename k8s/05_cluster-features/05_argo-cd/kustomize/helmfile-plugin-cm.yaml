@@ -34,6 +34,10 @@ data:
             if [ -f .sops.yaml ]; then
               export SOPS_AGE_KEY_FILE=/home/argocd/.config/sops/age/keys.txt
             fi
-            helmfile template --include-crds
+            KUBE_VERSION_FLAG=""
+            if [ -n "$KUBE_VERSION" ]; then
+              KUBE_VERSION_FLAG="--kube-version $KUBE_VERSION"
+            fi
+            helmfile template --include-crds $KUBE_VERSION_FLAG
       discover:
         fileName: "helmfile.yaml"
