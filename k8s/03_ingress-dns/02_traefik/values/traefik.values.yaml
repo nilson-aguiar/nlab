@@ -12,10 +12,9 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
 
-logs:
-  access:
-    enabled: false
-    format: json
+accessLog:
+  enabled: false
+  format: json
 
 deployment:
   enabled: true
