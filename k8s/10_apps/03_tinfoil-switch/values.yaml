@@ -2,7 +2,7 @@ qbittorrent:
   enabled: true
   image:
     repository: linuxserver/qbittorrent
-    tag: 5.2.3
+    tag: 5.2.4
 
   persistence:
     config:
@@ -21,7 +21,7 @@ service:
 
 image:
   repository: a1ex4/ownfoil
-  tag: 2.4.1
+  tag: 2.4.2
 
 persistence:
   enabled: true
