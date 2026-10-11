@@ -15,7 +15,7 @@ spec:
       port: 80
       targetPort: 8465
       protocol: TCP
-      {{- if and (eq .Values.service.type "NodePort") .Values.qbittorrent.service.bittorrent.nodePort }}
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:

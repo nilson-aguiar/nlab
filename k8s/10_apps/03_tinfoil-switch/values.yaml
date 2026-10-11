@@ -1,5 +1,4 @@
 qbittorrent:
-  enabled: true
   image:
     repository: linuxserver/qbittorrent
     tag: 5.2.4
@@ -11,9 +10,6 @@ qbittorrent:
   config:
     timezone: Europe/Amsterdam
 
-
-#  kubernetes.io/ingress.class: traefik-external
-
 service:
   type: LoadBalancer
   annotations:
@@ -24,16 +20,15 @@ image:
   tag: 2.4.2
 
 persistence:
-  enabled: true
   storageClassName: secondary
   accessMode: ReadWriteMany
   size: 100Gi
 
 ownfoil:
-  gamesDir: "/games"
-  dataDir: "/games/.ownfoil"
+  admin:
+    name: admin
+    # password: set in secrets/tinfoil-hat-secrets.yaml
 
-# values override
 ingressRoute:
   annotations:
     external-dns.alpha.kubernetes.io/target: 192.168.1.200
@@ -44,6 +39,3 @@ ingressRoute:
   entryPoints:
     - web
     - websecure
-  tls:
-    enabled: true
-    secretName: certificate-tls

@@ -26,8 +26,17 @@ persistence:
   mountPath: /games
 
 ownfoil:
-  gamesDir: "/games"
   dataDir: "/games/.ownfoil"
+  # Admin user created/updated on startup (USER_ADMIN_NAME / USER_ADMIN_PASSWORD)
+  admin:
+    name: ""
+    password: ""
+  persistence:
+    config:
+      enabled: true
+      storageClassName: longhorn
+      accessMode: ReadWriteOnce
+      size: 1Gi
 
 # values override
 ingressRoute:
@@ -78,14 +87,3 @@ qbittorrent:
       storageClassName: ""
       size: 100Mi
       accessMode: ReadWriteOnce
-
-gluetun:
-  enabled: false
-  image:
-    repository: qmcgaw/gluetun
-    tag: v3.41.3
-  # NordVPN specific defaults
-  config:
-    vpn_service_provider: "nordvpn"
-    vpn_type: "openvpn"
-    server_countries: "Netherlands"

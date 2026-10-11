@@ -1,0 +1,15 @@
+{{- if .Values.ownfoil.persistence.config.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-ownfoil-config
+  labels:
+    app: tinfoil-hat
+spec:
+  accessModes:
+    - {{ .Values.ownfoil.persistence.config.accessMode }}
+  storageClassName: {{ .Values.ownfoil.persistence.config.storageClassName | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.ownfoil.persistence.config.size }}
+{{- end }}
