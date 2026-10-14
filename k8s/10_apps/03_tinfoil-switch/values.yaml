@@ -17,7 +17,7 @@ service:
 
 image:
   repository: a1ex4/ownfoil
-  tag: 2.4.2
+  tag: 2.5.0
 
 persistence:
   storageClassName: secondary
