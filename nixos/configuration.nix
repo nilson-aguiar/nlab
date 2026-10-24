@@ -24,7 +24,8 @@
     gc = {
       automatic = true;
       # dates = "daily";
-      options = "--delete-generations +2";
+      dates = "weekly";
+      options = "--delete-older-than 14d";
     };
   };
   
@@ -43,6 +44,8 @@
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
+  # Limit boot entries so the 1GB ESP (/boot) doesn't fill up
+  boot.loader.systemd-boot.configurationLimit = 2;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelModules = [ 
