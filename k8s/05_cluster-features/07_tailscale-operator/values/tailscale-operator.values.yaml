@@ -1,0 +1,15 @@
+operatorConfig:
+  defaultTags:
+    - "tag:k8s-operator"
+  hostname: "tailscale-operator"
+  logging: "info"
+
+proxyConfig:
+  defaultTags: "tag:k8s"
+
+ingressClass:
+  enabled: true
+  name: "tailscale"
+
+apiServerProxyConfig:
+  mode: "false"

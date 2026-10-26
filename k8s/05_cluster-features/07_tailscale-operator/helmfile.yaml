@@ -1,0 +1,25 @@
+repositories:
+  - name: tailscale
+    url: https://pkgs.tailscale.com/helmcharts
+  - name: raw
+    url: https://bedag.github.io/helm-charts/
+
+---
+releases:
+  - name: tailscale-operator
+    chart: tailscale/tailscale-operator
+    version: 1.104.2
+    namespace: tailscale
+    values:
+      - ./values/tailscale-operator.values.yaml
+    secrets:
+      - ./secrets/tailscale-operator.secret.yaml
+
+  - name: tailscale-connector
+    chart: raw/raw
+    version: 2.0.2
+    namespace: tailscale
+    needs:
+      - tailscale/tailscale-operator
+    values:
+      - ./values/connector.values.yaml

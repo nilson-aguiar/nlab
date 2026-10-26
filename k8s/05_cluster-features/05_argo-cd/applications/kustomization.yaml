@@ -25,3 +25,4 @@ resources:
   - vaultwarden.yaml
   - nbot.yaml
   - actual.yaml
+  - tailscale-operator.yaml
