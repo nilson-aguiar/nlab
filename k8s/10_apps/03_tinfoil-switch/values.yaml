@@ -1,7 +1,7 @@
 qbittorrent:
   image:
     repository: linuxserver/qbittorrent
-    tag: 5.2.4
+    tag: 5.3.0
   vpn:
     enabled: true
     country: Netherlands
