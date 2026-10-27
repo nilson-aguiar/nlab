@@ -28,12 +28,45 @@ spec:
         role: server
     spec:
       serviceAccountName: homeassistant-sa
+      initContainers:
+        - name: postgres-init
+          image: "ghcr.io/home-operations/postgres-init:18"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: INIT_POSTGRES_HOST
+              value: "postgres-rw.cloudnative-pg.svc.cluster.local"
+            - name: INIT_POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: INIT_POSTGRES_USER
+            - name: INIT_POSTGRES_DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: INIT_POSTGRES_DBNAME
+            - name: INIT_POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: INIT_POSTGRES_PASS
+            - name: INIT_POSTGRES_SUPER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-superuser
+                  key: password
       containers:
         - name: home-assistant-app
           image: "homeassistant/home-assistant:tag-here"
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
+          env:
+            - name: RECORDER_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: RECORDER_DB_URL
           envFrom:
             - configMapRef:
                 name: home-assistant-env

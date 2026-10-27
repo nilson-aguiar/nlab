@@ -1,4 +1,21 @@
+repositories:
+  - name: bjw-s
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
+
+---
 releases:
+  - name: home-assistant-secret
+    namespace: home-assistant
+    chart: bjw-s/app-template
+    version: 5.0.1
+    secrets:
+      - ./secrets/home-assistant.values.secret.yaml
+    values:
+      - controllers:
+          main:
+            enabled: false
+
   - name: home-assistant
     namespace: home-assistant
     chart: ./overlay
