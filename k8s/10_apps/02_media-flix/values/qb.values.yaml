@@ -4,6 +4,27 @@ controllers:
     annotations:
       reloader.stakater.com/auto: "true"
     containers:
+      gluetun:
+        image:
+          repository: ghcr.io/qdm12/gluetun
+          tag: v3.40.0
+        env:
+          VPN_SERVICE_PROVIDER: surfshark
+          VPN_TYPE: wireguard
+          SERVER_COUNTRIES: Netherlands
+          FIREWALL_OUTBOUND_SUBNETS: 10.42.0.0/16,10.43.0.0/16,192.168.1.0/24
+          FIREWALL_INPUT_PORTS: 80,50413
+          DOT: "off"
+        envFrom:
+          - secretRef:
+              name: media-qb-gluetun-secret
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
       app:
         image:
           repository: ghcr.io/home-operations/qbittorrent
@@ -72,23 +93,31 @@ service:
         protocol: TCP
 
 persistence:
+  dev-net-tun:
+    type: hostPath
+    hostPath: /dev/net/tun
+    advancedMounts:
+      media-qb:
+        gluetun:
+          - path: /dev/net/tun
   config:
-#    size: 100Mi
-#    retain: true
-#    accessMode: ReadWriteOnce
     existingClaim: media-qb-config
+    advancedMounts:
+      media-qb:
+        app:
+          - path: /config
   tmp:
     type: emptyDir
-#  scripts:
-#    type: configMap
-#    name: qbittorrent-scripts
-#    defaultMode: 0775
-#    globalMounts:
-#      - readOnly: true
+    advancedMounts:
+      media-qb:
+        app:
+          - path: /tmp
   media:
     existingClaim: media-storage
-    globalMounts:
-      - path: /media
+    advancedMounts:
+      media-qb:
+        app:
+          - path: /media
 #        subPath: downloads
 
 rawResources:

@@ -27,6 +27,8 @@ releases:
     <<: *bjw
     values:
       - ./values/qb.values.yaml
+    secrets:
+      - ./secrets/qb.secrets.yaml
 
   - name: sonarr
     <<: *bjw
