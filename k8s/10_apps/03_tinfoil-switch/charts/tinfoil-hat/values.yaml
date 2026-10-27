@@ -52,6 +52,17 @@ ingressRoute:
 
 qbittorrent:
   enabled: true
+  vpn:
+    enabled: true
+    image:
+      repository: ghcr.io/qdm12/gluetun
+      tag: v3.40.0
+    provider: surfshark
+    type: wireguard
+    country: Netherlands
+    firewallOutboundSubnets: "10.42.0.0/16,10.43.0.0/16,192.168.1.0/24"
+    wireguardPrivateKey: "CHANGE_ME"
+    wireguardAddresses: "10.14.0.2/16"
   image:
     repository: linuxserver/qbittorrent
     tag: latest

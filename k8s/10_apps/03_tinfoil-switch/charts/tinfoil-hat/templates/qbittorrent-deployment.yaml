@@ -16,6 +16,36 @@ spec:
         app: qbittorrent
     spec:
       containers:
+        {{- if .Values.qbittorrent.vpn.enabled }}
+        - name: gluetun
+          image: "{{ .Values.qbittorrent.vpn.image.repository }}:{{ .Values.qbittorrent.vpn.image.tag }}"
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: {{ .Values.qbittorrent.vpn.provider | quote }}
+            - name: VPN_TYPE
+              value: {{ .Values.qbittorrent.vpn.type | quote }}
+            - name: SERVER_COUNTRIES
+              value: {{ .Values.qbittorrent.vpn.country | quote }}
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: {{ .Values.qbittorrent.vpn.firewallOutboundSubnets | default "10.42.0.0/16,10.43.0.0/16,192.168.1.0/24" | quote }}
+            - name: FIREWALL_INPUT_PORTS
+              value: {{ printf "%v,%v" .Values.qbittorrent.config.webui_port .Values.qbittorrent.config.bittorrent_port | quote }}
+            - name: DOT
+              value: "off"
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-gluetun-secrets
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+          volumeMounts:
+            - name: dev-net-tun
+              mountPath: /dev/net/tun
+        {{- end }}
         - name: qbittorrent
           image: "{{ .Values.qbittorrent.image.repository }}:{{ .Values.qbittorrent.image.tag }}"
           imagePullPolicy: {{ .Values.qbittorrent.image.pullPolicy }}
@@ -44,6 +74,11 @@ spec:
           resources:
             {{- toYaml .Values.qbittorrent.resources | nindent 12 }}
       volumes:
+        {{- if .Values.qbittorrent.vpn.enabled }}
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
+        {{- end }}
         - name: games-storage
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-tinfoil-hat-pvc
