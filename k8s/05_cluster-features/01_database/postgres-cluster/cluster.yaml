@@ -61,6 +61,12 @@ spec:
       memory: 2Gi
   monitoring:
     enablePodMonitor: true
+    disableDefaultQueries: false
+    customQueriesConfigMap:
+      - name: cnpg-default-monitoring
+        key: queries
+      - name: cnpg-custom-monitoring
+        key: queries
   # see https://cloudnative-pg.io/documentation/1.22/kubernetes_upgrade/
   nodeMaintenanceWindow:
     reusePVC: false # rebuild from other replica instead
