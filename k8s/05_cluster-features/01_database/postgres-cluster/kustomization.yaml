@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - cluster.yaml
   - service.yaml
-#  - secret.yaml
+  - grafana-user.secret.yaml
 

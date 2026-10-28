@@ -30,3 +30,24 @@ configMapGenerator:
     options:
       labels:
         grafana_dashboard: "1"
+  - name: grafana-dashboard-postgres-cluster-overview
+    namespace: monitoring
+    files:
+      - ../dashboards/postgres-cluster-overview.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+  - name: grafana-dashboard-postgres-database-consumption
+    namespace: monitoring
+    files:
+      - ../dashboards/postgres-database-consumption.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+  - name: grafana-dashboard-postgres-query-insights
+    namespace: monitoring
+    files:
+      - ../dashboards/postgres-query-insights.json
+    options:
+      labels:
+        grafana_dashboard: "1"

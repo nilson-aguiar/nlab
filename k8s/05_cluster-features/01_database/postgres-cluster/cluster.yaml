@@ -6,9 +6,9 @@ spec:
   inheritedMetadata:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "n8n,media-flix,affine,vaultwarden,nbot,home-assistant"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "n8n,media-flix,affine,vaultwarden,nbot,home-assistant,monitoring"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "n8n,media-flix,affine,vaultwarden,nbot,home-assistant"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "n8n,media-flix,affine,vaultwarden,nbot,home-assistant,monitoring"
 
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.11
@@ -39,13 +39,25 @@ spec:
       max_connections: "400"
       shared_buffers: 256MB
       max_slot_wal_keep_size: 5GB
+      shared_preload_libraries: "pg_stat_statements"
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: "all"
+  managed:
+    roles:
+      - name: grafana_reader
+        ensure: present
+        login: true
+        inRoles:
+          - pg_monitor
+        passwordSecret:
+          name: postgres-grafana-user
   resources:
     requests:
       cpu: 500m
     limits:
       memory: 2Gi
   monitoring:
-    enablePodMonitor: false
+    enablePodMonitor: true
   # see https://cloudnative-pg.io/documentation/1.22/kubernetes_upgrade/
   nodeMaintenanceWindow:
     reusePVC: false # rebuild from other replica instead
