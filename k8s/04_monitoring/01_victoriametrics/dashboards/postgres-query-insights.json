@@ -48,7 +48,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -208,12 +208,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  round(s.max_exec_time::numeric, 2) AS \"Max Time (ms)\",\n  s.rows AS \"Rows\",\n  round((100.0 * s.shared_blks_hit / nullif(s.shared_blks_hit + s.shared_blks_read, 0))::numeric, 2) AS \"Cache Hit %\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('$database' = 'ALL' OR d.datname = '$database')\nORDER BY s.total_exec_time DESC\nLIMIT 30;",
-          "refId": "A"
+          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  round(s.max_exec_time::numeric, 2) AS \"Max Time (ms)\",\n  s.rows AS \"Rows\",\n  round((100.0 * s.shared_blks_hit / nullif(s.shared_blks_hit + s.shared_blks_read, 0))::numeric, 2) AS \"Cache Hit %\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}')\nORDER BY s.total_exec_time DESC\nLIMIT 30;",
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Top Slowest Queries by Total Execution Time (pg_stat_statements)",
@@ -234,7 +235,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -328,12 +329,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('$database' = 'ALL' OR d.datname = '$database')\nORDER BY s.calls DESC\nLIMIT 20;",
-          "refId": "A"
+          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}')\nORDER BY s.calls DESC\nLIMIT 20;",
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Most Frequently Executed Queries (Highest Calls)",
@@ -342,7 +344,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -452,12 +454,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.temp_blks_written AS \"Temp Blks Written\",\n  s.temp_blks_read AS \"Temp Blks Read\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('$database' = 'ALL' OR d.datname = '$database') AND s.temp_blks_written > 0\nORDER BY s.temp_blks_written DESC\nLIMIT 20;",
-          "refId": "A"
+          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  s.temp_blks_written AS \"Temp Blks Written\",\n  s.temp_blks_read AS \"Temp Blks Read\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nWHERE ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}') AND s.temp_blks_written > 0\nORDER BY s.temp_blks_written DESC\nLIMIT 20;",
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Queries Spilling to Disk (Temporary Blocks Written)",
@@ -478,7 +481,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -592,12 +595,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n  pid AS \"PID\",\n  datname AS \"Database\",\n  usename AS \"User\",\n  application_name AS \"Application\",\n  round(extract(epoch FROM (now() - query_start))::numeric, 2) AS \"Duration (s)\",\n  state AS \"State\",\n  query AS \"Current Query\"\nFROM pg_stat_activity\nWHERE state != 'idle' AND pid <> pg_backend_pid()\n  AND ('$database' = 'ALL' OR datname = '$database')\nORDER BY query_start ASC;",
-          "refId": "A"
+          "rawSql": "SELECT \n  pid AS \"PID\",\n  datname AS \"Database\",\n  usename AS \"User\",\n  application_name AS \"Application\",\n  round(extract(epoch FROM (now() - query_start))::numeric, 2) AS \"Duration (s)\",\n  state AS \"State\",\n  query AS \"Current Query\"\nFROM pg_stat_activity\nWHERE state != 'idle' AND pid <> pg_backend_pid()\n  AND ('${database:raw}' = 'ALL' OR datname = '${database:raw}')\nORDER BY query_start ASC;",
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Currently Active Queries (pg_stat_activity)",
@@ -606,7 +610,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -648,12 +652,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
           "rawSql": "SELECT \n  blocked_locks.pid AS \"Blocked PID\",\n  blocked_activity.usename AS \"Blocked User\",\n  blocking_locks.pid AS \"Blocking PID\",\n  blocking_activity.usename AS \"Blocking User\",\n  blocked_activity.query AS \"Blocked Statement\"\nFROM pg_catalog.pg_locks blocked_locks\nJOIN pg_catalog.pg_stat_activity blocked_activity ON blocked_activity.pid = blocked_locks.pid\nJOIN pg_catalog.pg_locks blocking_locks \n  ON blocking_locks.locktype = blocked_locks.locktype\n  AND blocking_locks.database IS NOT DISTINCT FROM blocked_locks.database\n  AND blocking_locks.relation IS NOT DISTINCT FROM blocked_locks.relation\n  AND blocking_locks.pid != blocked_locks.pid\nJOIN pg_catalog.pg_stat_activity blocking_activity ON blocking_activity.pid = blocking_locks.pid\nWHERE NOT blocked_locks.granted;",
-          "refId": "A"
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Lock Contention & Blocked Queries (pg_locks)",
@@ -674,7 +679,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -764,12 +769,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
           "rawSql": "SELECT \n  schemaname AS \"Schema\",\n  relname AS \"Table\",\n  n_live_tup AS \"Live Tuples\",\n  n_dead_tup AS \"Dead Tuples\",\n  round((100.0 * n_dead_tup / nullif(n_live_tup + n_dead_tup, 0))::numeric, 2) AS \"Dead %\",\n  last_autovacuum AS \"Last AutoVacuum\"\nFROM pg_stat_user_tables\nORDER BY n_dead_tup DESC\nLIMIT 20;",
-          "refId": "A"
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Top Tables by Dead Tuples (Vacuum Health)",
@@ -778,7 +784,7 @@
     {
       "datasource": {
         "type": "postgres",
-        "uid": "postgres-cluster"
+        "uid": "${pg_datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -868,12 +874,13 @@
         {
           "datasource": {
             "type": "postgres",
-            "uid": "postgres-cluster"
+            "uid": "${pg_datasource}"
           },
           "format": "table",
           "rawQuery": true,
           "rawSql": "SELECT \n  schemaname AS \"Schema\",\n  relname AS \"Table\",\n  seq_scan AS \"Sequential Scans\",\n  idx_scan AS \"Index Scans\",\n  round((100.0 * idx_scan / nullif(seq_scan + idx_scan, 0))::numeric, 2) AS \"Index Scan %\"\nFROM pg_stat_user_tables\nWHERE (seq_scan + idx_scan) > 100\nORDER BY seq_scan DESC\nLIMIT 20;",
-          "refId": "A"
+          "refId": "A",
+          "editorMode": "code"
         }
       ],
       "title": "Table Scans vs Index Scans (Unindexed Table Detection)",
@@ -932,7 +939,7 @@
         },
         "datasource": {
           "type": "postgres",
-          "uid": "postgres-cluster"
+          "uid": "${pg_datasource}"
         },
         "definition": "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname;",
         "hide": 0,
@@ -941,7 +948,13 @@
         "multi": false,
         "name": "database",
         "options": [],
-        "query": "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname;",
+        "query": {
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname;",
+          "refId": "PostgresVariableQueryEditor-VariableQuery"
+        },
         "refresh": 1,
         "sort": 1,
         "type": "query"
