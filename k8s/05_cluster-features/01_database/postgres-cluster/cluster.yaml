@@ -35,22 +35,19 @@ spec:
 #    name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
+    shared_preload_libraries:
+      - "pg_stat_statements"
     parameters:
       max_connections: "400"
       shared_buffers: 256MB
       max_slot_wal_keep_size: 5GB
-      shared_preload_libraries: "pg_stat_statements"
       pg_stat_statements.max: "10000"
       pg_stat_statements.track: "all"
   managed:
     roles:
-      - name: grafana_reader
-        ensure: present
-        login: true
+      - name: app
         inRoles:
           - pg_monitor
-        passwordSecret:
-          name: postgres-grafana-user
   resources:
     requests:
       cpu: 500m
