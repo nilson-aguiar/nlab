@@ -163,6 +163,10 @@ grafana:
       label: grafana_dashboard
       labelValue: "1"
       provider:
+        # Renamed from the chart default ('default') to force Grafana to re-provision
+        # every dashboard. Dashboards stored while the old provider was write-restricted
+        # (duplicate UID) kept a read-only flag that only a re-provision clears.
+        name: sidecar
         allowUiUpdates: true
 
   readinessProbe:
