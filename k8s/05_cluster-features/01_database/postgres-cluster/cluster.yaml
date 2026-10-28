@@ -46,6 +46,9 @@ spec:
   managed:
     roles:
       - name: app
+        ensure: present
+        inherit: true
+        connectionLimit: -1
         inRoles:
           - pg_monitor
   resources:
