@@ -1,0 +1,133 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cnpg-custom-monitoring
+  labels:
+    cnpg.io/reload: ""
+data:
+  queries: |
+    pg_stat_statements:
+      query: |
+        WITH aggregated AS (
+          SELECT
+            d.datname,
+            r.rolname AS usename,
+            s.queryid::text AS queryid,
+            pg_catalog.min(pg_catalog.left(pg_catalog.regexp_replace(s.query, '\s+', ' ', 'g'), 160)) AS query,
+            pg_catalog.sum(s.calls)::bigint AS calls,
+            pg_catalog.sum(s.total_exec_time)::double precision AS total_exec_time_ms,
+            pg_catalog.max(s.max_exec_time)::double precision AS max_exec_time_ms,
+            pg_catalog.sum(s.rows)::bigint AS rows,
+            pg_catalog.sum(s.shared_blks_hit)::bigint AS shared_blks_hit,
+            pg_catalog.sum(s.shared_blks_read)::bigint AS shared_blks_read,
+            pg_catalog.sum(s.temp_blks_read)::bigint AS temp_blks_read,
+            pg_catalog.sum(s.temp_blks_written)::bigint AS temp_blks_written
+          FROM public.pg_stat_statements s
+          JOIN pg_catalog.pg_database d ON s.dbid OPERATOR(pg_catalog.=) d.oid
+          JOIN pg_catalog.pg_roles r ON s.userid OPERATOR(pg_catalog.=) r.oid
+          WHERE NOT pg_catalog.pg_is_in_recovery()
+            AND r.rolname OPERATOR(pg_catalog.<>) 'cnpg_metrics_exporter'
+            AND s.queryid IS NOT NULL
+          GROUP BY d.datname, r.rolname, s.queryid
+        ),
+        ranked AS (
+          SELECT
+            *,
+            pg_catalog.row_number() OVER (PARTITION BY datname ORDER BY total_exec_time_ms DESC) AS rn_time,
+            pg_catalog.row_number() OVER (PARTITION BY datname ORDER BY calls DESC) AS rn_calls
+          FROM aggregated
+        )
+        SELECT
+          datname,
+          usename,
+          queryid,
+          query,
+          calls,
+          total_exec_time_ms,
+          max_exec_time_ms,
+          rows,
+          shared_blks_hit,
+          shared_blks_read,
+          temp_blks_read,
+          temp_blks_written
+        FROM ranked
+        WHERE rn_time <= 25 OR rn_calls <= 25 OR temp_blks_written > 0
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - usename:
+            usage: "LABEL"
+            description: "User name"
+        - queryid:
+            usage: "LABEL"
+            description: "Normalized query ID"
+        - query:
+            usage: "LABEL"
+            description: "Normalized SQL query preview"
+        - calls:
+            usage: "COUNTER"
+            description: "Total number of times statement was executed"
+        - total_exec_time_ms:
+            usage: "COUNTER"
+            description: "Total time spent in the statement, in milliseconds"
+        - max_exec_time_ms:
+            usage: "GAUGE"
+            description: "Maximum time spent in the statement, in milliseconds"
+        - rows:
+            usage: "COUNTER"
+            description: "Total number of rows retrieved or affected by the statement"
+        - shared_blks_hit:
+            usage: "COUNTER"
+            description: "Total number of shared block cache hits by the statement"
+        - shared_blks_read:
+            usage: "COUNTER"
+            description: "Total number of shared blocks read by the statement"
+        - temp_blks_read:
+            usage: "COUNTER"
+            description: "Total number of temp blocks read by the statement"
+        - temp_blks_written:
+            usage: "COUNTER"
+            description: "Total number of temp blocks written by the statement"
+
+    pg_stat_user_tables:
+      query: |
+        SELECT
+          pg_catalog.current_database() AS datname,
+          schemaname,
+          relname,
+          COALESCE(seq_scan, 0) AS seq_scan,
+          COALESCE(idx_scan, 0) AS idx_scan,
+          COALESCE(n_live_tup, 0) AS n_live_tup,
+          COALESCE(n_dead_tup, 0) AS n_dead_tup,
+          COALESCE(EXTRACT(EPOCH FROM last_autovacuum), 0) AS last_autovacuum_epoch
+        FROM pg_catalog.pg_stat_user_tables
+        WHERE NOT pg_catalog.pg_is_in_recovery()
+          AND (COALESCE(n_live_tup, 0) + COALESCE(n_dead_tup, 0) + COALESCE(seq_scan, 0) + COALESCE(idx_scan, 0)) > 0
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - schemaname:
+            usage: "LABEL"
+            description: "Schema name"
+        - relname:
+            usage: "LABEL"
+            description: "Table name"
+        - seq_scan:
+            usage: "COUNTER"
+            description: "Number of sequential scans initiated on this table"
+        - idx_scan:
+            usage: "COUNTER"
+            description: "Number of index scans initiated on this table"
+        - n_live_tup:
+            usage: "GAUGE"
+            description: "Estimated number of live rows"
+        - n_dead_tup:
+            usage: "GAUGE"
+            description: "Estimated number of dead rows"
+        - last_autovacuum_epoch:
+            usage: "GAUGE"
+            description: "Unix timestamp of last autovacuum on this table"
+      target_databases:
+        - '*'

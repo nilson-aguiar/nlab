@@ -42,8 +42,1286 @@
         "y": 0
       },
       "id": 300,
-      "title": "Query Performance & Statement Statistics (pg_stat_statements)",
+      "title": "Query Performance & Statement Statistics (Time-Windowed \u2014 Follows Time Picker)",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Execution Time Rate",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 302,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "topk(10, sum by (datname, usename, queryid, query) (rate(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__rate_interval])) > 0)",
+          "legendFormat": "{{datname}} ({{usename}}): {{query}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Query Execution Time Rate Over Time \u2014 Top 10 Queries (ms/sec)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Query Preview"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 450
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cache Hit %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 90
+                    },
+                    {
+                      "color": "green",
+                      "value": 98
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 301,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Total Time (ms)"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round((sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__range])) / clamp_min(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])), 1)) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(max by (datname, usename, queryid, query) (max_over_time(cnpg_pg_stat_statements_max_exec_time_ms{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_rows{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "E"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round((100 * sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_shared_blks_hit{datname=~\"$database\"}[$__range])) / clamp_min(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_shared_blks_hit{datname=~\"$database\"}[$__range]) + increase(cnpg_pg_stat_statements_shared_blks_read{datname=~\"$database\"}[$__range])), 1)) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "F"
+        }
+      ],
+      "title": "Top Slowest Queries in Selected Time Range ($__range)",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "cluster": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "queryid": true
+            },
+            "indexByName": {
+              "datname": 0,
+              "usename": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "Value #D": 5,
+              "Value #E": 6,
+              "Value #F": 7,
+              "query": 8
+            },
+            "renameByName": {
+              "datname": "Database",
+              "usename": "User",
+              "Value #A": "Calls",
+              "Value #B": "Total Time (ms)",
+              "Value #C": "Mean Time (ms)",
+              "Value #D": "Max Time (ms)",
+              "Value #E": "Rows",
+              "Value #F": "Cache Hit %",
+              "query": "Query Preview"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 310,
+      "title": "High Frequency Queries & Temp Disk Spills (Time-Windowed \u2014 Follows Time Picker)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mean Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Query Preview"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 300
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "id": 311,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Calls"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round((sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__range])) / clamp_min(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])), 1)) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        }
+      ],
+      "title": "Most Frequently Executed Queries in Selected Time Range ($__range)",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "cluster": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "queryid": true
+            },
+            "indexByName": {
+              "datname": 0,
+              "usename": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "query": 5
+            },
+            "renameByName": {
+              "datname": "Database",
+              "usename": "User",
+              "Value #A": "Calls",
+              "Value #B": "Total Time (ms)",
+              "Value #C": "Mean Time (ms)",
+              "query": "Query Preview"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Temp Blks Written"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    },
+                    {
+                      "color": "red",
+                      "value": 1000
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Time (ms)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Query Preview"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 280
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 20
+      },
+      "id": 312,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Temp Blks Written"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_written{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_written{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_read{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_written{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_calls{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_written{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_total_exec_time_ms{datname=~\"$database\"}[$__range])) and (sum by (datname, usename, queryid, query) (increase(cnpg_pg_stat_statements_temp_blks_written{datname=~\"$database\"}[$__range])) >= 1), 0.01)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "D"
+        }
+      ],
+      "title": "Queries Spilling to Disk in Selected Time Range ($__range)",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "cluster": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "queryid": true
+            },
+            "indexByName": {
+              "datname": 0,
+              "usename": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #C": 4,
+              "Value #D": 5,
+              "query": 6
+            },
+            "renameByName": {
+              "datname": "Database",
+              "usename": "User",
+              "Value #A": "Temp Blks Written",
+              "Value #B": "Temp Blks Read",
+              "Value #C": "Calls",
+              "Value #D": "Total Time (ms)",
+              "query": "Query Preview"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 330,
+      "title": "Database Tables & Index Health Across All Databases (Dead Tuples & Time-Windowed Scans)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Dead %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 15
+                    },
+                    {
+                      "color": "red",
+                      "value": 30
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 331,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Dead Tuples"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_live_tup{datname=~\"$database\"}) and (max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_live_tup{datname=~\"$database\"} + cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}) and (max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_live_tup{datname=~\"$database\"} + cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(100 * max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}) / clamp_min(max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_live_tup{datname=~\"$database\"} + cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}), 1), 0.01) and (max by (datname, schemaname, relname) (cnpg_pg_stat_user_tables_n_live_tup{datname=~\"$database\"} + cnpg_pg_stat_user_tables_n_dead_tup{datname=~\"$database\"}) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        }
+      ],
+      "title": "Top Tables by Dead Tuples (Vacuum Health \u2014 All Databases)",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "cluster": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "queryid": true
+            },
+            "indexByName": {
+              "datname": 0,
+              "schemaname": 1,
+              "relname": 2,
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5
+            },
+            "renameByName": {
+              "datname": "Database",
+              "schemaname": "Schema",
+              "relname": "Table",
+              "Value #A": "Live Tuples",
+              "Value #B": "Dead Tuples",
+              "Value #C": "Dead %"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Index Scan %"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 50
+                    },
+                    {
+                      "color": "green",
+                      "value": 85
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 332,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Sequential Scans"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_seq_scan{datname=~\"$database\"}[$__range])) and (sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_seq_scan{datname=~\"$database\"}[$__range]) + increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])) and (sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_seq_scan{datname=~\"$database\"}[$__range]) + increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])) >= 1), 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(100 * sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])) / clamp_min(sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_seq_scan{datname=~\"$database\"}[$__range]) + increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])), 1), 0.01) and (sum by (datname, schemaname, relname) (increase(cnpg_pg_stat_user_tables_seq_scan{datname=~\"$database\"}[$__range]) + increase(cnpg_pg_stat_user_tables_idx_scan{datname=~\"$database\"}[$__range])) >= 1)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        }
+      ],
+      "title": "Table Scans vs Index Scans in Selected Time Range ($__range)",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "cluster": true,
+              "instance": true,
+              "job": true,
+              "namespace": true,
+              "pod": true,
+              "queryid": true
+            },
+            "indexByName": {
+              "datname": 0,
+              "schemaname": 1,
+              "relname": 2,
+              "Value #A": 3,
+              "Value #B": 4,
+              "Value #C": 5
+            },
+            "renameByName": {
+              "datname": "Database",
+              "schemaname": "Schema",
+              "relname": "Table",
+              "Value #A": "Sequential Scans",
+              "Value #B": "Index Scans",
+              "Value #C": "Index Scan %"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 320,
+      "title": "Live Active Sessions, Lock Waiters & Cumulative SQL View (Direct PostgreSQL)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${pg_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration (s)"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 5
+                    },
+                    {
+                      "color": "red",
+                      "value": 30
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PID"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Current Query"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 400
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 41
+      },
+      "id": 321,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Duration (s)"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${pg_datasource}"
+          },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  pid AS \"PID\",\n  datname AS \"Database\",\n  usename AS \"User\",\n  application_name AS \"Application\",\n  round(extract(epoch FROM (now() - query_start))::numeric, 2) AS \"Duration (s)\",\n  state AS \"State\",\n  query AS \"Current Query\"\nFROM pg_stat_activity\nWHERE state != 'idle' AND pid <> pg_backend_pid()\n  AND ('${database:raw}' = '.*' OR datname = '${database:raw}')\nORDER BY query_start ASC;",
+          "refId": "A",
+          "editorMode": "code"
+        }
+      ],
+      "title": "Currently Active Queries (pg_stat_activity)",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "${pg_datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "inspect": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 41
+      },
+      "id": 322,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "${pg_datasource}"
+          },
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  blocked_locks.pid AS \"Blocked PID\",\n  blocked_activity.usename AS \"Blocked User\",\n  blocking_locks.pid AS \"Blocking PID\",\n  blocking_activity.usename AS \"Blocking User\",\n  blocked_activity.query AS \"Blocked Statement\"\nFROM pg_catalog.pg_locks blocked_locks\nJOIN pg_catalog.pg_stat_activity blocked_activity ON blocked_activity.pid = blocked_locks.pid\nJOIN pg_catalog.pg_locks blocking_locks \n  ON blocking_locks.locktype = blocked_locks.locktype\n  AND blocking_locks.database IS NOT DISTINCT FROM blocked_locks.database\n  AND blocking_locks.relation IS NOT DISTINCT FROM blocked_locks.relation\n  AND blocking_locks.pid != blocked_locks.pid\nJOIN pg_catalog.pg_stat_activity blocking_activity ON blocking_activity.pid = blocking_locks.pid\nWHERE NOT blocked_locks.granted;",
+          "refId": "A",
+          "editorMode": "code"
+        }
+      ],
+      "title": "Lock Contention & Blocked Queries (pg_locks)",
+      "type": "table"
     },
     {
       "datasource": {
@@ -179,12 +1457,12 @@
         ]
       },
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 49
       },
-      "id": 301,
+      "id": 323,
       "options": {
         "cellHeight": "sm",
         "footer": {
@@ -212,678 +1490,12 @@
           },
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  r.rolname AS \"User\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  round(s.max_exec_time::numeric, 2) AS \"Max Time (ms)\",\n  s.rows AS \"Rows\",\n  round((100.0 * s.shared_blks_hit / nullif(s.shared_blks_hit + s.shared_blks_read, 0))::numeric, 2) AS \"Cache Hit %\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nJOIN pg_roles r ON s.userid = r.oid\nWHERE r.rolname <> 'cnpg_metrics_exporter' AND ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}')\nORDER BY s.total_exec_time DESC\nLIMIT 30;",
+          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  r.rolname AS \"User\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  round(s.max_exec_time::numeric, 2) AS \"Max Time (ms)\",\n  s.rows AS \"Rows\",\n  round((100.0 * s.shared_blks_hit / nullif(s.shared_blks_hit + s.shared_blks_read, 0))::numeric, 2) AS \"Cache Hit %\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nJOIN pg_roles r ON s.userid = r.oid\nWHERE r.rolname <> 'cnpg_metrics_exporter' AND ('${database:raw}' = '.*' OR d.datname = '${database:raw}')\nORDER BY s.total_exec_time DESC\nLIMIT 30;",
           "refId": "A",
           "editorMode": "code"
         }
       ],
-      "title": "Top Slowest Queries by Total Execution Time (pg_stat_statements)",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 11
-      },
-      "id": 310,
-      "title": "High Frequency Queries & Temp Disk Spills",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Mean Time (ms)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "ms"
-              },
-              {
-                "id": "custom.width",
-                "value": 120
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Total Time (ms)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "ms"
-              },
-              {
-                "id": "custom.width",
-                "value": 120
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Query Preview"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 300
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 12
-      },
-      "id": 311,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Calls"
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  r.rolname AS \"User\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  round((s.total_exec_time / nullif(s.calls, 0))::numeric, 2) AS \"Mean Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nJOIN pg_roles r ON s.userid = r.oid\nWHERE r.rolname <> 'cnpg_metrics_exporter' AND ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}')\nORDER BY s.calls DESC\nLIMIT 20;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Most Frequently Executed Queries (Highest Calls)",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Temp Blks Written"
-            },
-            "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "color-background"
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "yellow",
-                      "value": null
-                    },
-                    {
-                      "color": "red",
-                      "value": 1000
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 140
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Total Time (ms)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "ms"
-              },
-              {
-                "id": "custom.width",
-                "value": 120
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Query Preview"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 280
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
-      "id": 312,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Temp Blks Written"
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  d.datname AS \"Database\",\n  r.rolname AS \"User\",\n  s.temp_blks_written AS \"Temp Blks Written\",\n  s.temp_blks_read AS \"Temp Blks Read\",\n  s.calls AS \"Calls\",\n  round(s.total_exec_time::numeric, 2) AS \"Total Time (ms)\",\n  s.query AS \"Query Preview\"\nFROM pg_stat_statements s\nJOIN pg_database d ON s.dbid = d.oid\nJOIN pg_roles r ON s.userid = r.oid\nWHERE r.rolname <> 'cnpg_metrics_exporter' AND ('${database:raw}' = 'ALL' OR d.datname = '${database:raw}') AND s.temp_blks_written > 0\nORDER BY s.temp_blks_written DESC\nLIMIT 20;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Queries Spilling to Disk (Temporary Blocks Written)",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 320,
-      "title": "Live Active Sessions & Lock Waiters",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Duration (s)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "s"
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "color-background"
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 5
-                    },
-                    {
-                      "color": "red",
-                      "value": 30
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 110
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "PID"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 80
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Current Query"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 400
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 14,
-        "x": 0,
-        "y": 22
-      },
-      "id": 321,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Duration (s)"
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  pid AS \"PID\",\n  datname AS \"Database\",\n  usename AS \"User\",\n  application_name AS \"Application\",\n  round(extract(epoch FROM (now() - query_start))::numeric, 2) AS \"Duration (s)\",\n  state AS \"State\",\n  query AS \"Current Query\"\nFROM pg_stat_activity\nWHERE state != 'idle' AND pid <> pg_backend_pid()\n  AND ('${database:raw}' = 'ALL' OR datname = '${database:raw}')\nORDER BY query_start ASC;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Currently Active Queries (pg_stat_activity)",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 10,
-        "x": 14,
-        "y": 22
-      },
-      "id": 322,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  blocked_locks.pid AS \"Blocked PID\",\n  blocked_activity.usename AS \"Blocked User\",\n  blocking_locks.pid AS \"Blocking PID\",\n  blocking_activity.usename AS \"Blocking User\",\n  blocked_activity.query AS \"Blocked Statement\"\nFROM pg_catalog.pg_locks blocked_locks\nJOIN pg_catalog.pg_stat_activity blocked_activity ON blocked_activity.pid = blocked_locks.pid\nJOIN pg_catalog.pg_locks blocking_locks \n  ON blocking_locks.locktype = blocked_locks.locktype\n  AND blocking_locks.database IS NOT DISTINCT FROM blocked_locks.database\n  AND blocking_locks.relation IS NOT DISTINCT FROM blocked_locks.relation\n  AND blocking_locks.pid != blocked_locks.pid\nJOIN pg_catalog.pg_stat_activity blocking_activity ON blocking_activity.pid = blocking_locks.pid\nWHERE NOT blocked_locks.granted;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Lock Contention & Blocked Queries (pg_locks)",
-      "type": "table"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 30
-      },
-      "id": 330,
-      "title": "Database Tables & Index Health (Dead Tuples & Vacuum)",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Dead %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "color-background"
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 15
-                    },
-                    {
-                      "color": "red",
-                      "value": 30
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 100
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 31
-      },
-      "id": 331,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Dead Tuples"
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  schemaname AS \"Schema\",\n  relname AS \"Table\",\n  n_live_tup AS \"Live Tuples\",\n  n_dead_tup AS \"Dead Tuples\",\n  round((100.0 * n_dead_tup / nullif(n_live_tup + n_dead_tup, 0))::numeric, 2) AS \"Dead %\",\n  last_autovacuum AS \"Last AutoVacuum\"\nFROM pg_stat_user_tables\nORDER BY n_dead_tup DESC\nLIMIT 20;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Top Tables by Dead Tuples (Vacuum Health)",
-      "type": "table"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "${pg_datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "auto",
-            "displayMode": "auto",
-            "inspect": true
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Index Scan %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "custom.displayMode",
-                "value": "color-background"
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "red",
-                      "value": null
-                    },
-                    {
-                      "color": "yellow",
-                      "value": 50
-                    },
-                    {
-                      "color": "green",
-                      "value": 85
-                    }
-                  ]
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 120
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 31
-      },
-      "id": 332,
-      "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        },
-        "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "Sequential Scans"
-          }
-        ]
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "${pg_datasource}"
-          },
-          "format": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT \n  schemaname AS \"Schema\",\n  relname AS \"Table\",\n  seq_scan AS \"Sequential Scans\",\n  idx_scan AS \"Index Scans\",\n  round((100.0 * idx_scan / nullif(seq_scan + idx_scan, 0))::numeric, 2) AS \"Index Scan %\"\nFROM pg_stat_user_tables\nWHERE (seq_scan + idx_scan) > 100\nORDER BY seq_scan DESC\nLIMIT 20;",
-          "refId": "A",
-          "editorMode": "code"
-        }
-      ],
-      "title": "Table Scans vs Index Scans (Unindexed Table Detection)",
+      "title": "All-Time Cumulative Top Queries (Direct SQL \u2014 Since Counter Reset)",
       "type": "table"
     }
   ],
@@ -931,11 +1543,11 @@
         "type": "datasource"
       },
       {
-        "allValue": "ALL",
+        "allValue": ".*",
         "current": {
           "selected": true,
-          "text": "ALL",
-          "value": "ALL"
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "postgres",
