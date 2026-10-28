@@ -47,8 +47,11 @@ spec:
     roles:
       - name: app
         ensure: present
+        login: true
         inherit: true
         connectionLimit: -1
+        passwordSecret:
+          name: postgres-app
         inRoles:
           - pg_monitor
   resources:
