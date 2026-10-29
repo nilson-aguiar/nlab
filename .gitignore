@@ -2,3 +2,7 @@
 .idea
 .worktrees
 .agentbridge
+
+# Local database backups
+*.sql.gz
+secret_*_backup.yaml
