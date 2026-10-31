@@ -156,6 +156,15 @@ in
     "d /var/lib/rancher/k3s/agent/pod-manifests 0755 root root -"
     "C+ /var/lib/rancher/k3s/agent/pod-manifests/kube-vip.yaml 0644 root root - ${kubeVipManifest}"
   ];
+
+  # Ensure kube-vip static pod is updated on every nixos-rebuild switch
+  system.activationScripts.kubeVipStaticPod = {
+    deps = [ "etc" ];
+    text = ''
+      mkdir -p /var/lib/rancher/k3s/agent/pod-manifests
+      cp -f ${kubeVipManifest} /var/lib/rancher/k3s/agent/pod-manifests/kube-vip.yaml
+    '';
+  };
   virtualisation.docker.logDriver = "json-file";
 
   # Enable the X11 windowing system.
