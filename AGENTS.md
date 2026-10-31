@@ -95,11 +95,14 @@ Each application directory typically contains:
 6.  **Service Discovery**: When linking applications across namespaces, use the full internal DNS pattern: `<release>-<service>.<namespace>.svc.cluster.local:<port>`.
 7.  **NixOS State Version**: Do not change `system.stateVersion` in `configuration.nix` as it is tied to the initial installation.
 8.  **SOPS Keys**: System secrets require the age key at `~/.config/sops/age/keys.txt`.
-9.  **Git Worktree Convention**: When using Git worktrees for isolated work, always place them under `.worktrees/<branch-name>` in the repository root (e.g., `.worktrees/feat-postgres-migration`), which is tracked in `.gitignore`. Clean up worktrees when finished (`git worktree remove .worktrees/<branch-name>`).
+9.  **Git Worktree Convention & Rebase Discipline**:
+    *   When using Git worktrees for isolated work, always place them under `.worktrees/<branch-name>` in the repository root (e.g., `.worktrees/feat-postgres-migration`), which is tracked in `.gitignore`. Clean up worktrees when finished (`git worktree remove .worktrees/<branch-name>`).
+    *   **Rebase Before Committing**: When making follow-ups or additional fixes on a feature branch, always fetch and rebase on `origin/main` before committing and pushing to prevent merge conflicts.
 10. **Secret Privacy & Templating**: When creating or modifying secrets, do not attempt to read or expose private credentials. Provide template manifests with clear placeholders (e.g. `<REPLACE_WITH_YOUR_DB_PASSWORD>`) and instruct the user to fill in values and encrypt using SOPS (`sops -e -i <file>`).
 11. **Stateful Migrations & ArgoCD Coordination**: For maintenance tasks, data migrations, or manual replica scaling:
     *   Temporarily disable ArgoCD auto-sync/self-heal on the target Application (`kubectl patch app <name> -n argocd --type merge -p '{"spec":{"syncPolicy":null}}'` or via UI) so ArgoCD does not reconcile during manual downtime or batch jobs.
     *   Guide the user interactively step-by-step, explicitly requesting user confirmation before proceeding to each subsequent step.
+    *   Never perform mutating operations directly against live cluster workloads or static mirror pods (e.g. `kubectl delete pod`) without prior user confirmation.
     *   Push changes to a feature branch on `origin` for user review and merge rather than committing directly to `main`.
     *   Re-enable auto-sync once the migration and verification are complete.
 12. **PostgreSQL Service & Provisioning Pattern**:
