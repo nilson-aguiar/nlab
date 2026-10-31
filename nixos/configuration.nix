@@ -4,6 +4,62 @@
 
 { config, lib, pkgs, inputs, meta, ... }:
 
+let
+  kubeVipManifest = pkgs.writeText "kube-vip.yaml" ''
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: kube-vip
+      namespace: kube-system
+    spec:
+      containers:
+      - name: kube-vip
+        image: ghcr.io/kube-vip/kube-vip:v1.1.2
+        imagePullPolicy: IfNotPresent
+        args:
+        - manager
+        env:
+        - name: vip_arp
+          value: "true"
+        - name: port
+          value: "6443"
+        - name: vip_interface
+          value: "enp2s0"
+        - name: vip_cidr
+          value: "32"
+        - name: cp_enable
+          value: "true"
+        - name: cp_namespace
+          value: "kube-system"
+        - name: vip_address
+          value: "192.168.1.121"
+        - name: vip_leaderelection
+          value: "true"
+        - name: lb_enable
+          value: "true"
+        - name: lb_port
+          value: "6443"
+        - name: lb_fwdmethod
+          value: "local"
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - NET_RAW
+        volumeMounts:
+        - mountPath: /etc/kubernetes/admin.conf
+          name: kubeconfig
+      hostAliases:
+      - hostnames:
+        - kubernetes
+        ip: 127.0.0.1
+      hostNetwork: true
+      volumes:
+      - hostPath:
+          path: /etc/rancher/k3s/k3s.yaml
+        name: kubeconfig
+  '';
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -84,9 +140,11 @@
     #useXkbConfig = true; # use xkb.options in tty.
   };
 
-  # Fixes for longhorn
+  # Fixes for longhorn & static pods
   systemd.tmpfiles.rules = [
     "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
+    "d /var/lib/rancher/k3s/agent/pod-manifests 0755 root root -"
+    "C+ /var/lib/rancher/k3s/agent/pod-manifests/kube-vip.yaml 0644 root root - ${kubeVipManifest}"
   ];
   virtualisation.docker.logDriver = "json-file";
 
@@ -106,6 +164,8 @@
 	    "--disable servicelb"
 	    "--disable traefik"
 	    "--disable local-storage"
+	    "--tls-san 192.168.1.121"
+	    "--tls-san k8s-api.local.naguiar.dev"
 	    "--kubelet-arg=kube-reserved=cpu=200m,memory=500Mi"
 	    "--kubelet-arg=system-reserved=cpu=200m,memory=500Mi"
 	    "--kubelet-arg=eviction-hard=memory.available<200Mi,nodefs.available<10%"

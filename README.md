@@ -50,7 +50,11 @@ After finished you can copy the connection details from `homelab-0` with:
 scp -r naguiar@homelab-0:/etc/rancher/k3s/k3s.yaml .kube/config
 ```
 
-then open the copied file and update the ip for the server
+Then open `.kube/config` and set the server endpoint to the Control Plane HA Virtual IP (VIP):
+```yaml
+server: https://192.168.1.121:6443
+```
+(or `https://k8s-api.local.naguiar.dev:6443` once internal DNS is mapped).
 
 When changes are made you can update the node using:
 
