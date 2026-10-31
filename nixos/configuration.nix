@@ -25,16 +25,26 @@ let
           value: "6443"
         - name: vip_interface
           value: "enp2s0"
+        - name: interface
+          value: "enp2s0"
         - name: vip_cidr
           value: "32"
         - name: cp_enable
           value: "true"
         - name: cp_namespace
           value: "kube-system"
+        - name: address
+          value: "192.168.1.121"
         - name: vip_address
           value: "192.168.1.121"
         - name: vip_leaderelection
           value: "true"
+        - name: vip_leaseduration
+          value: "5"
+        - name: vip_renewdeadline
+          value: "3"
+        - name: vip_retryperiod
+          value: "1"
         - name: lb_enable
           value: "true"
         - name: lb_port
