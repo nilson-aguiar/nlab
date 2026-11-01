@@ -18,18 +18,26 @@ command:
 # Valid values are "daemonset", "deployment", and "statefulset".
 mode: "daemonset"
 
+presets:
+  # Collect logs from /var/log/pods on each node
+  logsCollection:
+    enabled: true
+    storeCheckpoints: true
+  # Extract kubernetes metadata (pod, namespace, container)
+  kubernetesAttributes:
+    enabled: true
+
 # When enabled, the chart will set the GOMEMLIMIT env var to 80% of the configured resources.limits.memory.
-# If no resources.limits.memory are defined then enabling does nothing.
-# It is HIGHLY recommend to enable this setting and set a value for resources.limits.memory.
 useGOMEMLIMIT: true
 
-# Resource limits & requests.
-# It is HIGHLY recommended to set resource limits.
-resources: {}
-# resources:
-#   limits:
-#     cpu: 250m
-#     memory: 512Mi
+# Resource limits & requests
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 512Mi
 
 service:
   # Enable the creation of a Service.
@@ -56,6 +64,15 @@ config:
       protocols:
         grpc: {}
         http: {}
+  processors:
+    filter/noisy:
+      error_mode: ignore
+      traces:
+        span:
+          - 'attributes["http.route"] == "/ping" or attributes["http.route"] == "/healthz" or attributes["http.route"] == "/readyz"'
+      logs:
+        log_record:
+          - 'body matches "GET /(ping|healthz|readyz|metrics)"'
   exporters:
     otlphttp/openobserve:
       endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
@@ -63,22 +80,21 @@ config:
         stream-name: default
       tls:
         insecure: true
-#    prometheusremotewrite:
-#      endpoint: http://victoriametrics.monitoring.svc.cluster.local:8428/api/v1/write
-#      tls:
-#        insecure: true
+    prometheusremotewrite:
+      endpoint: http://vmsingle-vm-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/api/v1/write
+      tls:
+        insecure: true
   service:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: []
+        processors: [k8s_attributes, filter/noisy, memory_limiter, batch]
         exporters: [otlphttp/openobserve]
       metrics:
         receivers: [otlp]
-        processors: []
-        exporters: [otlphttp/openobserve]
+        processors: [k8s_attributes, memory_limiter, batch]
+        exporters: [otlphttp/openobserve, prometheusremotewrite]
       logs:
-        receivers: [otlp]
-        processors: []
+        receivers: [otlp, file_log]
+        processors: [k8s_attributes, filter/noisy, memory_limiter, batch]
         exporters: [otlphttp/openobserve]
-  
