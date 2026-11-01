@@ -72,7 +72,7 @@ config:
           - 'attributes["http.route"] == "/ping" or attributes["http.route"] == "/healthz" or attributes["http.route"] == "/readyz"'
       logs:
         log_record:
-          - 'body matches "GET /(ping|healthz|readyz|metrics)"'
+          - 'IsMatch(body, ".*(ping|healthz|readyz|metrics).*")'
   exporters:
     otlphttp/openobserve:
       endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
