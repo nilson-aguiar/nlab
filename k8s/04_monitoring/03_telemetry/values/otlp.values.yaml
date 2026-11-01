@@ -73,6 +73,17 @@ config:
       logs:
         log_record:
           - 'IsMatch(body, ".*(ping|healthz|readyz|metrics).*")'
+          - 'IsMatch(body, ".*config::axum::middlewares::access_log.*POST /api/default/v1/.*")'
+    transform:
+      error_mode: ignore
+      log_statements:
+        - context: log
+          statements:
+            - 'merge_maps(attributes, ParseJSON(body), "upsert") where IsString(body) and IsMatch(body, "^\\s*\\{")'
+            - 'set(severity_text, "INFO") where IsMatch(body, "(?i)(level=info|\"level\":\"info\"|\\sINFO\\s)")'
+            - 'set(severity_text, "WARN") where IsMatch(body, "(?i)(level=warn|\"level\":\"warn\"|\\sWARN\\s)")'
+            - 'set(severity_text, "ERROR") where IsMatch(body, "(?i)(level=error|\"level\":\"error\"|\\sERROR\\s)")'
+            - 'set(severity_text, "DEBUG") where IsMatch(body, "(?i)(level=debug|\"level\":\"debug\"|\\sDEBUG\\s)")'
   exporters:
     otlphttp/openobserve:
       endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
@@ -96,5 +107,5 @@ config:
         exporters: [otlphttp/openobserve, otlphttp/victoriametrics]
       logs:
         receivers: [otlp, file_log]
-        processors: [k8s_attributes, filter/noisy, memory_limiter, batch]
+        processors: [k8s_attributes, filter/noisy, transform, memory_limiter, batch]
         exporters: [otlphttp/openobserve]
