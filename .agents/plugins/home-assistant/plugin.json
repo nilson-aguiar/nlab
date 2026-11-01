@@ -1,0 +1,4 @@
+{
+  "name": "home-assistant",
+  "description": "Home Assistant integration providing ha-mcp tooling and direct REST API access."
+}

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "ha-mcp": {
+      "command": ".agents/plugins/home-assistant/scripts/ha-mcp-server.sh"
+    }
+  }
+}
