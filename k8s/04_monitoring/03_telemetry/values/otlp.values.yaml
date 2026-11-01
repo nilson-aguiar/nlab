@@ -77,7 +77,7 @@ config:
     otlphttp/openobserve:
       endpoint: http://open-observe.monitoring.svc.cluster.local:5080/api/default
       headers:
-        stream-name: default
+        stream-name: k8s
       tls:
         insecure: true
     otlphttp/victoriametrics:
