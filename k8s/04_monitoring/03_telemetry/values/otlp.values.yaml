@@ -80,8 +80,8 @@ config:
         stream-name: default
       tls:
         insecure: true
-    prometheusremotewrite:
-      endpoint: http://vmsingle-vm-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/api/v1/write
+    otlphttp/victoriametrics:
+      endpoint: http://vmsingle-vm-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry
       tls:
         insecure: true
   service:
@@ -93,7 +93,7 @@ config:
       metrics:
         receivers: [otlp]
         processors: [k8s_attributes, memory_limiter, batch]
-        exporters: [otlphttp/openobserve, prometheusremotewrite]
+        exporters: [otlphttp/openobserve, otlphttp/victoriametrics]
       logs:
         receivers: [otlp, file_log]
         processors: [k8s_attributes, filter/noisy, memory_limiter, batch]
