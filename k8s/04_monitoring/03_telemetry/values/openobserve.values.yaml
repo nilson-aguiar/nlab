@@ -9,12 +9,20 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           ZO_DATA_DIR: /data
+          ZO_DATA_RETENTION_DAYS: "3"
           ZO_SCHEMA_MAPPING: |
             {
               "__hash__": {
                 "type": "keyword"
               }
             }
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 1024Mi
         ports:
           - name: http
             containerPort: &port 5080
@@ -41,6 +49,10 @@ persistence:
   data:
     globalMounts:
       - path: "/data"
+    labels:
+      # Prevent Longhorn from creating recurring snapshot chains that fill host disk
+      recurring-job.longhorn.io/source: enabled
+      recurring-job-group.longhorn.io/no-snapshots: enabled
     size: 10Gi
     storageClass: longhorn
     retain: true

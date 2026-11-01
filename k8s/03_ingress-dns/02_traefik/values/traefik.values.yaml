@@ -170,7 +170,7 @@ tracing:  # @schema additionalProperties: false
   # # -- By default, all query parameters are redacted. Defines the list of query parameters to not redact.
   # safeQueryParams: []
   # # -- The proportion of requests to trace, specified between 0.0 and 1.0. Default: 1.0.
-  # sampleRate:  # @schema type:[number, null]; minimum:0; maximum:1
+  sampleRate: 0.01
   otlp:
     # -- See https://doc.traefik.io/traefik/v3.0/observability/tracing/opentelemetry/
     enabled: true
