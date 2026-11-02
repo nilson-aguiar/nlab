@@ -5,4 +5,5 @@ resources:
   - cluster.yaml
   - custom-monitoring.yaml
   - service.yaml
+  - superuser-secret.yaml
 
