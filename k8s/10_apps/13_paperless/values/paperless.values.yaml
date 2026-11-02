@@ -41,6 +41,9 @@ controllers:
           PAPERLESS_DBPORT: "5432"
           PAPERLESS_DBNAME: "paperless"
           PAPERLESS_DBUSER: "paperless"
+          USERMAP_UID: 1000
+          USERMAP_GID: 1000
+          PAPERLESS_OCR_LANGUAGES: "nld por"
           PAPERLESS_OCR_LANGUAGE: "eng+nld+por"
           PAPERLESS_TASK_WORKERS: 2
           PAPERLESS_WEBSERVER_WORKERS: 2
