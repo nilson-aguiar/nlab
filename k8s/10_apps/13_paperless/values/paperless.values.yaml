@@ -1,0 +1,162 @@
+# k8s/10_apps/13_paperless/values/paperless.values.yaml
+controllers:
+  main:
+    strategy: Recreate
+    annotations:
+      reloader.stakater.com/auto: "true"
+    initContainers:
+      init-db:
+        image:
+          repository: ghcr.io/home-operations/postgres-init
+          tag: 18
+        env:
+          INIT_POSTGRES_SUPER_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+          INIT_POSTGRES_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
+          INIT_POSTGRES_USER: "paperless"
+          INIT_POSTGRES_DBNAME: "paperless"
+          INIT_POSTGRES_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: paperless
+                key: PAPERLESS_DBPASS
+    containers:
+      app:
+        image:
+          repository: ghcr.io/paperless-ngx/paperless-ngx
+          tag: 2.14.7
+          pullPolicy: IfNotPresent
+        env:
+          TZ: Europe/Amsterdam
+          PAPERLESS_PORT: &port 8000
+          PAPERLESS_URL: "https://paperless.local.naguiar.dev"
+          PAPERLESS_CSRF_TRUSTED_ORIGINS: "https://paperless.local.naguiar.dev,https://paperless.naguiar.dev"
+          PAPERLESS_TRUSTED_PROXIES: "10.42.0.0/16,10.43.0.0/16,192.168.0.0/16"
+          PAPERLESS_REDIS: "redis://localhost:6379"
+          PAPERLESS_DBENGINE: "postgresql"
+          PAPERLESS_DBHOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
+          PAPERLESS_DBPORT: "5432"
+          PAPERLESS_DBNAME: "paperless"
+          PAPERLESS_DBUSER: "paperless"
+          PAPERLESS_OCR_LANGUAGE: "eng+nld+por"
+          PAPERLESS_TASK_WORKERS: 2
+          PAPERLESS_WEBSERVER_WORKERS: 2
+          PAPERLESS_TIME_ZONE: Europe/Amsterdam
+        envFrom:
+          - secretRef:
+              name: paperless
+        ports:
+          - name: http
+            containerPort: *port
+        probes:
+          liveness:
+            enabled: true
+            port: *port
+          readiness:
+            enabled: true
+            port: *port
+          startup:
+            enabled: true
+            port: *port
+            spec:
+              failureThreshold: 30
+              periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 384Mi
+          limits:
+            cpu: 1500m
+            memory: 1024Mi
+
+      valkey:
+        image:
+          repository: valkey/valkey
+          tag: 8.0-alpine
+          pullPolicy: IfNotPresent
+        ports:
+          - name: redis
+            containerPort: 6379
+        resources:
+          requests:
+            cpu: 20m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+persistence:
+  data:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: longhorn
+    advancedMounts:
+      main:
+        app:
+          - path: /usr/src/paperless/data
+
+  media:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteMany
+    size: 50Gi
+    storageClass: secondary
+    advancedMounts:
+      main:
+        app:
+          - path: /usr/src/paperless/media
+
+  consume:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteMany
+    size: 10Gi
+    storageClass: secondary
+    advancedMounts:
+      main:
+        app:
+          - path: /usr/src/paperless/consume
+
+  export:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteMany
+    size: 20Gi
+    storageClass: backup
+    advancedMounts:
+      main:
+        app:
+          - path: /usr/src/paperless/export
+
+rawResources:
+  ingress-route:
+    enabled: true
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`paperless.local.naguiar.dev`) || Host(`paperless.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: paperless
+                port: *port
+        tls:
+          secretName: certificate-tls
