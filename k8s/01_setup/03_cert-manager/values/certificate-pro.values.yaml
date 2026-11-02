@@ -27,4 +27,5 @@ certificate:
       - vaultwarden
       - actual
       - nbot
+      - paperless
     autoNamespaces: *namespaces

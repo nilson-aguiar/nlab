@@ -26,3 +26,4 @@ resources:
   - nbot.yaml
   - actual.yaml
   - tailscale-operator.yaml
+  - paperless.yaml
