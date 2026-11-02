@@ -18,7 +18,7 @@ releases:
   - name: ingress-traefik-internal
     namespace: traefik-system
     chart: traefik/traefik
-    version: 41.6.1
+    version: 41.7.1
     secrets:
       - ./secrets/traefik.values.secret.yaml
     values:
@@ -27,7 +27,7 @@ releases:
   - name: traefik-auth
     namespace: traefik-system
     chart: bjw-s/app-template
-    version: 5.2.1
+    version: 5.3.0
     secrets:
       - ./secrets/auth.values.secret.yaml
 
