@@ -8,7 +8,7 @@ repositories:
 releases:
   - name: tailscale-operator
     chart: tailscale/tailscale-operator
-    version: 1.104.2
+    version: 1.104.4
     namespace: tailscale
     values:
       - ./values/tailscale-operator.values.yaml
