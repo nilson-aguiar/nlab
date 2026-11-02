@@ -73,7 +73,7 @@ controllers:
             memory: 384Mi
           limits:
             cpu: 1500m
-            memory: 1024Mi
+            memory: 2048Mi
 
       valkey:
         image:
