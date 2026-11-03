@@ -80,7 +80,7 @@ controllers:
       valkey:
         image:
           repository: valkey/valkey
-          tag: 8.1-alpine
+          tag: 9.2-alpine
           pullPolicy: IfNotPresent
         ports:
           - name: redis
