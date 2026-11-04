@@ -28,4 +28,5 @@ certificate:
       - actual
       - nbot
       - paperless
+      - it-tools
     autoNamespaces: *namespaces
