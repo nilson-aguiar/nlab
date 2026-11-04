@@ -63,7 +63,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/corentinth/it-tools
-          tag: 2024.10.22-7ca59a3
+          tag: 2024.10.22-7ca5933
           pullPolicy: IfNotPresent
         ports:
           - name: http
@@ -147,7 +147,7 @@ spec:
 
 ## Rollout Checklist
 
-- [ ] Create directory: `mkdir -p k8s/10_apps/17_it-tools/values`.
-- [ ] Save `helmfile.yaml` and `values/it-tools.values.yaml`.
-- [ ] Add `it-tools.yaml` to `k8s/05_cluster-features/05_argo-cd/applications/` and register in `kustomization.yaml`.
+- [x] Create directory: `mkdir -p k8s/10_apps/17_it-tools/values`.
+- [x] Save `helmfile.yaml` and `values/it-tools.values.yaml`.
+- [x] Add `it-tools.yaml` to `k8s/05_cluster-features/05_argo-cd/applications/` and register in `kustomization.yaml`.
 - [ ] Commit, push, and let ArgoCD sync.

@@ -1,0 +1,56 @@
+controllers:
+  main:
+    strategy: Recreate
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: ghcr.io/corentinth/it-tools
+          tag: 2024.10.22-7ca5933
+          pullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: &port 80
+        probes:
+          liveness:
+            enabled: true
+            port: *port
+          readiness:
+            enabled: true
+            port: *port
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+rawResources:
+  ingress-route:
+    enabled: true
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`it-tools.local.naguiar.dev`) || Host(`it-tools.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: it-tools
+                port: *port
+        tls:
+          secretName: certificate-tls

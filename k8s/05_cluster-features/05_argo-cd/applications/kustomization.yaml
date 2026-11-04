@@ -27,3 +27,4 @@ resources:
   - actual.yaml
   - tailscale-operator.yaml
   - paperless.yaml
+  - it-tools.yaml
