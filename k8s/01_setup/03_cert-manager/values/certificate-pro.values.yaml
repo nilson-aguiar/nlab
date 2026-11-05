@@ -29,4 +29,5 @@ certificate:
       - nbot
       - paperless
       - it-tools
+      - stirling-pdf
     autoNamespaces: *namespaces

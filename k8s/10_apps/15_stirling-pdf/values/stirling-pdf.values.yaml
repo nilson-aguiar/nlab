@@ -1,0 +1,83 @@
+# k8s/10_apps/15_stirling-pdf/values/stirling-pdf.values.yaml
+controllers:
+  main:
+    strategy: Recreate
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: stirlingtools/stirling-pdf
+          tag: 3.2.2
+          pullPolicy: IfNotPresent
+        env:
+          TZ: Europe/Amsterdam
+          SERVER_PORT: &port 8080
+          DOCKER_ENABLE_SECURITY: "false"
+          INSTALL_BOOK_AND_ADVANCED_HTML_OPS: "false"
+          JAVA_CUSTOM_OPTS: "-XX:MaxRAMPercentage=50"
+        ports:
+          - name: http
+            containerPort: *port
+        probes:
+          liveness:
+            enabled: true
+            port: *port
+          readiness:
+            enabled: true
+            port: *port
+          startup:
+            enabled: true
+            port: *port
+            spec:
+              failureThreshold: 30
+              periodSeconds: 5
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 2Gi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+persistence:
+  configs:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: longhorn
+    globalMounts:
+      - path: /configs
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp
+
+rawResources:
+  ingress-route:
+    enabled: true
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`pdf.local.naguiar.dev`) || Host(`pdf.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: stirling-pdf
+                port: *port
+        tls:
+          secretName: certificate-tls
