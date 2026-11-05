@@ -29,3 +29,4 @@ resources:
   - paperless.yaml
   - it-tools.yaml
   - stirling-pdf.yaml
+  - linkwarden.yaml
