@@ -1,0 +1,18 @@
+# k8s/10_apps/15_stirling-pdf/helmfile.yaml
+repositories:
+  - name: bjw-s
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
+
+---
+templates:
+  bjw: &bjw
+    namespace: stirling-pdf
+    chart: bjw-s/app-template
+    version: 5.0.1
+
+releases:
+  - name: stirling-pdf
+    <<: *bjw
+    values:
+      - ./values/stirling-pdf.values.yaml

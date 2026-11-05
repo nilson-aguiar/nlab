@@ -167,7 +167,7 @@ spec:
 
 ## Rollout Checklist
 
-- [ ] Create directory: `mkdir -p k8s/10_apps/15_stirling-pdf/values`.
-- [ ] Save `helmfile.yaml` and `values/stirling-pdf.values.yaml`.
-- [ ] Add `stirling-pdf.yaml` to `k8s/05_cluster-features/05_argo-cd/applications/` and register in `kustomization.yaml`.
-- [ ] Commit, push, and let ArgoCD deploy.
+- [x] Create directory: `mkdir -p k8s/10_apps/15_stirling-pdf/values`.
+- [x] Save `helmfile.yaml` and `values/stirling-pdf.values.yaml`.
+- [x] Add `stirling-pdf.yaml` to `k8s/05_cluster-features/05_argo-cd/applications/` and register in `kustomization.yaml`.
+- [x] Commit, push, and let ArgoCD deploy.
