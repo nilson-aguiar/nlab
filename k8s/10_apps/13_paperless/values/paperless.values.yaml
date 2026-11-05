@@ -45,10 +45,11 @@ controllers:
           USERMAP_GID: 1000
           PAPERLESS_OCR_LANGUAGES: "nld por"
           PAPERLESS_OCR_LANGUAGE: "eng+nld+por"
-          PAPERLESS_TASK_WORKERS: 1
-          PAPERLESS_WEBSERVER_WORKERS: 1
-          OMP_THREAD_LIMIT: 1
-          PAPERLESS_OCR_MODE: "skip"
+          PAPERLESS_TASK_WORKERS: 2
+          PAPERLESS_WEBSERVER_WORKERS: 2
+          OMP_THREAD_LIMIT: 2
+          PAPERLESS_OCR_MODE: "auto"
+          PAPERLESS_OCR_DESKEW: "true"
           MALLOC_TRIM_THRESHOLD_: 65536
           PAPERLESS_TIME_ZONE: Europe/Amsterdam
         envFrom:
