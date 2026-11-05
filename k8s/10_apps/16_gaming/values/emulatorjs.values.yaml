@@ -5,7 +5,7 @@ controllers:
       app:
         image:
           repository: lscr.io/linuxserver/emulatorjs
-          tag: 1.9.1
+          tag: 1.9.2
           pullPolicy: IfNotPresent
         env:
           TZ: Europe/Amsterdam
