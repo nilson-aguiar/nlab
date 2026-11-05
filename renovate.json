@@ -6,7 +6,6 @@
   ],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
-  "minimumReleaseAge": "5 days",
   "platformAutomerge": false,
   "ignoreTests": true,
   "lockFileMaintenance": {
