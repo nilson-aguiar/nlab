@@ -31,4 +31,5 @@ certificate:
       - it-tools
       - stirling-pdf
       - linkwarden
+      - gaming
     autoNamespaces: *namespaces

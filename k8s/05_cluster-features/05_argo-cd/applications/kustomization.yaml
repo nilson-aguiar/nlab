@@ -30,3 +30,4 @@ resources:
   - it-tools.yaml
   - stirling-pdf.yaml
   - linkwarden.yaml
+  - gaming.yaml
