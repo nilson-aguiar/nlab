@@ -1,0 +1,129 @@
+controllers:
+  main:
+    strategy: Recreate
+    annotations:
+      reloader.stakater.com/auto: "true"
+    initContainers:
+      init-db:
+        image:
+          repository: ghcr.io/home-operations/postgres-init
+          tag: 18
+        env:
+          INIT_POSTGRES_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
+          INIT_POSTGRES_USER: "romm"
+          INIT_POSTGRES_DBNAME: "romm"
+          INIT_POSTGRES_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: romm
+                key: DB_PASSWD
+          INIT_POSTGRES_SUPER_PASS:
+            valueFrom:
+              secretKeyRef:
+                name: postgres-superuser
+                key: password
+    containers:
+      app:
+        image:
+          repository: ghcr.io/rommapp/romm
+          tag: 5.4.1
+          pullPolicy: IfNotPresent
+        env:
+          TZ: Europe/Amsterdam
+          ROMM_PORT: &port 8080
+          ROMM_BASE_PATH: "/"
+          ROMM_DB_DRIVER: "postgresql"
+          DB_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
+          DB_PORT: 5432
+          DB_NAME: "romm"
+          DB_USER: "romm"
+        envFrom:
+          - secretRef:
+              name: romm
+        ports:
+          - name: http
+            containerPort: *port
+        probes:
+          liveness:
+            enabled: true
+            port: *port
+          readiness:
+            enabled: true
+            port: *port
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 1Gi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+persistence:
+  resources:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    storageClass: longhorn
+    advancedMounts:
+      main:
+        app:
+          - path: /romm/resources
+
+  assets:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    storageClass: longhorn
+    advancedMounts:
+      main:
+        app:
+          - path: /romm/assets
+
+  redis:
+    enabled: true
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    storageClass: longhorn
+    advancedMounts:
+      main:
+        app:
+          - path: /redis-data
+
+  library:
+    enabled: true
+    existingClaim: roms-storage
+    advancedMounts:
+      main:
+        app:
+          - path: /romm/library
+
+rawResources:
+  ingress-route:
+    enabled: true
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`romm.local.naguiar.dev`) || Host(`romm.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: romm
+                port: *port
+        tls:
+          secretName: certificate-tls

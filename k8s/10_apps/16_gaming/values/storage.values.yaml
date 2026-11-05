@@ -1,0 +1,9 @@
+# k8s/10_apps/16_gaming/values/storage.values.yaml
+fullnameOverride: roms-storage
+
+persistence:
+  data:
+    size: 100Gi
+    storageClass: secondary
+    retain: true
+    accessMode: ReadWriteMany
