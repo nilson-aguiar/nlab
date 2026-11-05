@@ -120,7 +120,7 @@ rawResources:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`romm.local.naguiar.dev`) || Host(`romm.naguiar.dev`)
+          - match: Host(`romm.local.naguiar.dev`) || Host(`romm.naguiar.dev`) || Host(`play.local.naguiar.dev`) || Host(`play.naguiar.dev`)
             kind: Rule
             services:
               - name: romm

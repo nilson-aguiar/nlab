@@ -24,10 +24,3 @@ releases:
       - ./values/romm.values.yaml
     secrets:
       - ./secrets/romm.secrets.yaml
-
-  - name: emulatorjs
-    <<: *bjw
-    needs:
-      - gaming/gaming-storage
-    values:
-      - ./values/emulatorjs.values.yaml
