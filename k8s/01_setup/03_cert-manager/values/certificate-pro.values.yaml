@@ -30,4 +30,5 @@ certificate:
       - paperless
       - it-tools
       - stirling-pdf
+      - linkwarden
     autoNamespaces: *namespaces
