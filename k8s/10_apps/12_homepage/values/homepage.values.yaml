@@ -1,0 +1,326 @@
+# k8s/10_apps/12_homepage/values/homepage.values.yaml
+defaultPodOptions:
+  automountServiceAccountToken: true
+
+serviceAccount:
+  homepage:
+    forceRename: homepage
+
+controllers:
+  main:
+    strategy: Recreate
+    serviceAccount:
+      identifier: homepage
+    containers:
+      app:
+        image:
+          repository: ghcr.io/gethomepage/homepage
+          tag: v2.7.0
+          pullPolicy: IfNotPresent
+        env:
+          TZ: Europe/Amsterdam
+          HOMEPAGE_ALLOWED_HOSTS: "home.local.naguiar.dev,home.naguiar.dev,homepage.homepage.svc.cluster.local"
+        envFrom:
+          - secretRef:
+              name: homepage
+        ports:
+          - name: http
+            containerPort: &port 3000
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 5
+        resources:
+          requests:
+            cpu: 20m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+
+service:
+  app:
+    controller: main
+    ports:
+      http:
+        port: *port
+
+configMaps:
+  config:
+    data:
+      settings.yaml: |
+        title: Homelab
+        favicon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/png/homepage.png
+        theme: dark
+        color: slate
+        language: en
+        layout:
+          Cluster:
+            style: row
+            columns: 4
+          Infrastructure:
+            style: row
+            columns: 4
+          Media & Downloads:
+            style: row
+            columns: 4
+          Productivity & Tools:
+            style: row
+            columns: 4
+
+      kubernetes.yaml: |
+        mode: cluster
+
+      widgets.yaml: |
+        - kubernetes:
+            cluster:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
+              label: "Cluster"
+            nodes:
+              show: true
+              cpu: true
+              memory: true
+              showLabel: true
+
+      bookmarks.yaml: |
+        - Homelab Repos:
+            - GitHub Repository:
+                - abbr: GH
+                  href: https://github.com/nilson-aguiar/nlab
+
+      services.yaml: |
+        - Infrastructure:
+            - ArgoCD:
+                icon: argocd.png
+                href: https://argocd.local.naguiar.dev
+                description: GitOps Delivery Engine
+                widget:
+                  type: argocd
+                  url: http://argocd-server.argocd.svc.cluster.local:80
+                  key: '{{ "{{" }}HOMEPAGE_VAR_ARGOCD_AUTH_TOKEN{{ "}}" }}'
+
+            - Pi-hole:
+                icon: pi-hole.png
+                href: https://pihole.local.naguiar.dev
+                description: Network Ad-blocking DNS
+                widget:
+                  type: pihole
+                  url: http://pihole-web.pihole-system.svc.cluster.local:80
+                  key: '{{ "{{" }}HOMEPAGE_VAR_PIHOLE_API_TOKEN{{ "}}" }}'
+
+            - Grafana:
+                icon: grafana.png
+                href: https://grafana.local.naguiar.dev
+                description: Metrics & Observability Dashboards
+
+            - VictoriaMetrics:
+                icon: victoriametrics.png
+                href: https://vmsingle.local.naguiar.dev
+                description: Time-series Monitoring Stack
+
+        - Media & Downloads:
+            - Sonarr:
+                icon: sonarr.png
+                href: https://sonarr.local.naguiar.dev
+                description: TV Series Management
+                widget:
+                  type: sonarr
+                  url: http://sonarr.media-flix.svc.cluster.local:8989
+                  key: '{{ "{{" }}HOMEPAGE_VAR_SONARR_API_KEY{{ "}}" }}'
+
+            - Radarr:
+                icon: radarr.png
+                href: https://radarr.local.naguiar.dev
+                description: Movies Management
+                widget:
+                  type: radarr
+                  url: http://radarr.media-flix.svc.cluster.local:7878
+                  key: '{{ "{{" }}HOMEPAGE_VAR_RADARR_API_KEY{{ "}}" }}'
+
+            - qBittorrent:
+                icon: qbittorrent.png
+                href: https://media-qb.local.naguiar.dev
+                description: Torrent Downloader
+                widget:
+                  type: qbittorrent
+                  url: http://media-qb.media-flix.svc.cluster.local:8080
+                  username: '{{ "{{" }}HOMEPAGE_VAR_QBITTORRENT_USERNAME{{ "}}" }}'
+                  password: '{{ "{{" }}HOMEPAGE_VAR_QBITTORRENT_PASSWORD{{ "}}" }}'
+
+            - Jellyfin:
+                icon: jellyfin.png
+                href: https://jellyfin.local.naguiar.dev
+                description: Media Streaming Server
+                widget:
+                  type: jellyfin
+                  url: http://jellyfin.media-flix.svc.cluster.local:8096
+                  key: '{{ "{{" }}HOMEPAGE_VAR_JELLYFIN_API_KEY{{ "}}" }}'
+
+            - Plex:
+                icon: plex.png
+                href: https://plex.local.naguiar.dev
+                description: Media Server
+
+            - Prowlarr:
+                icon: prowlarr.png
+                href: https://prowlarr.local.naguiar.dev
+                description: Indexer Manager
+                widget:
+                  type: prowlarr
+                  url: http://prowlarr.media-flix.svc.cluster.local:9696
+                  key: '{{ "{{" }}HOMEPAGE_VAR_PROWLARR_API_KEY{{ "}}" }}'
+
+            - Overseerr:
+                icon: overseerr.png
+                href: https://seerr.local.naguiar.dev
+                description: Media Requests & Discovery
+                widget:
+                  type: overseerr
+                  url: http://seerr.media-flix.svc.cluster.local:5055
+                  key: '{{ "{{" }}HOMEPAGE_VAR_SEERR_API_KEY{{ "}}" }}'
+
+            - Tautulli:
+                icon: tautulli.png
+                href: https://tautulli.local.naguiar.dev
+                description: Plex Monitoring & Analytics
+                widget:
+                  type: tautulli
+                  url: http://tautulli.media-flix.svc.cluster.local:8181
+                  key: '{{ "{{" }}HOMEPAGE_VAR_TAUTULLI_API_KEY{{ "}}" }}'
+
+        - Productivity & Tools:
+            - Home Assistant:
+                icon: home-assistant.png
+                href: https://ha.local.naguiar.dev
+                description: Smart Home Automation
+                widget:
+                  type: homeassistant
+                  url: http://home-assistant.home-assistant.svc.cluster.local:8123
+                  key: '{{ "{{" }}HOMEPAGE_VAR_HASS_API_KEY{{ "}}" }}'
+
+            - Actual Budget:
+                icon: actual-budget.png
+                href: https://actual.local.naguiar.dev
+                description: Zero-based Personal Finance
+
+            - Paperless-ngx:
+                icon: paperless-ngx.png
+                href: https://paperless.local.naguiar.dev
+                description: Document Archive & OCR
+                widget:
+                  type: paperlessngx
+                  url: http://paperless.paperless.svc.cluster.local:8000
+                  key: '{{ "{{" }}HOMEPAGE_VAR_PAPERLESS_API_KEY{{ "}}" }}'
+
+            - Vaultwarden:
+                icon: vaultwarden.png
+                href: https://vaultwarden.local.naguiar.dev
+                description: Password Manager
+
+            - AFFiNE:
+                icon: affine.png
+                href: https://affine.local.naguiar.dev
+                description: Knowledge Base & Notes
+
+            - Komga:
+                icon: komga.png
+                href: https://komga.local.naguiar.dev
+                description: Comics & Manga Server
+                widget:
+                  type: komga
+                  url: http://komga.reader.svc.cluster.local:8080
+                  username: '{{ "{{" }}HOMEPAGE_VAR_KOMGA_USERNAME{{ "}}" }}'
+                  password: '{{ "{{" }}HOMEPAGE_VAR_KOMGA_PASSWORD{{ "}}" }}'
+
+            - Linkwarden:
+                icon: linkwarden.png
+                href: https://linkwarden.local.naguiar.dev
+                description: Bookmark Manager
+
+            - IT-Tools:
+                icon: it-tools.png
+                href: https://it-tools.local.naguiar.dev
+                description: Developer Utilities
+
+persistence:
+  config:
+    type: configMap
+    identifier: config
+    globalMounts:
+      - path: /app/config/settings.yaml
+        subPath: settings.yaml
+      - path: /app/config/services.yaml
+        subPath: services.yaml
+      - path: /app/config/widgets.yaml
+        subPath: widgets.yaml
+      - path: /app/config/bookmarks.yaml
+        subPath: bookmarks.yaml
+      - path: /app/config/kubernetes.yaml
+        subPath: kubernetes.yaml
+  logs:
+    type: emptyDir
+    globalMounts:
+      - path: /app/config/logs
+
+rawResources:
+  ingress-route:
+    enabled: true
+    manifest:
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: 192.168.1.200
+          kubernetes.io/ingress.class: traefik-external
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - match: Host(`home.local.naguiar.dev`) || Host(`home.naguiar.dev`)
+            kind: Rule
+            services:
+              - name: homepage
+                port: *port
+        tls:
+          secretName: certificate-tls
+  cluster-role:
+    enabled: true
+    forceRename: homepage
+    manifest:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      rules:
+        - apiGroups: [""]
+          resources: ["namespaces", "pods", "nodes"]
+          verbs: ["get", "list"]
+        - apiGroups: ["networking.k8s.io", "extensions"]
+          resources: ["ingresses"]
+          verbs: ["get", "list"]
+        - apiGroups: ["traefik.io"]
+          resources: ["ingressroutes"]
+          verbs: ["get", "list"]
+        - apiGroups: ["metrics.k8s.io"]
+          resources: ["nodes", "pods"]
+          verbs: ["get", "list"]
+  cluster-role-binding:
+    enabled: true
+    forceRename: homepage
+    manifest:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: homepage
+      subjects:
+        - kind: ServiceAccount
+          name: homepage
+          namespace: homepage
