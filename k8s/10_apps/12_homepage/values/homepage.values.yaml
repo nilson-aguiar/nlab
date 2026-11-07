@@ -99,7 +99,7 @@ configMaps:
       services.yaml: |
         - Infrastructure:
             - ArgoCD:
-                icon: argocd.png
+                icon: argo.png
                 href: https://argocd.local.naguiar.dev
                 description: GitOps Delivery Engine
 
@@ -171,7 +171,7 @@ configMaps:
                 description: Smart Home Automation
 
             - Actual Budget:
-                icon: actual-budget.png
+                icon: actual.png
                 href: https://actual.local.naguiar.dev
                 description: Zero-based Personal Finance
 
@@ -205,6 +205,76 @@ configMaps:
                 href: https://it-tools.local.naguiar.dev
                 description: Developer Utilities
 
+      custom.js: |
+        (function () {
+          // Detect if accessed from external domain
+          const isExternal = window.location.hostname === 'home.naguiar.dev';
+          if (!isExternal) return;
+
+          // Services strictly confined to LAN (no public IngressRoute on *.naguiar.dev)
+          const lanOnlySubdomains = [
+            'argocd',
+            'pihole',
+            'vmsingle',
+            'victoriametrics',
+            'traefik',
+            'media-qb',
+            'qb',
+            'plex',
+            'jellyfin',
+            'prowlarr',
+            'stash'
+          ];
+
+          function adaptContext() {
+            const links = document.querySelectorAll('a[href*=".local.naguiar.dev"]');
+            links.forEach(a => {
+              try {
+                const url = new URL(a.href);
+                const subdomain = url.hostname.split('.')[0];
+
+                if (lanOnlySubdomains.includes(subdomain)) {
+                  // Hide LAN-only cards when accessed externally
+                  const card = a.closest('.service-card') || a.closest('.group') || a.parentElement;
+                  if (card && card.style.display !== 'none') {
+                    card.style.display = 'none';
+                  }
+                } else {
+                  // Rewrite local domain to public domain
+                  const newHref = a.href.replace('.local.naguiar.dev', '.naguiar.dev');
+                  if (a.href !== newHref) {
+                    a.href = newHref;
+                  }
+                }
+              } catch (e) {
+                // Ignore parse errors
+              }
+            });
+          }
+
+          // Initial execution
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', adaptContext);
+          } else {
+            adaptContext();
+          }
+
+          window.addEventListener('load', adaptContext);
+
+          // Handle client-side dynamic DOM updates
+          const observer = new MutationObserver(() => {
+            adaptContext();
+          });
+
+          observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true
+          });
+
+          // Fallback timers during initial React hydration
+          [100, 300, 600, 1200, 2500].forEach(delay => setTimeout(adaptContext, delay));
+        })();
+
 persistence:
   config:
     type: configMap
@@ -220,6 +290,8 @@ persistence:
         subPath: bookmarks.yaml
       - path: /app/config/kubernetes.yaml
         subPath: kubernetes.yaml
+      - path: /app/config/custom.js
+        subPath: custom.js
   logs:
     type: emptyDir
     globalMounts:
