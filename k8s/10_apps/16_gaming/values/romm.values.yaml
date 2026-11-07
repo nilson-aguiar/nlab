@@ -37,6 +37,7 @@ controllers:
           DB_PORT: 5432
           DB_NAME: "romm"
           DB_USER: "romm"
+          WEB_SERVER_CONCURRENCY: 2
         envFrom:
           - secretRef:
               name: romm
@@ -53,9 +54,9 @@ controllers:
         resources:
           requests:
             cpu: 50m
-            memory: 128Mi
+            memory: 512Mi
           limits:
-            memory: 1Gi
+            memory: 2Gi
 
 service:
   app:
