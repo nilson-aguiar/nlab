@@ -102,19 +102,11 @@ configMaps:
                 icon: argocd.png
                 href: https://argocd.local.naguiar.dev
                 description: GitOps Delivery Engine
-                widget:
-                  type: argocd
-                  url: http://argocd-server.argocd.svc.cluster.local:80
-                  key: '{{ "{{" }}HOMEPAGE_VAR_ARGOCD_AUTH_TOKEN{{ "}}" }}'
 
             - Pi-hole:
                 icon: pi-hole.png
                 href: https://pihole.local.naguiar.dev
                 description: Network Ad-blocking DNS
-                widget:
-                  type: pihole
-                  url: http://pihole-web.pihole-system.svc.cluster.local:80
-                  key: '{{ "{{" }}HOMEPAGE_VAR_PIHOLE_API_TOKEN{{ "}}" }}'
 
             - Grafana:
                 icon: grafana.png
@@ -126,43 +118,31 @@ configMaps:
                 href: https://vmsingle.local.naguiar.dev
                 description: Time-series Monitoring Stack
 
+            - Traefik:
+                icon: traefik.png
+                href: https://traefik.local.naguiar.dev
+                description: Ingress Controller
+
         - Media & Downloads:
             - Sonarr:
                 icon: sonarr.png
                 href: https://sonarr.local.naguiar.dev
                 description: TV Series Management
-                widget:
-                  type: sonarr
-                  url: http://sonarr.media-flix.svc.cluster.local:8989
-                  key: '{{ "{{" }}HOMEPAGE_VAR_SONARR_API_KEY{{ "}}" }}'
 
             - Radarr:
                 icon: radarr.png
                 href: https://radarr.local.naguiar.dev
                 description: Movies Management
-                widget:
-                  type: radarr
-                  url: http://radarr.media-flix.svc.cluster.local:7878
-                  key: '{{ "{{" }}HOMEPAGE_VAR_RADARR_API_KEY{{ "}}" }}'
 
             - qBittorrent:
                 icon: qbittorrent.png
                 href: https://media-qb.local.naguiar.dev
                 description: Torrent Downloader
-                widget:
-                  type: qbittorrent
-                  url: http://media-qb.media-flix.svc.cluster.local:8080
-                  username: '{{ "{{" }}HOMEPAGE_VAR_QBITTORRENT_USERNAME{{ "}}" }}'
-                  password: '{{ "{{" }}HOMEPAGE_VAR_QBITTORRENT_PASSWORD{{ "}}" }}'
 
             - Jellyfin:
                 icon: jellyfin.png
                 href: https://jellyfin.local.naguiar.dev
                 description: Media Streaming Server
-                widget:
-                  type: jellyfin
-                  url: http://jellyfin.media-flix.svc.cluster.local:8096
-                  key: '{{ "{{" }}HOMEPAGE_VAR_JELLYFIN_API_KEY{{ "}}" }}'
 
             - Plex:
                 icon: plex.png
@@ -173,38 +153,22 @@ configMaps:
                 icon: prowlarr.png
                 href: https://prowlarr.local.naguiar.dev
                 description: Indexer Manager
-                widget:
-                  type: prowlarr
-                  url: http://prowlarr.media-flix.svc.cluster.local:9696
-                  key: '{{ "{{" }}HOMEPAGE_VAR_PROWLARR_API_KEY{{ "}}" }}'
 
             - Overseerr:
                 icon: overseerr.png
                 href: https://seerr.local.naguiar.dev
                 description: Media Requests & Discovery
-                widget:
-                  type: overseerr
-                  url: http://seerr.media-flix.svc.cluster.local:5055
-                  key: '{{ "{{" }}HOMEPAGE_VAR_SEERR_API_KEY{{ "}}" }}'
 
             - Tautulli:
                 icon: tautulli.png
                 href: https://tautulli.local.naguiar.dev
                 description: Plex Monitoring & Analytics
-                widget:
-                  type: tautulli
-                  url: http://tautulli.media-flix.svc.cluster.local:8181
-                  key: '{{ "{{" }}HOMEPAGE_VAR_TAUTULLI_API_KEY{{ "}}" }}'
 
         - Productivity & Tools:
             - Home Assistant:
                 icon: home-assistant.png
                 href: https://ha.local.naguiar.dev
                 description: Smart Home Automation
-                widget:
-                  type: homeassistant
-                  url: http://home-assistant.home-assistant.svc.cluster.local:8123
-                  key: '{{ "{{" }}HOMEPAGE_VAR_HASS_API_KEY{{ "}}" }}'
 
             - Actual Budget:
                 icon: actual-budget.png
@@ -215,10 +179,6 @@ configMaps:
                 icon: paperless-ngx.png
                 href: https://paperless.local.naguiar.dev
                 description: Document Archive & OCR
-                widget:
-                  type: paperlessngx
-                  url: http://paperless.paperless.svc.cluster.local:8000
-                  key: '{{ "{{" }}HOMEPAGE_VAR_PAPERLESS_API_KEY{{ "}}" }}'
 
             - Vaultwarden:
                 icon: vaultwarden.png
@@ -234,11 +194,6 @@ configMaps:
                 icon: komga.png
                 href: https://komga.local.naguiar.dev
                 description: Comics & Manga Server
-                widget:
-                  type: komga
-                  url: http://komga.reader.svc.cluster.local:8080
-                  username: '{{ "{{" }}HOMEPAGE_VAR_KOMGA_USERNAME{{ "}}" }}'
-                  password: '{{ "{{" }}HOMEPAGE_VAR_KOMGA_PASSWORD{{ "}}" }}'
 
             - Linkwarden:
                 icon: linkwarden.png
