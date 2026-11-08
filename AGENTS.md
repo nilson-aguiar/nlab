@@ -98,6 +98,7 @@ Each application directory typically contains:
 9.  **Git Worktree Convention & Rebase Discipline**:
     *   When using Git worktrees for isolated work, always place them under `.worktrees/<branch-name>` in the repository root (e.g., `.worktrees/feat-postgres-migration`), which is tracked in `.gitignore`. Clean up worktrees when finished (`git worktree remove .worktrees/<branch-name>`).
     *   **Rebase Before Committing**: When making follow-ups or additional fixes on a feature branch, always fetch and rebase on `origin/main` before committing and pushing to prevent merge conflicts.
+    *   **Return PR URL**: Whenever pushing a branch or worktree to GitHub, always provide the PR creation URL (e.g. `https://github.com/nilson-aguiar/nlab/pull/new/<branch-name>`).
 10. **Secret Privacy & Templating**: When creating or modifying secrets, do not attempt to read or expose private credentials. Provide template manifests with clear placeholders (e.g. `<REPLACE_WITH_YOUR_DB_PASSWORD>`) and instruct the user to fill in values and encrypt using SOPS (`sops -e -i <file>`).
 11. **Stateful Migrations & ArgoCD Coordination**: For maintenance tasks, data migrations, or manual replica scaling:
     *   Temporarily disable ArgoCD auto-sync/self-heal on the target Application (`kubectl patch app <name> -n argocd --type merge -p '{"spec":{"syncPolicy":null}}'` or via UI) so ArgoCD does not reconcile during manual downtime or batch jobs.
