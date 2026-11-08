@@ -31,7 +31,6 @@ controllers:
         env:
           TZ: Europe/Amsterdam
           ROMM_PORT: &port 8080
-          ROMM_BASE_PATH: "/"
           ROMM_DB_DRIVER: "postgresql"
           DB_HOST: "postgres-rw.cloudnative-pg.svc.cluster.local"
           DB_PORT: 5432
