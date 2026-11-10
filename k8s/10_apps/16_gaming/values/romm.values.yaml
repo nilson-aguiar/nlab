@@ -37,6 +37,7 @@ controllers:
           DB_NAME: "romm"
           DB_USER: "romm"
           WEB_SERVER_CONCURRENCY: 2
+          HASHEOUS_API_ENABLED: "true"
         envFrom:
           - secretRef:
               name: romm
