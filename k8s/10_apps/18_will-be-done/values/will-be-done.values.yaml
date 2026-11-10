@@ -8,7 +8,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/will-be-done/will-be-done
-          tag: 0.14.0
+          tag: 0.15.0
           pullPolicy: IfNotPresent
         env:
           TZ: Europe/Amsterdam
