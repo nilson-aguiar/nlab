@@ -31,4 +31,5 @@ resources:
   - stirling-pdf.yaml
   - linkwarden.yaml
   - gaming.yaml
+  - will-be-done.yaml
   - homepage.yaml
