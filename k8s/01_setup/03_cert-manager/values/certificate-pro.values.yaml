@@ -32,4 +32,5 @@ certificate:
       - stirling-pdf
       - linkwarden
       - gaming
+      - will-be-done
     autoNamespaces: *namespaces
