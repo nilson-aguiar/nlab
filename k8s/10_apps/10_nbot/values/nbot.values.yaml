@@ -1,7 +1,34 @@
 # k8s/10_apps/10_nbot/values/nbot.values.yaml
+defaultPodOptions:
+  automountServiceAccountToken: true
+
+serviceAccount:
+  nbot:
+    forceRename: nbot
+
+rbac:
+  roles:
+    nbot:
+      type: ClusterRole
+      rules:
+        - apiGroups: ["traefik.io"]
+          resources: ["ingressroutes"]
+          verbs: ["get", "list", "watch"]
+  bindings:
+    nbot:
+      type: ClusterRoleBinding
+      roleRef:
+        identifier: nbot
+      subjects:
+        - kind: ServiceAccount
+          name: nbot
+          namespace: nbot
+
 controllers:
   main:
     strategy: Recreate
+    serviceAccount:
+      identifier: nbot
     annotations:
       reloader.stakater.com/auto: "true"
     initContainers:
