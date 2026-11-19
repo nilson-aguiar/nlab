@@ -17,7 +17,3 @@ configs:
       schedule: "0 0 * * 0"
       fromChapter: 0
       provider: mangalivre
-    claymore:
-      schedule: "0 0 * * 0"
-      fromChapter: 1
-      provider: taverna
