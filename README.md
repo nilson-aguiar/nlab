@@ -2,7 +2,7 @@
 
 [![Views](https://hits.sh/github.com/nilson-aguiar/nlab.svg?view=today-total&label=Views)](https://hits.sh/github.com/nilson-aguiar/nlab/)
 
-https://
+
 This is the companion configuration that goes with the video from [Dreams of Autonomy](https://youtu.be/2yplBzPCghA).
 
 This project is split into different directories depending on each service used.
