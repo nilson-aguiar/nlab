@@ -15,7 +15,6 @@ Each blueprint is tailored specifically to the infrastructure of this repository
 
 | Service | Category | Memory Target | Database / Backend | Persistence Tier | Blueprint File |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Homepage** | Central Dashboard | ~60 – 100 MiB | None (ConfigMaps) | Longhorn (Config) | [`homepage.md`](file:///home/naguiar/.gemini/antigravity-cli/worktrees/nlab/homeland_feature_ideas_brainstorm/ideas/homepage.md) |
 | **Paperless-ngx** | Document Archiving / OCR | ~250 – 500 MiB | CloudNativePG + Valkey | Longhorn (Data) + NFS (Media/Consume) | [`paperless.md`](file:///home/naguiar/.gemini/antigravity-cli/worktrees/nlab/homeland_feature_ideas_brainstorm/ideas/paperless.md) |
 | **Linkwarden** | Bookmarks & Web Archiver | ~120 – 200 MiB | CloudNativePG | Longhorn (Assets) | [`linkwarden.md`](file:///home/naguiar/.gemini/antigravity-cli/worktrees/nlab/homeland_feature_ideas_brainstorm/ideas/linkwarden.md) |
 | **Stirling-PDF** | PDF Manipulation Toolkit | ~150 – 300 MiB | Stateless | Temporary / EmptyDir | [`stirling-pdf.md`](file:///home/naguiar/.gemini/antigravity-cli/worktrees/nlab/homeland_feature_ideas_brainstorm/ideas/stirling-pdf.md) |
@@ -28,7 +27,6 @@ Each blueprint is tailored specifically to the infrastructure of this repository
 
 To preserve chronological and logical ordering across `k8s/10_apps`, the suggested sequence for rollout is:
 
-* `k8s/10_apps/12_homepage`
 * `k8s/10_apps/13_paperless`
 * `k8s/10_apps/14_linkwarden`
 * `k8s/10_apps/15_stirling-pdf`
