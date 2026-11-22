@@ -30,7 +30,7 @@ spec:
       serviceAccountName: homeassistant-sa
       initContainers:
         - name: postgres-init
-          image: "ghcr.io/home-operations/postgres-init:18"
+          image: "ghcr.io/home-operations/postgres-init:19"
           imagePullPolicy: IfNotPresent
           env:
             - name: INIT_POSTGRES_HOST
