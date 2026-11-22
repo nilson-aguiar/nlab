@@ -7,7 +7,7 @@ controllers:
       postgres-init:
         image:
           repository: ghcr.io/home-operations/postgres-init
-          tag: 18
+          tag: 19
         env:
           INIT_POSTGRES_HOST: postgres-rw.cloudnative-pg.svc.cluster.local
           INIT_POSTGRES_DBNAME: vaultwarden
