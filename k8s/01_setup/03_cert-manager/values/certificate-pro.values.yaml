@@ -33,4 +33,5 @@ certificate:
       - linkwarden
       - gaming
       - will-be-done
+      - butterfly
     autoNamespaces: *namespaces
